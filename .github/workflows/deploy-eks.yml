@@ -14,7 +14,7 @@ on:
 # ──────────────────────────────────────────────────────────────────────────
 
 env:
-  AWS_REGION: us-east-2
+  AWS_REGION: ap-northeast-2
 
 jobs:
   deploy:
@@ -51,7 +51,7 @@ jobs:
           aws eks update-kubeconfig \
             --region ${{ env.AWS_REGION }} \
             --name   ${{ secrets.EKS_CLUSTER_NAME }}
-
+ 
       - name: Deploy to EKS
         env:
           FRONTEND_IMAGE: "${{ secrets.ECR_FRONTEND_URI }}:${{ github.sha }}"
