@@ -1,39 +1,37 @@
-name: Frontend → EKS Deploy
+name: Frontend → ArgoCD Deploy
 
 on:
   push:
     branches: [main]
   workflow_dispatch:
 
-# ──────────────────────────────────────────────────────────────────────────
-# 이 repo의 GitHub Secrets에 등록할 값:
-#   AWS_ACCESS_KEY_ID          IAM 액세스 키
-#   AWS_SECRET_ACCESS_KEY      IAM 시크릿 키
-#   ECR_FRONTEND_URI           terraform output -raw ecr_frontend_repository_url
-#   EKS_CLUSTER_NAME           terraform output -raw eks_cluster_name
-# ──────────────────────────────────────────────────────────────────────────
-
 env:
   AWS_REGION: ap-northeast-2
 
 jobs:
   deploy:
-    name: Build & Deploy Frontend
+    name: Build & Push Frontend Image
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
 
+      # ─────────────────────────────
+      # AWS 인증
+      # ─────────────────────────────
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id:     ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region:            ${{ env.AWS_REGION }}
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v2
 
+      # ─────────────────────────────
+      # Docker build & push
+      # ─────────────────────────────
       - name: Docker Build & Push
         env:
           ECR: ${{ secrets.ECR_FRONTEND_URI }}
@@ -43,28 +41,45 @@ jobs:
             --build-arg REACT_APP_API_BASE_URL="" \
             -t $ECR:$TAG \
             -t $ECR:latest .
+
           docker push $ECR:$TAG
           docker push $ECR:latest
 
-      - name: Update kubeconfig
-        run: |
-          aws eks update-kubeconfig \
-            --region ${{ env.AWS_REGION }} \
-            --name   ${{ secrets.EKS_CLUSTER_NAME }}
- 
-      - name: Deploy to EKS
-        env:
-          FRONTEND_IMAGE: "${{ secrets.ECR_FRONTEND_URI }}:${{ github.sha }}"
-        run: |
-          envsubst < k8s/frontend.yaml | kubectl apply -f -
+      # ─────────────────────────────
+      # Infra repo checkout (ArgoCD GitOps)
+      # ─────────────────────────────
+      - name: Checkout Infra Repository
+        uses: actions/checkout@v4
+        with:
+          repository: Miniproject-management/management-infra
+          token: ${{ secrets.GH_TOKEN }}
+          path: infra-repo
 
-      - name: Wait for Rollout
+      # ─────────────────────────────
+      # manifest image 업데이트
+      # ─────────────────────────────
+      - name: Update Frontend Manifest
         run: |
-          kubectl rollout status deployment/frontend \
-            -n sample-app --timeout=300s
+          cd infra-repo
 
-      - name: Show Access URL
+          sed -i "s|image:.*|image: ${{ secrets.ECR_FRONTEND_URI }}:${{ github.sha }}|g" \
+            manifests/frontend/deployment.yaml
+
+      # ─────────────────────────────
+      # commit & push (ArgoCD trigger)
+      # ─────────────────────────────
+      - name: Commit and Push Changes
         run: |
-          echo "접속 URL:"
-          kubectl get svc frontend-service -n sample-app \
-            -o jsonpath='http://{.status.loadBalancer.ingress[0].hostname}{"\n"}'
+          cd infra-repo
+
+          git config --global user.name "github-actions"
+          git config --global user.email "action@github.com"
+
+          git add manifests/frontend/deployment.yaml
+
+          if ! git diff-index --quiet HEAD; then
+            git commit -m "chore: update frontend image ${{ github.sha }} [skip ci]"
+            git push origin main
+          else
+            echo "No changes to commit"
+          fi
