@@ -6,6 +6,7 @@ import ApprovalPage from "./pages/approval/ApprovalPage";
 import ResumePage from "./pages/resume/ResumePage";
 import DepartmentPage from "./pages/department/DepartmentPage";
 import DashboardPage from "./pages/dashboard/DashboardPage";
+import JobApplicationPage from "./pages/apply/JobApplicationPage";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
           <Route path="/approval" element={<ApprovalPage />} />
           <Route path="/resume" element={<ResumePage />} />
           <Route path="/department" element={<DepartmentPage />} />
+          <Route path="/apply" element={<JobApplicationPage />} />
         </Routes>
       </div>
     </BrowserRouter>
