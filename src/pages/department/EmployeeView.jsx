@@ -52,7 +52,6 @@ const EmployeeView = () => {
                                     <td>{emp.position}</td> {/* DB의 position 컬럼 */}
                                     <td>{emp.hireDate}</td> {/* hire_date -> hireDate */}
                                     <td className="text-center">
-                                        {/* 상태값이 따로 없다면 우선 활성 상태로 표시 */}
                                         <span className="status-badge active">재직</span>
                                     </td>
                                 </tr>
