@@ -115,12 +115,23 @@ function ApprovalPage() {
       <div className="approval-header">
         <h1>전자결재</h1>
 
-        <Link
-          to="/approval/apply"
-          className="apply-btn"
-        >
-          + 연차 신청
-        </Link>
+        <div className="header-buttons">
+          {role === "ROLE_ADMIN" && (
+            <Link
+              to="/approval/leave-balance"
+              className="balance-btn"
+            >
+              연차 생성
+            </Link>
+          )}
+
+          <Link
+            to="/approval/apply"
+            className="apply-btn"
+          >
+            + 연차 신청
+          </Link>
+        </div>
       </div>
 
       {/* 내 신청 내역 */}
