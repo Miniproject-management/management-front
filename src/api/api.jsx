@@ -27,6 +27,9 @@ function httpErrorMessage(res, data) {
   if (res.status === 401) {
     return '로그인이 필요합니다. 로그인 후 다시 시도해 주세요.';
   }
+  if (res.status === 403) {
+    return '접근이 거부되었습니다(403). 로그인·권한 또는 배포된 API 버전을 확인해 주세요.';
+  }
   const msg = data.message || data.error || data.raw || `HTTP ${res.status}`;
   return typeof msg === 'string' ? msg : JSON.stringify(msg);
 }
@@ -53,7 +56,19 @@ export async function fetchHrApplicantDetail(applicantId) {
   return data;
 }
 
-/** S3 PDF 브라우저 표시용 단기 프리사인 URL { url, expiresInSeconds } */
+/** PDF 바이트 (Blob URL / iframe 용). Bearer 필수 */
+export async function fetchResumePdfBlob(applicantId) {
+  const res = await fetch(`/api/hr/applicants/${applicantId}/resume/file`, {
+    headers: authHeaders(),
+  });
+  if (!res.ok) {
+    const data = await handleJson(res);
+    throw new Error(httpErrorMessage(res, data));
+  }
+  return res.blob();
+}
+
+/** S3 PDF 브라우저 표시용 단기 프리사인 URL { url, expiresInSeconds } (선택) */
 export async function fetchResumePreviewUrl(applicantId) {
   const res = await fetch(
     `/api/hr/applicants/${applicantId}/resume/preview-url`,
