@@ -484,82 +484,84 @@
   text-align: right;
 }
 
-/* ---------- admin dashboard orange theme ---------- */
-.dashboard-page--admin .panel__link,
-.dashboard-page--admin .summary-card__note.is-up,
-.dashboard-page--admin .rank-cell,
-.dashboard-page--admin .score-badge {
-  color: #f97316;
-}
-
-.dashboard-page--admin {
-  gap: 22px;
-}
-
-.dashboard-page--admin .dashboard-page__header {
-  margin-bottom: 4px;
-}
-
-.dashboard-page--admin .summary-card {
-  min-height: 142px;
-}
-
+/* ---------- admin (HR) — 오렌지 통일 톤 + 자연 높이 ---------- */
+.dashboard-page--admin .dashboard-page__summary-grid,
 .dashboard-page--admin .dashboard-page__content-grid {
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 18px;
+  align-items: start;
 }
 
-.dashboard-page--admin .panel:nth-child(1),
-.dashboard-page--admin .panel:nth-child(2) {
-  min-height: 392px;
+.dashboard-page--admin .summary-card__note.is-up {
+  color: #ea580c;
 }
 
-.dashboard-page--admin .panel:nth-child(3),
-.dashboard-page--admin .panel:nth-child(4) {
-  min-height: 310px;
+.dashboard-page--admin .summary-card__icon.tone-orange {
+  color: #f97316;
+  background: #fff1e0;
 }
 
-.dashboard-page--admin .data-table {
-  width: 100%;
+.dashboard-page--admin .panel__link {
+  color: #ea580c;
 }
 
-.dashboard-page--admin .rank-cell,
-.dashboard-page--admin .score-badge,
-.dashboard-page--admin .delta-pill.is-positive {
-  background: #fff7ed;
+.dashboard-page--admin .rank-cell {
+  color: #ea580c;
+  font-weight: 800;
 }
 
+.dashboard-page--admin .score-badge {
+  color: #ea580c;
+  background: #fff1e0;
+}
+
+.dashboard-page--admin .progress-bar__fill,
 .dashboard-page--admin .progress-bar.tone-blue .progress-bar__fill,
 .dashboard-page--admin .progress-bar.tone-orange .progress-bar__fill {
   background: #f97316;
 }
 
-.dashboard-page--admin .summary-card__icon.tone-orange {
-  color: #f97316;
+.dashboard-page--admin .leave-card.tone-orange {
   background: #fff7ed;
 }
 
-.dashboard-page--admin .leave-card.tone-blue {
-  border-color: #fed7aa;
-  background: #fff7ed;
+.dashboard-page--admin .leave-card.tone-orange p {
+  color: #c2410c;
 }
 
-.dashboard-page--admin .leave-card.tone-blue strong,
 .dashboard-page--admin .leave-card.tone-orange strong {
-  color: #f97316;
+  color: #ea580c;
+}
+
+.dashboard-page--admin .leave-card.tone-orange .progress-bar {
+  background: #fed7aa;
 }
 
 .dashboard-page--admin .status-badge {
-  background: #fff7ed;
+  background: #fff1e0;
+  color: #ea580c;
+}
+
+.dashboard-page--admin .doc-icon.tone-orange {
+  background: #fff1e0;
   color: #f97316;
 }
 
-.dashboard-page--admin .panel {
-  overflow: hidden;
+.dashboard-page--admin .dept-cell svg {
+  color: #f97316;
 }
 
-.dashboard-page--admin .data-table {
-  table-layout: fixed;
+.dashboard-page--admin .delta-pill.is-positive {
+  background: #fff1e0;
+  color: #ea580c;
+}
+
+.dashboard-page--admin .delta-pill.is-negative {
+  background: #fef2f2;
+  color: #ef4444;
+}
+
+.dashboard-page--admin .delta-pill.is-neutral {
+  background: #f5f5f4;
+  color: #78716c;
 }
 
 .dashboard-page--admin .data-table th,

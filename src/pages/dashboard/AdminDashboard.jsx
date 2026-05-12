@@ -54,7 +54,7 @@ const topApplicants = [
 ];
 
 const leaveOverview = [
-  { label: "이번 달 사용 연차", value: "24.5일", current: 24.5, target: 30, tone: "blue" },
+  { label: "이번 달 사용 연차", value: "24.5일", current: 24.5, target: 30, tone: "orange" },
   { label: "승인 대기 연차", value: "6.0일", current: 6, target: 10, tone: "orange" },
   { label: "평균 잔여 연차", value: "9.8일", current: 9.8, target: 15, tone: "green" },
 ];
@@ -194,7 +194,7 @@ function AdminDashboard() {
                   <td>
                     <div className="score-cell">
                       <span className="score-badge">{a.score}점</span>
-                      <ProgressBar value={a.score} tone="blue" />
+                      <ProgressBar value={a.score} tone="orange" />
                     </div>
                   </td>
                   <td className="muted-cell">{a.summary}</td>
@@ -243,7 +243,7 @@ function AdminDashboard() {
                   <td>
                     <div className="score-cell">
                       <span>{remain}일</span>
-                      <ProgressBar value={remain} max={15} tone="blue" />
+                      <ProgressBar value={remain} max={15} tone="orange" />
                     </div>
                   </td>
                   <td>{used}</td>
