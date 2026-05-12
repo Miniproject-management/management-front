@@ -1,7 +1,11 @@
 import { Link } from "react-router-dom";
 import "../styles/sidebar.css";
 
+import useAuthStore from "../store/useAuthStore";
+
 function Sidebar() {
+  const { accessToken, logout } = useAuthStore();
+
   return (
     <aside className="sidebar">
       <div>
@@ -26,9 +30,15 @@ function Sidebar() {
         </nav>
       </div>
 
-      <Link className="login-btn" to="/login">
-        로그인
-      </Link>
+      {accessToken ? (
+        <button className="login-btn" onClick={logout}>
+          로그아웃
+        </button>
+      ) : (
+        <Link className="login-btn" to="/login">
+          로그인
+        </Link>
+      )}
     </aside>
   );
 }
