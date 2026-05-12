@@ -90,3 +90,23 @@
 
   cursor: pointer;
 }
+
+.detail-btn {
+  background-color: #fea954;
+  color: white;
+
+  padding: 8px 12px;
+
+  border-radius: 8px;
+
+  text-decoration: none;
+
+  font-size: 13px;
+  font-weight: 500;
+
+  display: inline-block;
+}
+
+.detail-btn:hover {
+  opacity: 0.9;
+}
