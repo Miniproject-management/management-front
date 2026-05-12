@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import "../styles/sidebar.css";
 
-import useAuthStore from "../store/useAuthStore";
+import useAuthStore from "../stores/authStore";
 
 function Sidebar() {
   const { accessToken, logout } = useAuthStore();
