@@ -309,18 +309,29 @@
   color: var(--resume-ai-link-hover);
 }
 
-/* ----- 본문 2열 (대시보드 content-grid gap 18px 와 동일) ----- */
+/* ----- 본문: 목록 위 · 상세(이력서·분석) 아래 ----- */
 
 .resume-ai__grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(320px, 520px);
+  display: flex;
+  flex-direction: column;
   gap: 20px;
-  align-items: start;
+  align-items: stretch;
+  width: 100%;
+}
+
+.resume-ai__list-panel {
+  width: 100%;
+}
+
+.resume-ai__detail-panel {
+  width: 100%;
+  max-width: 960px;
+  margin-inline: auto;
 }
 
 @media (max-width: 1024px) {
-  .resume-ai__grid {
-    grid-template-columns: 1fr;
+  .resume-ai__detail-panel {
+    max-width: 100%;
   }
 }
 
@@ -530,6 +541,10 @@
   color: var(--resume-ai-link);
 }
 
+button.resume-ai__icon-btn--link {
+  font: inherit;
+}
+
 .resume-ai__icon-btn--link:hover {
   color: var(--resume-ai-link-hover);
 }
@@ -556,8 +571,8 @@
 .resume-ai__pdf-frame {
   display: block;
   width: 100%;
-  height: min(62vh, 560px);
-  min-height: 400px;
+  height: min(70vh, 720px);
+  min-height: 480px;
   border: none;
   background: #fff;
 }
