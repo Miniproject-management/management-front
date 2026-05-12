@@ -91,8 +91,8 @@
   background: #faf5ff;
 }
 .summary-card__icon.tone-orange {
-  color: #f59e0b;
-  background: #fff7ed;
+  color: #ff6b00;
+  background: #fff2e6;
 }
 
 .summary-card__label {
@@ -121,7 +121,7 @@
 }
 
 .summary-card__note.is-up {
-  color: #2563eb;
+  color: #ff6b00;
 }
 
 .summary-card__arrow {
@@ -158,7 +158,7 @@
   display: inline-flex;
   align-items: center;
   gap: 2px;
-  color: #2563eb;
+  color: #ff6b00;
   font-size: 14px;
   font-weight: 600;
   text-decoration: none;
@@ -218,7 +218,7 @@
 }
 
 .rank-cell {
-  color: #2563eb;
+  color: #ff6b00;
   font-weight: 700;
 }
 
@@ -228,7 +228,7 @@
   min-width: 24px;
   height: 24px;
   border-radius: 999px;
-  background: #eff6ff;
+  background: #fff2e6;
 }
 
 .muted-cell {
@@ -249,8 +249,8 @@
   min-width: 54px;
   padding: 6px 11px;
   border-radius: 8px;
-  background: #eff6ff;
-  color: #2563eb;
+  background: #fff2e6;
+  color: #ff6b00;
   font-size: 13px;
   font-weight: 700;
 }
@@ -269,18 +269,18 @@
   display: block;
   height: 100%;
   border-radius: 999px;
-  background: #3b82f6;
+  background: #ff6b00;
   transition: width 0.3s ease;
 }
 
 .progress-bar.tone-blue .progress-bar__fill {
-  background: #3b82f6;
+  background: #ff6b00;
 }
 .progress-bar.tone-orange .progress-bar__fill {
-  background: #f59e0b;
+  background: #ff6b00;
 }
 .progress-bar.tone-green .progress-bar__fill {
-  background: #22c55e;
+  background: #6aa84f;
 }
 
 /* ---------- leave overview ---------- */
@@ -298,13 +298,16 @@
 }
 
 .leave-card.tone-blue {
-  background: #eff6ff;
+  background: #fff2e6;
+  border-color: #ffd7b5;
 }
 .leave-card.tone-orange {
-  background: #fff7ed;
+  background: #fff2e6;
+  border-color: #ffd7b5;
 }
 .leave-card.tone-green {
   background: #ecfdf5;
+  border-color: #d6ead7;
 }
 
 .leave-card p {
@@ -322,10 +325,10 @@
 }
 
 .leave-card.tone-blue strong {
-  color: #2563eb;
+  color: #ff6b00;
 }
 .leave-card.tone-orange strong {
-  color: #ea580c;
+  color: #ff6b00;
 }
 .leave-card.tone-green strong {
   color: #16a34a;
@@ -389,8 +392,8 @@
   justify-content: center;
   padding: 8px 14px;
   border-radius: 8px;
-  background: #fff7ed;
-  color: #ea580c;
+  background: #fff2e6;
+  color: #ff6b00;
   font-size: 14px;
   font-weight: 700;
 }
@@ -407,8 +410,8 @@
 }
 
 .delta-pill.is-positive {
-  background: #eff6ff;
-  color: #2563eb;
+  background: #fff2e6;
+  color: #ff6b00;
 }
 
 .delta-pill.is-negative {

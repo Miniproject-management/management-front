@@ -2,8 +2,9 @@
   width: 240px;
   min-height: 100vh;
 
-  background-color: white;
-  border-right: 1px solid #eee;
+  background:
+    linear-gradient(180deg, #fffefe 0%, #fffaf4 100%);
+  border-right: 1px solid #f2e6d9;
 
   padding: 30px 20px;
 
@@ -32,7 +33,7 @@
 
   border-radius: 12px;
 
-  background-color: #fff3e4;
+  background-color: #fff2df;
   color: #333;
 
   font-weight: 500;
@@ -43,12 +44,12 @@
 }
 
 .menu-item:hover {
-  background-color: #fea954;
+  background-color: #ff9f43;
   color: white;
 }
 
 .login-btn {
-  background-color: #fea954;
+  background: linear-gradient(180deg, #ffb15c 0%, #ff9f43 100%);
   color: white;
 
   padding: 14px;
