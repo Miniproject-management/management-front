@@ -7,6 +7,9 @@ import ApprovalPage from "./pages/approval/ApprovalPage";
 import ResumePage from "./pages/resume/ResumePage";
 import DepartmentPage from "./pages/department/DepartmentPage";
 import DashboardPage from "./pages/dashboard/DashboardPage";
+import AdminDashboard from "./pages/dashboard/AdminDashboard";
+import ManagerDashboard from "./pages/dashboard/ManagerDashboard";
+import EmployeeDashboard from "./pages/dashboard/EmployeeDashboard";
 import JobApplicationPage from "./pages/apply/JobApplicationPage";
 
 import "./index.css";
@@ -20,6 +23,9 @@ function App() {
         <main className="main-content">
           <Routes>
             <Route path="/" element={<DashboardPage />} />
+            <Route path="/dashboard/admin" element={<AdminDashboard />} />
+            <Route path="/dashboard/manager" element={<ManagerDashboard />} />
+            <Route path="/dashboard/employee" element={<EmployeeDashboard />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/approval" element={<ApprovalPage />} />
             <Route path="/resume" element={<ResumePage />} />

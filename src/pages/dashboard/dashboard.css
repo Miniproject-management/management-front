@@ -466,6 +466,345 @@
   text-align: right;
 }
 
+/* ---------- manager dashboard ---------- */
+.dashboard-page__wave {
+  font-size: 22px;
+  vertical-align: middle;
+}
+
+.dashboard-page__header-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.icon-button {
+  display: inline-grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #475569;
+  cursor: pointer;
+}
+
+.icon-button:hover {
+  border-color: #cbd5e1;
+}
+
+.manager-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.manager-grid--top {
+  grid-template-columns: 2fr 1fr;
+}
+
+.manager-grid--bottom {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.panel--span-2 {
+  grid-column: span 1;
+}
+
+.year-select {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #334155;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.my-leave-grid {
+  display: grid;
+  grid-template-columns: minmax(280px, auto) 1fr;
+  gap: 28px;
+  align-items: center;
+}
+
+.my-leave-summary {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 16px;
+  align-items: center;
+}
+
+.my-leave-donut__value {
+  fill: #0f172a;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.my-leave-donut__label {
+  fill: #94a3b8;
+  font-size: 11px;
+}
+
+.my-leave-stats {
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+
+.my-leave-stats li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10px;
+  align-items: center;
+}
+
+.my-leave-stats__icon {
+  display: inline-grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+}
+
+.my-leave-stats__icon.tone-blue { background: #eff6ff; color: #2563eb; }
+.my-leave-stats__icon.tone-purple { background: #faf5ff; color: #a855f7; }
+.my-leave-stats__icon.tone-orange { background: #fff7ed; color: #f97316; }
+
+.my-leave-stats p {
+  color: #64748b;
+  font-size: 12px;
+}
+
+.my-leave-stats strong {
+  display: block;
+  font-size: 16px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.my-leave-stats strong.orange {
+  color: #ea580c;
+}
+
+.monthly-leave {
+  border-left: 1px solid #f1f5f9;
+  padding-left: 24px;
+}
+
+.monthly-leave__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.monthly-leave__head h3 {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.monthly-leave__legend,
+.mini-calendar__legend {
+  list-style: none;
+  display: flex;
+  gap: 12px;
+  font-size: 11px;
+  color: #64748b;
+}
+
+.monthly-leave__legend li,
+.mini-calendar__legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.bar-chart__top { fill: #b45309; font-size: 10px; font-weight: 700; }
+.bar-chart__bottom { fill: #ffffff; font-size: 10px; font-weight: 700; }
+.bar-chart__month { fill: #64748b; font-size: 11px; }
+
+.team-leave-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.panel__subhead--row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 6px 0 10px;
+}
+
+/* mini calendar */
+.mini-calendar {
+  font-size: 12px;
+}
+
+.mini-calendar__head {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 8px;
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.mini-calendar__nav {
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border: 0;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+}
+
+.mini-calendar__grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  text-align: center;
+}
+
+.mini-calendar__weekday {
+  color: #94a3b8;
+  font-size: 11px;
+  padding: 4px 0;
+}
+
+.mini-calendar__day {
+  position: relative;
+  padding: 6px 0;
+  color: #334155;
+  border-radius: 8px;
+}
+
+.mini-calendar__day.is-muted {
+  color: #cbd5e1;
+}
+
+.mini-calendar__day.is-selected {
+  background: #2563eb;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.mini-calendar__dot {
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  transform: translateX(-50%);
+}
+
+.mini-calendar__legend {
+  margin-top: 8px;
+  justify-content: center;
+}
+
+/* team table cell highlights */
+.warn-cell {
+  color: #ea580c;
+  font-weight: 700;
+}
+
+/* recent activity */
+.activity-list {
+  list-style: none;
+  display: grid;
+  gap: 12px;
+}
+
+.activity-list li {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 12px;
+  align-items: center;
+  font-size: 13px;
+}
+
+.activity-text {
+  color: #334155;
+}
+
+.activity-time {
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+/* quick menu */
+.quick-menu-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.quick-menu-item {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  padding: 18px 10px;
+  border: 0;
+  border-radius: 12px;
+  background: #f8fafc;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+.quick-menu-item:hover {
+  transform: translateY(-1px);
+}
+
+.quick-menu-item.tone-orange { background: #fff7ed; color: #ea580c; }
+.quick-menu-item.tone-green { background: #ecfdf5; color: #16a34a; }
+.quick-menu-item.tone-purple { background: #faf5ff; color: #a855f7; }
+
+.panel__footer-link {
+  display: block;
+  margin-top: 12px;
+  text-align: center;
+  color: #2563eb;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.panel__footer-link:hover {
+  text-decoration: underline;
+}
+
+/* ---------- placeholder (manager/employee 임시) ---------- */
+.placeholder-block {
+  padding: 40px 20px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+  background: #f8fafc;
+  color: #64748b;
+  text-align: center;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.placeholder-block small {
+  color: #94a3b8;
+  font-size: 12px;
+}
+
 /* ---------- responsive ---------- */
 @media (max-width: 1180px) {
   .dashboard-page__summary-grid,
@@ -473,8 +812,21 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .headcount-grid {
+  .headcount-grid,
+  .manager-grid--top,
+  .my-leave-grid {
     grid-template-columns: 1fr;
+  }
+
+  .manager-grid--bottom {
+    grid-template-columns: 1fr;
+  }
+
+  .monthly-leave {
+    border-left: 0;
+    padding-left: 0;
+    padding-top: 16px;
+    border-top: 1px solid #f1f5f9;
   }
 }
 

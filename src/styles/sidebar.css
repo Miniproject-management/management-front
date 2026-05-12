@@ -64,3 +64,39 @@
 .login-btn:hover {
   opacity: 0.9;
 }
+
+.preview-section {
+  margin-top: 32px;
+  padding: 14px 12px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 10px;
+  background: #f8fafc;
+}
+
+.preview-title {
+  margin-bottom: 10px;
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.preview-link {
+  display: block;
+  padding: 8px 10px;
+  margin-bottom: 4px;
+  border-radius: 8px;
+  color: #475569;
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.preview-link:hover {
+  background: #ffffff;
+  color: #ea580c;
+}
+
+.preview-link:last-child {
+  margin-bottom: 0;
+}

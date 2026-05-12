@@ -28,6 +28,19 @@ function Sidebar() {
             전자결재
           </Link>
         </nav>
+
+        <div className="preview-section">
+          <p className="preview-title">디자인 미리보기</p>
+          <Link className="preview-link" to="/dashboard/admin">
+            인사팀 화면
+          </Link>
+          <Link className="preview-link" to="/dashboard/manager">
+            팀장 화면
+          </Link>
+          <Link className="preview-link" to="/dashboard/employee">
+            사원 화면
+          </Link>
+        </div>
       </div>
 
       {accessToken ? (
