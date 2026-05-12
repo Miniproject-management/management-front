@@ -1,10 +1,11 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../styles/sidebar.css";
 
 import useAuthStore from "../stores/authStore";
 
 function Sidebar() {
   const { accessToken, logout } = useAuthStore();
+  const navigate = useNavigate();
 
   return (
     <aside className="sidebar">
@@ -44,7 +45,13 @@ function Sidebar() {
       </div>
 
       {accessToken ? (
-        <button className="login-btn" onClick={logout}>
+        <button className="login-btn" 
+         onClick={() => {
+          logout();
+          alert("로그아웃되었습니다.");
+          navigate("/login");
+        }}
+        >
           로그아웃
         </button>
       ) : (

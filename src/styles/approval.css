@@ -1,0 +1,92 @@
+.approval-page {
+  width: 100%;
+}
+
+.approval-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-bottom: 30px;
+}
+
+.approval-header h1 {
+  font-size: 32px;
+}
+
+.apply-btn {
+  border: none;
+
+  background-color: #fea954;
+  color: white;
+
+  padding: 12px 18px;
+
+  border-radius: 10px;
+
+  cursor: pointer;
+}
+
+.approval-section {
+  background-color: white;
+
+  padding: 24px;
+
+  border-radius: 16px;
+
+  margin-bottom: 24px;
+}
+
+.approval-section h2 {
+  margin-bottom: 20px;
+}
+
+.approval-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.approval-table th {
+  background-color: #f5f5f5;
+}
+
+.approval-table th,
+.approval-table td {
+  padding: 14px;
+
+  text-align: center;
+
+  border-bottom: 1px solid #eee;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.approve-btn {
+  border: none;
+
+  background-color: #fea954;
+  color: white;
+
+  padding: 8px 12px;
+
+  border-radius: 8px;
+
+  cursor: pointer;
+}
+
+.reject-btn {
+  border: none;
+
+  background-color: #ff4d4f;
+  color: white;
+
+  padding: 8px 12px;
+
+  border-radius: 8px;
+
+  cursor: pointer;
+}
