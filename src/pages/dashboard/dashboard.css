@@ -17,15 +17,15 @@
 
 .dashboard-page {
   display: grid;
-  grid-template-rows: 60px 1fr;
-  gap: 14px;
+  grid-template-rows: 54px 1fr;
+  gap: 12px;
   width: 100%;
   min-height: auto;
   height: calc(100vh - 40px);
   max-height: calc(100vh - 40px);
   align-self: stretch;
   overflow: hidden;
-  padding: 16px 22px;
+  padding: 10px 22px 14px;
   color: var(--text-main);
   font-family: "Pretendard", "Noto Sans KR", "Apple SD Gothic Neo", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   font-feature-settings: "tnum";
@@ -38,7 +38,7 @@
   max-width: 1600px;
   margin: 0 auto;
   align-content: start;
-  background: #fffaf4;
+  background: #fbfaf8;
 }
 
 .dashboard-page__header {
@@ -49,14 +49,14 @@
 }
 
 .dashboard-page__hero h1 {
-  font-size: 26px;
+  font-size: 25px;
   font-weight: 700;
   color: var(--text-main);
   letter-spacing: 0;
 }
 
 .dashboard-page__hero p {
-  margin-top: 6px;
+  margin-top: 4px;
   color: var(--text-muted);
   font-size: 14px;
   font-weight: 500;
@@ -86,8 +86,8 @@
 .dashboard-grid {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
-  grid-template-rows: 108px 304px 206px;
-  gap: 18px;
+  grid-template-rows: 104px 312px 198px;
+  gap: 16px;
   align-items: stretch;
   min-height: 0;
 }
@@ -106,7 +106,7 @@
   display: flex;
   align-items: center;
   gap: 16px;
-  height: 108px;
+  height: 104px;
   padding: 18px;
 }
 
@@ -169,17 +169,17 @@
 .dashboard-card--large,
 .dashboard-card--medium {
   grid-column: span 6;
-  padding: 18px;
+  padding: 16px;
 }
 
 .dashboard-card--large {
-  height: 304px;
-  min-height: 304px;
+  height: 312px;
+  min-height: 312px;
 }
 
 .dashboard-card--medium {
-  height: 206px;
-  min-height: 206px;
+  height: 198px;
+  min-height: 198px;
 }
 
 .dashboard-card__header {
@@ -355,12 +355,12 @@
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 .leave-summary {
-  min-height: 72px;
-  padding: 12px;
+  min-height: 58px;
+  padding: 10px;
   border: 1px solid var(--orange-border);
   border-radius: 12px;
   background: #fffaf5;
@@ -372,15 +372,15 @@
 
 .leave-summary p {
   color: var(--text-muted);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 500;
 }
 
 .leave-summary strong {
   display: block;
-  margin-top: 6px;
+  margin-top: 4px;
   color: var(--brand-orange);
-  font-size: 24px;
+  font-size: 21px;
   font-weight: 700;
   line-height: 1;
 }
@@ -393,21 +393,29 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-top: 7px;
+  margin-top: 6px;
 }
 
 .leave-summary__progress span:last-child {
   white-space: nowrap;
   color: var(--text-muted);
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 500;
 }
 
 .dashboard-subtitle {
-  margin-bottom: 7px;
+  margin-bottom: 6px;
   color: var(--text-main);
   font-size: 15px;
   font-weight: 700;
+}
+
+.leave-table th {
+  height: 28px;
+}
+
+.leave-table td {
+  height: 29px;
 }
 
 .leave-table th:nth-child(1),
