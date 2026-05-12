@@ -81,6 +81,8 @@
 }
 
 /* 승인 요청 목록 - 관리 컬럼 */
+.approval-table th:nth-child(6),
+.approval-table td:nth-child(6),
 .approval-table th:nth-child(7),
 .approval-table td:nth-child(7) {
   width: 130px;
@@ -94,8 +96,6 @@
   align-items: center;
 
   gap: 4px;
-
-  width: 100%;
 }
 
 /* 승인 / 반려 버튼 */
