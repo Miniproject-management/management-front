@@ -1,0 +1,66 @@
+.sidebar {
+  width: 240px;
+  min-height: 100vh;
+
+  background-color: white;
+  border-right: 1px solid #eee;
+
+  padding: 30px 20px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.logo {
+  color: #fea954;
+
+  font-size: 26px;
+  font-weight: bold;
+
+  margin-bottom: 40px;
+}
+
+.nav-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.menu-item {
+  padding: 14px 16px;
+
+  border-radius: 12px;
+
+  background-color: #fff3e4;
+  color: #333;
+
+  font-weight: 500;
+
+  text-decoration: none;
+
+  transition: 0.2s;
+}
+
+.menu-item:hover {
+  background-color: #fea954;
+  color: white;
+}
+
+.login-btn {
+  background-color: #fea954;
+  color: white;
+
+  padding: 14px;
+
+  border-radius: 12px;
+
+  text-align: center;
+  font-weight: bold;
+
+  text-decoration: none;
+}
+
+.login-btn:hover {
+  opacity: 0.9;
+}

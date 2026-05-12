@@ -1,0 +1,93 @@
+.login-page {
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 로그인 박스 */
+.login-container {
+  width: 100%;
+  max-width: 340px;
+
+  padding: 40px 30px;
+
+  background-color: #f5f5f5;
+
+  border-radius: 16px;
+}
+
+/* 제목 */
+.login-title {
+  text-align: center;
+
+  font-size: 28px;
+  font-weight: 700;
+
+  margin-bottom: 30px;
+
+  color: #111;
+}
+
+/* form */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* input 묶음 */
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.input-group label {
+  font-size: 13px;
+  color: #222;
+}
+
+/* input */
+.input-group input {
+  height: 40px;
+
+  border: 1px solid #d9d9d9;
+  border-radius: 8px;
+
+  padding: 0 12px;
+
+  font-size: 13px;
+
+  outline: none;
+  background-color: white;
+}
+
+.input-group input:focus {
+  border-color: #fea954;
+}
+
+/* 버튼 */
+.login-button {
+  margin-top: 10px;
+
+  height: 40px;
+
+  border: none;
+  border-radius: 8px;
+
+  background-color: #fea954;
+  color: white;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.login-button:hover {
+  opacity: 0.9;
+}
