@@ -81,7 +81,7 @@
 /* 승인 요청 목록 - 관리 컬럼 너비 */
 .approval-table th:nth-child(7),
 .approval-table td:nth-child(7) {
-  width: 180px;
+  width: 140px;
 }
 
 /* 관리 버튼 영역 */
@@ -91,9 +91,10 @@
   justify-content: center;
   align-items: center;
 
-  gap: 8px;
+  gap: 6px;
 
   flex-wrap: nowrap;
+  width: 100%;
 }
 
 /* 승인 버튼 */
