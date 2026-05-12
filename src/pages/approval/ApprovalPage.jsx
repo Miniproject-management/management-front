@@ -5,7 +5,7 @@ import {
   getPendingLeaveApi,
   approveLeaveApi,
   rejectLeaveApi,
-} from "../../apis/leaveApi";
+} from "../../api/leaveApi";
 
 import "../../styles/approval.css";
 
