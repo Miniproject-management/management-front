@@ -520,6 +520,61 @@
   color: #f97316;
 }
 
+.dashboard-page--admin .panel {
+  overflow: hidden;
+}
+
+.dashboard-page--admin .data-table {
+  table-layout: fixed;
+}
+
+.dashboard-page--admin .data-table th,
+.dashboard-page--admin .data-table td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dashboard-page--admin .data-table th:nth-child(1),
+.dashboard-page--admin .data-table td:nth-child(1) {
+  width: 68px;
+}
+
+.dashboard-page--admin .data-table th:nth-child(2),
+.dashboard-page--admin .data-table td:nth-child(2) {
+  width: 112px;
+}
+
+.dashboard-page--admin .data-table th:nth-child(3),
+.dashboard-page--admin .data-table td:nth-child(3) {
+  width: 142px;
+}
+
+.dashboard-page--admin .data-table th:nth-child(4),
+.dashboard-page--admin .data-table td:nth-child(4) {
+  width: 168px;
+}
+
+.dashboard-page--admin .data-table th:nth-child(5),
+.dashboard-page--admin .data-table td:nth-child(5) {
+  width: auto;
+}
+
+.dashboard-page--admin .muted-cell {
+  max-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dashboard-page--admin .score-cell {
+  max-width: 150px;
+  gap: 8px;
+}
+
+.dashboard-page--admin .score-cell .progress-bar {
+  width: 70px;
+  flex: 0 0 70px;
+}
+
 /* ---------- manager dashboard ---------- */
 .dashboard-page__wave {
   font-size: 22px;
