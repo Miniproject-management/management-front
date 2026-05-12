@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Calendar,
@@ -14,7 +14,7 @@ import {
 import {
   fetchHrApplicantDashboard,
   fetchHrApplicantDetail,
-  fetchResumePreviewUrl,
+  fetchResumePdfBlob,
   postAnalyzeApplicantResume,
 } from '../../api/api.jsx';
 
@@ -85,9 +85,16 @@ export default function ResumePage() {
   const [analyzeModalRow, setAnalyzeModalRow] = useState(null);
   const [analyzeJd, setAnalyzeJd] = useState('');
   const [previewUrl, setPreviewUrl] = useState(null);
-  const [previewExpiresSec, setPreviewExpiresSec] = useState(null);
   const [previewLoading, setPreviewLoading] = useState(false);
   const [previewError, setPreviewError] = useState('');
+  const resumeBlobUrlRef = useRef(null);
+
+  const revokeResumeBlob = useCallback(() => {
+    if (resumeBlobUrlRef.current) {
+      URL.revokeObjectURL(resumeBlobUrlRef.current);
+      resumeBlobUrlRef.current = null;
+    }
+  }, []);
 
   const loadDashboard = useCallback(async () => {
     setError('');
@@ -162,9 +169,9 @@ export default function ResumePage() {
     setDetail(null);
     setDetailError('');
     setPreviewUrl(null);
-    setPreviewExpiresSec(null);
     setPreviewError('');
     setPreviewLoading(false);
+    revokeResumeBlob();
     setDetailLoading(true);
     try {
       const d = await fetchHrApplicantDetail(applicantId);
@@ -216,8 +223,8 @@ export default function ResumePage() {
 
   useEffect(() => {
     if (!selectedId || !detail?.storageKey) {
+      revokeResumeBlob();
       setPreviewUrl(null);
-      setPreviewExpiresSec(null);
       setPreviewError('');
       setPreviewLoading(false);
       return;
@@ -225,23 +232,26 @@ export default function ResumePage() {
     let cancelled = false;
     setPreviewLoading(true);
     setPreviewError('');
+    revokeResumeBlob();
     setPreviewUrl(null);
-    setPreviewExpiresSec(null);
-    fetchResumePreviewUrl(selectedId)
-      .then((r) => {
-        if (cancelled) return;
-        if (r?.url) {
-          setPreviewUrl(r.url);
-          setPreviewExpiresSec(
-            typeof r.expiresInSeconds === 'number' ? r.expiresInSeconds : null,
-          );
-        } else {
-          setPreviewError('미리보기 URL을 받지 못했습니다.');
+    fetchResumePdfBlob(selectedId)
+      .then((blob) => {
+        const u = URL.createObjectURL(blob);
+        if (cancelled) {
+          URL.revokeObjectURL(u);
+          return;
         }
+        if (!blob || blob.size === 0) {
+          setPreviewError('PDF 데이터가 비어 있습니다.');
+          URL.revokeObjectURL(u);
+          return;
+        }
+        resumeBlobUrlRef.current = u;
+        setPreviewUrl(u);
       })
       .catch((e) => {
         if (!cancelled) {
-          setPreviewError(e.message || '미리보기 URL을 가져오지 못했습니다.');
+          setPreviewError(e.message || 'PDF를 불러오지 못했습니다.');
         }
       })
       .finally(() => {
@@ -250,30 +260,31 @@ export default function ResumePage() {
     return () => {
       cancelled = true;
     };
-  }, [selectedId, detail?.storageKey]);
+  }, [selectedId, detail?.storageKey, revokeResumeBlob]);
 
-  const reloadPreviewUrl = async () => {
+  const reloadResumePdf = async () => {
     if (!selectedId || !detail?.storageKey) return;
     setPreviewLoading(true);
     setPreviewError('');
+    revokeResumeBlob();
     setPreviewUrl(null);
-    setPreviewExpiresSec(null);
     try {
-      const r = await fetchResumePreviewUrl(selectedId);
-      if (r?.url) {
-        setPreviewUrl(r.url);
-        setPreviewExpiresSec(
-          typeof r.expiresInSeconds === 'number' ? r.expiresInSeconds : null,
-        );
-      } else {
-        setPreviewError('미리보기 URL을 받지 못했습니다.');
+      const blob = await fetchResumePdfBlob(selectedId);
+      if (!blob || blob.size === 0) {
+        setPreviewError('PDF 데이터가 비어 있습니다.');
+        return;
       }
+      const u = URL.createObjectURL(blob);
+      resumeBlobUrlRef.current = u;
+      setPreviewUrl(u);
     } catch (e) {
-      setPreviewError(e.message || '미리보기 URL을 가져오지 못했습니다.');
+      setPreviewError(e.message || 'PDF를 불러오지 못했습니다.');
     } finally {
       setPreviewLoading(false);
     }
   };
+
+  useEffect(() => () => revokeResumeBlob(), [revokeResumeBlob]);
 
   const selectedRow = rows.find((r) => r.applicantId === selectedId);
 
@@ -555,19 +566,16 @@ export default function ResumePage() {
                   ) : (
                     <>
                       <div className="resume-ai__pdf-toolbar">
-                        {previewExpiresSec != null ? (
-                          <span className="resume-ai__pdf-ttl">
-                            보기 링크 유효 약{' '}
-                            {Math.max(1, Math.round(previewExpiresSec / 60))}분
-                          </span>
-                        ) : null}
+                        <span className="resume-ai__pdf-ttl">
+                          로그인 토큰으로 서버에서 PDF를 받아 표시합니다.
+                        </span>
                         <div className="resume-ai__pdf-actions">
                           <button
                             type="button"
                             className="resume-ai__icon-btn"
-                            onClick={() => reloadPreviewUrl()}
+                            onClick={() => reloadResumePdf()}
                             disabled={previewLoading}
-                            title="프리사인 URL 새로 발급"
+                            title="PDF 다시 받기"
                           >
                             <RefreshCw
                               size={16}
@@ -576,18 +584,23 @@ export default function ResumePage() {
                                 previewLoading ? 'resume-ai__spin' : undefined
                               }
                             />
-                            URL 갱신
+                            다시 불러오기
                           </button>
                           {previewUrl ? (
-                            <a
+                            <button
+                              type="button"
                               className="resume-ai__icon-btn resume-ai__icon-btn--link"
-                              href={previewUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
+                              onClick={() =>
+                                window.open(
+                                  previewUrl,
+                                  '_blank',
+                                  'noopener,noreferrer',
+                                )
+                              }
                             >
                               <ExternalLink size={16} strokeWidth={2} />
                               새 탭
-                            </a>
+                            </button>
                           ) : null}
                         </div>
                       </div>
@@ -597,7 +610,7 @@ export default function ResumePage() {
                         </p>
                       ) : null}
                       {previewLoading && !previewUrl ? (
-                        <p className="resume-ai__hint">미리보기 URL 발급 중…</p>
+                        <p className="resume-ai__hint">PDF 불러오는 중…</p>
                       ) : null}
                       {previewUrl ? (
                         <div className="resume-ai__pdf-frame-wrap">
