@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 
 const DeptListView = () => {
   const [departments, setDepartments] = useState([]);
@@ -11,7 +11,7 @@ const DeptListView = () => {
 
   const fetchDepartments = async () => {
     try {
-      const response = await axios.get('/api/hr/departments/tree');
+      const response = await api.get('/api/hr/departments/tree');
       setDepartments(response.data);
     } catch (error) {
       console.error("부서 목록 조회 실패", error);

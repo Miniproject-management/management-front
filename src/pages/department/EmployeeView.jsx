@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 
 const EmployeeView = () => {
   const [employees, setEmployees] = useState([]);
@@ -8,7 +8,7 @@ const EmployeeView = () => {
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
-        const response = await axios.get('/api/hr/employees');
+        const response = await api.get('/api/hr/employees');
         setEmployees(response.data);
       } catch (error) {
         console.error("임직원 목록 조회 실패", error);

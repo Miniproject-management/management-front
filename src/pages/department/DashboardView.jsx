@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import { Users, Building2 } from "lucide-react";
 
 const DashboardView = () => {
@@ -11,8 +11,8 @@ const DashboardView = () => {
       try {
         // 방법 2: 기존 API 두 개를 동시에 호출해서 길이를 측정
         const [empRes, deptRes] = await Promise.all([
-          axios.get('/api/hr/employees'),           // 전체 사원 목록
-          axios.get('/api/hr/departments/tree')     // 전체 부서 목록 (트리 혹은 리스트)
+          api.get('/api/hr/employees'),           // 전체 사원 목록
+          api.get('/api/hr/departments/tree')     // 전체 부서 목록 (트리 혹은 리스트)
         ]);
 
         setCounts({
@@ -70,7 +70,7 @@ const DashboardView = () => {
         {/* 예시 이미지의 4개 칸을 맞추기 위해 비워두거나 다른 정보 활용 가능 */}
         <div className="stat-card placeholder-card">
           <div className="stat-info">
-            <span className="stat-label">진행 중인 프로젝트</span>
+            <span className="stat-label"></span>
             <div className="stat-value-group">
               <span className="stat-num">-</span>
             </div>
@@ -79,7 +79,7 @@ const DashboardView = () => {
 
         <div className="stat-card placeholder-card">
           <div className="stat-info">
-            <span className="stat-label">오늘의 근태 현황</span>
+            <span className="stat-label"></span>
             <div className="stat-value-group">
               <span className="stat-num">-</span>
             </div>
