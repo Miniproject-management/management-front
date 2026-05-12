@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../api/axios'; // 인증된 axios 인스턴스
+import useAuthStore from '../../stores/authStore';
 
 const EmployeeView = () => {
+    const { role } = useAuthStore();
     const [employees, setEmployees] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -93,10 +95,12 @@ const EmployeeView = () => {
                     <h2>임직원 관리</h2>
                     <p>전체 임직원의 명단과 상세 정보를 확인합니다.</p>
                 </div>
-                {/* 신규 임직원 버튼 */}
-                <button className="btn-primary" onClick={handleOpenModal}>
-                    + 신규 임직원 등록
-                </button>
+                {/* 관리자 권한이 있을 때만 버튼 표시 */}
+                {role === '관리자' && (
+                    <button className="btn-primary" onClick={handleOpenModal}>
+                        + 신규 임직원 등록
+                    </button>
+                )}
             </div>
 
             <div className="table-container">
