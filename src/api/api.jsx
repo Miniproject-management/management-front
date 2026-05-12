@@ -30,6 +30,11 @@ function httpErrorMessage(res, data) {
   if (res.status === 403) {
     return '접근이 거부되었습니다(403). 로그인·권한 또는 배포된 API 버전을 확인해 주세요.';
   }
+  if (res.status === 502 || res.status === 503) {
+    const m = data.message || data.error || data.raw;
+    if (typeof m === 'string' && m.length > 0) return m;
+    return '서버 또는 S3 연결에 문제가 있습니다. 잠시 후 다시 시도하거나 관리자에게 문의해 주세요.';
+  }
   const msg = data.message || data.error || data.raw || `HTTP ${res.status}`;
   return typeof msg === 'string' ? msg : JSON.stringify(msg);
 }
