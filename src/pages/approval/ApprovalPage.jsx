@@ -6,6 +6,7 @@ import {
   getPendingLeaveApi,
   approveLeaveApi,
   rejectLeaveApi,
+  cancelLeaveApi
 } from "../../api/leaveApi";
 
 import "../../styles/approval.css";
@@ -77,6 +78,19 @@ function ApprovalPage() {
     }
   };
 
+  //취소
+  const handleCancel = async (leaveId) => {
+  try {
+    await cancelLeaveApi(leaveId);
+
+    alert("연차 신청이 취소되었습니다.");
+
+    await fetchMyLeaves();
+  } catch (error) {
+    console.error(error);
+  }
+};
+
   // 초기 조회
   useEffect(() => {
     const fetchData = async () => {
@@ -113,6 +127,7 @@ function ApprovalPage() {
               <th>연차 종류</th>
               <th>일수</th>
               <th>상태</th>
+              <th>관리</th>
               <th>상세</th>
             </tr>
           </thead>
@@ -130,11 +145,21 @@ function ApprovalPage() {
                 <td>{leave.leaveDays}일</td>
 
                 <td>
-                  {
-                    statusMap[
-                      leave.leaveStatus
-                    ]
-                  }
+                  {leave.leaveStatus !==
+                    "APPROVED" &&
+                    leave.leaveStatus !==
+                      "CANCELED" && (
+                      <button
+                        className="cancel-btn"
+                        onClick={() =>
+                          handleCancel(
+                            leave.leaveId
+                          )
+                        }
+                      >
+                        취소
+                      </button>
+                    )}
                 </td>
 
                 <td>
