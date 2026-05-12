@@ -88,6 +88,11 @@
   width: 130px;
 }
 
+/* td 세로 가운데 정렬 */
+.approval-table td {
+  vertical-align: middle;
+}
+
 /* 관리 버튼 영역 */
 .action-buttons {
   display: flex;
@@ -96,6 +101,8 @@
   align-items: center;
 
   gap: 4px;
+
+  height: 100%;
 }
 
 /* 승인 / 반려 버튼 */
