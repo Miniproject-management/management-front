@@ -15,6 +15,8 @@ import useAuthStore from "../../stores/authStore";
 function ApprovalPage() {
   const { role } = useAuthStore();
 
+  console.log("현재 role =", role);
+
   const [myLeaves, setMyLeaves] = useState([]);
   const [pendingLeaves, setPendingLeaves] =
     useState([]);
