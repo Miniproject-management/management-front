@@ -21,6 +21,19 @@
   --resume-ai-link-hover: #1d4ed8;
 }
 
+/*
+ * dashboard.css 의 .dashboard-page 가 뷰포트 고정 높이 + overflow:hidden 이라
+ * /resume 에서 목록·상세가 길어지면 하단(이력서 PDF·분석)이 잘리고 스크롤로도 안 보임.
+ */
+.dashboard-page.resume-ai {
+  height: auto;
+  min-height: calc(100vh - 40px);
+  max-height: none;
+  overflow-x: hidden;
+  overflow-y: visible;
+  align-content: start;
+}
+
 /* ----- 탭 바 (크게 · 세그먼트형) ----- */
 
 .resume-ai__tab-bar {
