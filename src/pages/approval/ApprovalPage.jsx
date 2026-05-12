@@ -6,7 +6,7 @@ import {
   getPendingLeaveApi,
   approveLeaveApi,
   rejectLeaveApi,
-  cancelLeaveApi
+  cancelLeaveApi,
 } from "../../api/leaveApi";
 
 import "../../styles/approval.css";
@@ -59,6 +59,8 @@ function ApprovalPage() {
     try {
       await approveLeaveApi(leaveId);
 
+      alert("승인 완료");
+
       await fetchPendingLeaves();
       await fetchMyLeaves();
     } catch (error) {
@@ -71,6 +73,8 @@ function ApprovalPage() {
     try {
       await rejectLeaveApi(leaveId);
 
+      alert("반려 완료");
+
       await fetchPendingLeaves();
       await fetchMyLeaves();
     } catch (error) {
@@ -78,18 +82,18 @@ function ApprovalPage() {
     }
   };
 
-  //취소
+  // 취소
   const handleCancel = async (leaveId) => {
-  try {
-    await cancelLeaveApi(leaveId);
+    try {
+      await cancelLeaveApi(leaveId);
 
-    alert("연차 신청이 취소되었습니다.");
+      alert("연차 신청이 취소되었습니다.");
 
-    await fetchMyLeaves();
-  } catch (error) {
-    console.error(error);
-  }
-};
+      await fetchMyLeaves();
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   // 초기 조회
   useEffect(() => {
@@ -135,33 +139,47 @@ function ApprovalPage() {
           <tbody>
             {myLeaves.map((leave) => (
               <tr key={leave.leaveId}>
+                {/* 기간 */}
                 <td>
                   {leave.startDate} ~{" "}
                   {leave.endDate}
                 </td>
 
+                {/* 연차 종류 */}
                 <td>{leave.leaveType}</td>
 
+                {/* 일수 */}
                 <td>{leave.leaveDays}일</td>
 
+                {/* 상태 */}
                 <td>
-                  {leave.leaveStatus !==
-                    "APPROVED" &&
-                    leave.leaveStatus !==
-                      "CANCELED" && (
-                      <button
-                        className="cancel-btn"
-                        onClick={() =>
-                          handleCancel(
-                            leave.leaveId
-                          )
-                        }
-                      >
-                        취소
-                      </button>
-                    )}
+                  {
+                    statusMap[
+                      leave.leaveStatus
+                    ]
+                  }
                 </td>
 
+                {/* 관리 */}
+                <td>
+                  {(leave.leaveStatus ===
+                    "PENDING_MANAGER" ||
+                    leave.leaveStatus ===
+                      "PENDING_HR") && (
+                    <button
+                      className="cancel-btn"
+                      onClick={() =>
+                        handleCancel(
+                          leave.leaveId
+                        )
+                      }
+                    >
+                      취소
+                    </button>
+                  )}
+                </td>
+
+                {/* 상세 */}
                 <td>
                   <Link
                     to={`/approval/${leave.leaveId}`}
@@ -197,17 +215,22 @@ function ApprovalPage() {
             <tbody>
               {pendingLeaves.map((leave) => (
                 <tr key={leave.leaveId}>
+                  {/* 이름 */}
                   <td>{leave.empName}</td>
 
+                  {/* 부서 */}
                   <td>{leave.deptName}</td>
 
+                  {/* 종류 */}
                   <td>{leave.leaveType}</td>
 
+                  {/* 기간 */}
                   <td>
                     {leave.startDate} ~{" "}
                     {leave.endDate}
                   </td>
 
+                  {/* 상태 */}
                   <td>
                     {
                       statusMap[
@@ -216,6 +239,7 @@ function ApprovalPage() {
                     }
                   </td>
 
+                  {/* 상세 */}
                   <td>
                     <Link
                       to={`/approval/${leave.leaveId}`}
@@ -225,6 +249,7 @@ function ApprovalPage() {
                     </Link>
                   </td>
 
+                  {/* 관리 */}
                   <td className="action-buttons">
                     <button
                       className="approve-btn"
