@@ -313,8 +313,8 @@
 
 .resume-ai__grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(300px, 380px);
-  gap: 18px;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 520px);
+  gap: 20px;
   align-items: start;
 }
 
@@ -322,6 +322,355 @@
   .resume-ai__grid {
     grid-template-columns: 1fr;
   }
+}
+
+.resume-ai__detail-panel .panel__head h2 {
+  font-size: 20px;
+}
+
+/* ----- 테이블 선택 행 ----- */
+
+.resume-ai__row.is-selected td {
+  background: var(--resume-ai-accent-soft-bg);
+}
+
+.resume-ai__row.is-selected .resume-ai__name-btn {
+  color: var(--resume-ai-accent-hover);
+}
+
+/* ----- 알림 · 힌트 ----- */
+
+.resume-ai__alert {
+  margin: 0 0 14px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.resume-ai__alert--error {
+  color: #991b1b;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+}
+
+.resume-ai__hint,
+.resume-ai__placeholder,
+.resume-ai__muted {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--resume-ai-muted);
+}
+
+.resume-ai__placeholder {
+  line-height: 1.55;
+}
+
+.resume-ai__muted {
+  font-weight: 500;
+  color: var(--resume-ai-muted-light);
+}
+
+/* ----- 상세 스택 ----- */
+
+.resume-ai__detail-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.resume-ai__identity {
+  padding-bottom: 4px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.resume-ai__identity-name {
+  margin: 0 0 6px;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--resume-ai-text);
+}
+
+.resume-ai__identity-meta {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--resume-ai-muted);
+}
+
+.resume-ai__meta-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 16px;
+  margin: 0;
+}
+
+@media (max-width: 640px) {
+  .resume-ai__meta-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.resume-ai__meta-row {
+  display: grid;
+  grid-template-columns: 88px 1fr;
+  gap: 8px;
+  align-items: start;
+  margin: 0;
+}
+
+.resume-ai__meta-row--full {
+  grid-column: 1 / -1;
+  grid-template-columns: 88px 1fr;
+}
+
+.resume-ai__meta-row dt {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--resume-ai-muted-light);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.resume-ai__meta-row dd {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+  word-break: break-word;
+}
+
+.resume-ai__mono {
+  display: block;
+  padding: 8px 10px;
+  font-size: 11px;
+  font-family: ui-monospace, monospace;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  word-break: break-all;
+  line-height: 1.45;
+}
+
+.resume-ai__section {
+  margin: 0;
+}
+
+.resume-ai__section-title {
+  margin: 0 0 12px;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--resume-ai-text);
+  letter-spacing: -0.02em;
+}
+
+.resume-ai__section-sub {
+  margin: 16px 0 8px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--resume-ai-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.resume-ai__pdf-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.resume-ai__pdf-ttl {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--resume-ai-muted-light);
+}
+
+.resume-ai__pdf-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.resume-ai__icon-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--resume-ai-border-strong);
+  background: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  color: #334155;
+  cursor: pointer;
+  text-decoration: none;
+  box-shadow: var(--resume-ai-shadow-soft);
+  transition:
+    border-color 0.15s,
+    color 0.15s;
+}
+
+.resume-ai__icon-btn:hover:not(:disabled) {
+  border-color: var(--resume-ai-accent-border);
+  color: var(--resume-ai-accent-hover);
+}
+
+.resume-ai__icon-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.resume-ai__icon-btn--link {
+  color: var(--resume-ai-link);
+}
+
+.resume-ai__icon-btn--link:hover {
+  color: var(--resume-ai-link-hover);
+}
+
+@keyframes resume-ai-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.resume-ai__spin {
+  animation: resume-ai-spin 0.8s linear infinite;
+}
+
+.resume-ai__pdf-frame-wrap {
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+  background: #f1f5f9;
+  min-height: 420px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.resume-ai__pdf-frame {
+  display: block;
+  width: 100%;
+  height: min(62vh, 560px);
+  min-height: 400px;
+  border: none;
+  background: #fff;
+}
+
+.resume-ai__analysis-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.resume-ai__chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.resume-ai__chip--muted {
+  background: #f1f5f9;
+  color: #64748b;
+  font-weight: 700;
+}
+
+.resume-ai__score-block {
+  margin-bottom: 4px;
+}
+
+.resume-ai__score-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--resume-ai-muted);
+}
+
+.resume-ai__score-head strong {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--resume-ai-text);
+}
+
+.resume-ai__score-track {
+  height: 10px;
+  border-radius: 999px;
+  background: #e2e8f0;
+  overflow: hidden;
+}
+
+.resume-ai__score-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #fb923c, #ea580c);
+  transition: width 0.35s ease;
+}
+
+.resume-ai__summary-box {
+  padding: 14px 16px;
+  font-size: 14px;
+  line-height: 1.65;
+  font-weight: 500;
+  color: #334155;
+  background: #fafaf9;
+  border: 1px solid var(--resume-ai-border);
+  border-radius: 12px;
+}
+
+.resume-ai__analysis-foot {
+  margin: 14px 0 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--resume-ai-muted-light);
+}
+
+.resume-ai__json-details {
+  margin-top: 14px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  padding: 0 12px 10px;
+}
+
+.resume-ai__json-details summary {
+  padding: 10px 4px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--resume-ai-muted);
+  cursor: pointer;
+  user-select: none;
+}
+
+.resume-ai__json-details summary:hover {
+  color: #334155;
+}
+
+.resume-ai__detail-pre--json {
+  max-height: 200px;
+  margin-top: 0;
+}
+
+.resume-ai__list-preview {
+  margin: 0;
+  padding-top: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--resume-ai-muted);
+  border-top: 1px dashed #e2e8f0;
 }
 
 /* ----- 상세 블록 (panel 안 보조 박스 — data-table th 배경과 톤 맞춤) ----- */

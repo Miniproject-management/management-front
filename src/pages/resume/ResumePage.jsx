@@ -1,10 +1,20 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar, ChevronDown, Users, FileText, Star, CheckCircle } from 'lucide-react';
+import {
+  Calendar,
+  ChevronDown,
+  Users,
+  FileText,
+  Star,
+  CheckCircle,
+  ExternalLink,
+  RefreshCw,
+} from 'lucide-react';
 
 import {
   fetchHrApplicantDashboard,
   fetchHrApplicantDetail,
+  fetchResumePreviewUrl,
   postAnalyzeApplicantResume,
 } from '../../api/api.jsx';
 
@@ -20,6 +30,14 @@ function formatDt(iso) {
   } catch {
     return String(iso);
   }
+}
+
+/** AI 점수 표시용 0–100 */
+function clampScore0to100(v) {
+  if (v == null || v === '') return null;
+  const n = Number(v);
+  if (Number.isNaN(n)) return null;
+  return Math.max(0, Math.min(100, Math.round(n)));
 }
 
 function previewFromSummary(text) {
@@ -66,6 +84,10 @@ export default function ResumePage() {
   const [analyzeBusyId, setAnalyzeBusyId] = useState(null);
   const [analyzeModalRow, setAnalyzeModalRow] = useState(null);
   const [analyzeJd, setAnalyzeJd] = useState('');
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const [previewExpiresSec, setPreviewExpiresSec] = useState(null);
+  const [previewLoading, setPreviewLoading] = useState(false);
+  const [previewError, setPreviewError] = useState('');
 
   const loadDashboard = useCallback(async () => {
     setError('');
@@ -139,6 +161,10 @@ export default function ResumePage() {
     setSelectedId(applicantId);
     setDetail(null);
     setDetailError('');
+    setPreviewUrl(null);
+    setPreviewExpiresSec(null);
+    setPreviewError('');
+    setPreviewLoading(false);
     setDetailLoading(true);
     try {
       const d = await fetchHrApplicantDetail(applicantId);
@@ -185,6 +211,67 @@ export default function ResumePage() {
       setError(e.message || '분석 요청 실패');
     } finally {
       setAnalyzeBusyId(null);
+    }
+  };
+
+  useEffect(() => {
+    if (!selectedId || !detail?.storageKey) {
+      setPreviewUrl(null);
+      setPreviewExpiresSec(null);
+      setPreviewError('');
+      setPreviewLoading(false);
+      return;
+    }
+    let cancelled = false;
+    setPreviewLoading(true);
+    setPreviewError('');
+    setPreviewUrl(null);
+    setPreviewExpiresSec(null);
+    fetchResumePreviewUrl(selectedId)
+      .then((r) => {
+        if (cancelled) return;
+        if (r?.url) {
+          setPreviewUrl(r.url);
+          setPreviewExpiresSec(
+            typeof r.expiresInSeconds === 'number' ? r.expiresInSeconds : null,
+          );
+        } else {
+          setPreviewError('미리보기 URL을 받지 못했습니다.');
+        }
+      })
+      .catch((e) => {
+        if (!cancelled) {
+          setPreviewError(e.message || '미리보기 URL을 가져오지 못했습니다.');
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setPreviewLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedId, detail?.storageKey]);
+
+  const reloadPreviewUrl = async () => {
+    if (!selectedId || !detail?.storageKey) return;
+    setPreviewLoading(true);
+    setPreviewError('');
+    setPreviewUrl(null);
+    setPreviewExpiresSec(null);
+    try {
+      const r = await fetchResumePreviewUrl(selectedId);
+      if (r?.url) {
+        setPreviewUrl(r.url);
+        setPreviewExpiresSec(
+          typeof r.expiresInSeconds === 'number' ? r.expiresInSeconds : null,
+        );
+      } else {
+        setPreviewError('미리보기 URL을 받지 못했습니다.');
+      }
+    } catch (e) {
+      setPreviewError(e.message || '미리보기 URL을 가져오지 못했습니다.');
+    } finally {
+      setPreviewLoading(false);
     }
   };
 
@@ -243,11 +330,7 @@ export default function ResumePage() {
         </button>
       </nav>
 
-      {error ? (
-        <p style={{ color: '#b91c1c', fontWeight: 700, marginBottom: 16 }}>
-          {error}
-        </p>
-      ) : null}
+      {error ? <p className="resume-ai__alert resume-ai__alert--error">{error}</p> : null}
 
       {tab === 'summary' && (
         <section className="dashboard-page__summary-grid">
@@ -311,7 +394,7 @@ export default function ResumePage() {
               </button>
             </div>
             {loading ? (
-              <p style={{ color: '#64748b', fontWeight: 600 }}>불러오는 중…</p>
+              <p className="resume-ai__hint">불러오는 중…</p>
             ) : (
               <>
                 <div className="resume-ai__table-wrap">
@@ -341,9 +424,7 @@ export default function ResumePage() {
                           return (
                             <tr
                               key={row.applicantId}
-                              style={{
-                                background: sel ? '#fff7ed' : undefined,
-                              }}
+                              className={sel ? 'resume-ai__row is-selected' : 'resume-ai__row'}
                             >
                               <td>
                                 <button
@@ -427,103 +508,195 @@ export default function ResumePage() {
             )}
           </article>
 
-          <article className="panel">
+          <article className="panel resume-ai__detail-panel">
             <div className="panel__head">
-              <h2>이력서 분석</h2>
+              <h2>이력서 · 분석</h2>
             </div>
             {!selectedId ? (
-              <p className="muted-cell">목록에서 지원자 이름을 눌러 상세를 확인하세요.</p>
+              <p className="resume-ai__placeholder">
+                목록에서 지원자 이름을 눌러 상세·PDF 미리보기를 확인하세요.
+              </p>
             ) : detailLoading ? (
-              <p style={{ color: '#64748b', fontWeight: 600 }}>상세 불러오는 중…</p>
+              <p className="resume-ai__hint">상세 불러오는 중…</p>
             ) : detailError ? (
-              <p style={{ color: '#b91c1c', fontWeight: 700 }}>{detailError}</p>
+              <p className="resume-ai__alert resume-ai__alert--error">{detailError}</p>
             ) : detail ? (
-              <>
-                <p>
-                  <strong>{detail.name}</strong>
-                  <br />
-                  <span className="muted-cell">
-                    {detail.email} · {detail.phone}
-                  </span>
-                </p>
-                <p className="muted-cell" style={{ fontSize: 13 }}>
-                  제출: {formatDt(detail.submittedAt)}
-                  <br />
-                  파일: {detail.originalFileName || '—'}
-                  <br />
-                  저장소 키:{' '}
-                  <span style={{ wordBreak: 'break-all' }}>
-                    {detail.storageKey || '—'}
-                  </span>
-                </p>
+              <div className="resume-ai__detail-stack">
+                <header className="resume-ai__identity">
+                  <h3 className="resume-ai__identity-name">{detail.name || '—'}</h3>
+                  <p className="resume-ai__identity-meta">
+                    {detail.email || '—'} · {detail.phone || '—'}
+                  </p>
+                </header>
+
+                <dl className="resume-ai__meta-grid">
+                  <div className="resume-ai__meta-row">
+                    <dt>제출일</dt>
+                    <dd>{formatDt(detail.submittedAt)}</dd>
+                  </div>
+                  <div className="resume-ai__meta-row">
+                    <dt>파일명</dt>
+                    <dd>{detail.originalFileName || '—'}</dd>
+                  </div>
+                  <div className="resume-ai__meta-row resume-ai__meta-row--full">
+                    <dt>저장소 키</dt>
+                    <dd>
+                      <code className="resume-ai__mono">{detail.storageKey || '—'}</code>
+                    </dd>
+                  </div>
+                </dl>
+
+                <section className="resume-ai__section" aria-labelledby="resume-pdf-title">
+                  <h4 id="resume-pdf-title" className="resume-ai__section-title">
+                    이력서 PDF
+                  </h4>
+                  {!detail.storageKey ? (
+                    <p className="resume-ai__muted">업로드된 이력서가 없습니다.</p>
+                  ) : (
+                    <>
+                      <div className="resume-ai__pdf-toolbar">
+                        {previewExpiresSec != null ? (
+                          <span className="resume-ai__pdf-ttl">
+                            보기 링크 유효 약{' '}
+                            {Math.max(1, Math.round(previewExpiresSec / 60))}분
+                          </span>
+                        ) : null}
+                        <div className="resume-ai__pdf-actions">
+                          <button
+                            type="button"
+                            className="resume-ai__icon-btn"
+                            onClick={() => reloadPreviewUrl()}
+                            disabled={previewLoading}
+                            title="프리사인 URL 새로 발급"
+                          >
+                            <RefreshCw
+                              size={16}
+                              strokeWidth={2}
+                              className={
+                                previewLoading ? 'resume-ai__spin' : undefined
+                              }
+                            />
+                            URL 갱신
+                          </button>
+                          {previewUrl ? (
+                            <a
+                              className="resume-ai__icon-btn resume-ai__icon-btn--link"
+                              href={previewUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              <ExternalLink size={16} strokeWidth={2} />
+                              새 탭
+                            </a>
+                          ) : null}
+                        </div>
+                      </div>
+                      {previewError ? (
+                        <p className="resume-ai__alert resume-ai__alert--error">
+                          {previewError}
+                        </p>
+                      ) : null}
+                      {previewLoading && !previewUrl ? (
+                        <p className="resume-ai__hint">미리보기 URL 발급 중…</p>
+                      ) : null}
+                      {previewUrl ? (
+                        <div className="resume-ai__pdf-frame-wrap">
+                          <iframe
+                            title={`${detail.name || '지원자'} 이력서 PDF`}
+                            className="resume-ai__pdf-frame"
+                            src={previewUrl}
+                          />
+                        </div>
+                      ) : null}
+                      {!previewLoading && !previewUrl && !previewError ? (
+                        <p className="resume-ai__muted">PDF를 불러올 수 없습니다.</p>
+                      ) : null}
+                    </>
+                  )}
+                </section>
+
                 {detail.analysis ? (
-                  <>
-                    <p style={{ fontSize: 14, fontWeight: 700, color: '#0f172a' }}>
-                      상태: {detail.analysis.status} · 모델:{' '}
-                      {detail.analysis.model || '—'} · 점수:{' '}
-                      {detail.analysis.overallScore != null
-                        ? detail.analysis.overallScore
-                        : '—'}
-                    </p>
-                    <p
-                      style={{
-                        marginBottom: 6,
-                        fontSize: 13,
-                        fontWeight: 700,
-                        color: '#64748b',
-                      }}
-                    >
-                      요약
-                    </p>
-                    <div className="resume-ai__detail-pre">
+                  <section className="resume-ai__section" aria-labelledby="resume-ai-title">
+                    <h4 id="resume-ai-title" className="resume-ai__section-title">
+                      AI 분석
+                    </h4>
+                    <div className="resume-ai__analysis-chips">
+                      <span className="resume-ai__chip">{detail.analysis.status}</span>
+                      {detail.analysis.model ? (
+                        <span className="resume-ai__chip resume-ai__chip--muted">
+                          {detail.analysis.model}
+                        </span>
+                      ) : null}
+                    </div>
+                    {(() => {
+                      const sc = clampScore0to100(detail.analysis.overallScore);
+                      return sc != null ? (
+                        <div className="resume-ai__score-block">
+                          <div className="resume-ai__score-head">
+                            <span>종합 점수</span>
+                            <strong>{sc}점</strong>
+                          </div>
+                          <div
+                            className="resume-ai__score-track"
+                            role="progressbar"
+                            aria-valuenow={sc}
+                            aria-valuemin={0}
+                            aria-valuemax={100}
+                          >
+                            <div
+                              className="resume-ai__score-fill"
+                              style={{ width: `${sc}%` }}
+                            />
+                          </div>
+                        </div>
+                      ) : (
+                        <p className="resume-ai__muted">점수 없음</p>
+                      );
+                    })()}
+                    <p className="resume-ai__section-sub">요약</p>
+                    <div className="resume-ai__summary-box">
                       {detail.analysis.summary || '—'}
                     </div>
-                    <p
-                      style={{
-                        marginBottom: 6,
-                        marginTop: 14,
-                        fontSize: 13,
-                        fontWeight: 700,
-                        color: '#64748b',
-                      }}
-                    >
-                      resultJson
-                    </p>
-                    <pre className="resume-ai__detail-pre">
-                      {detail.analysis.resultJson
-                        ? (() => {
-                            try {
-                              return JSON.stringify(
-                                JSON.parse(detail.analysis.resultJson),
-                                null,
-                                2,
-                              );
-                            } catch {
-                              return detail.analysis.resultJson;
-                            }
-                          })()
-                        : '—'}
-                    </pre>
                     {detail.analysis.failureMessage ? (
-                      <p style={{ color: '#b91c1c', marginTop: 10 }}>
+                      <p className="resume-ai__alert resume-ai__alert--error">
                         {detail.analysis.failureMessage}
                       </p>
                     ) : null}
-                    <p className="muted-cell" style={{ marginTop: 10 }}>
+                    <p className="resume-ai__analysis-foot">
                       분석일시: {formatDt(detail.analysis.analyzedAt)}
                     </p>
-                  </>
+                    <details className="resume-ai__json-details">
+                      <summary>원본 JSON</summary>
+                      <pre className="resume-ai__detail-pre resume-ai__detail-pre--json">
+                        {detail.analysis.resultJson
+                          ? (() => {
+                              try {
+                                return JSON.stringify(
+                                  JSON.parse(detail.analysis.resultJson),
+                                  null,
+                                  2,
+                                );
+                              } catch {
+                                return detail.analysis.resultJson;
+                              }
+                            })()
+                          : '—'}
+                      </pre>
+                    </details>
+                  </section>
                 ) : (
-                  <p className="muted-cell">
-                    아직 분석 결과가 없습니다. 목록에서 분석을 실행하세요.
-                  </p>
+                  <section className="resume-ai__section">
+                    <p className="resume-ai__muted">
+                      아직 분석 결과가 없습니다. 목록에서「분석」을 실행하세요.
+                    </p>
+                  </section>
                 )}
                 {selectedRow?.summaryPreview && !detail.analysis?.summary ? (
-                  <p className="muted-cell" style={{ marginTop: 10 }}>
+                  <p className="resume-ai__list-preview">
                     목록 요약: {selectedRow.summaryPreview}
                   </p>
                 ) : null}
-              </>
+              </div>
             ) : null}
           </article>
         </div>

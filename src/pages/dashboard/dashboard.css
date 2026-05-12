@@ -17,15 +17,15 @@
 
 .dashboard-page {
   display: grid;
-  grid-template-rows: 70px 1fr;
-  gap: 20px;
+  grid-template-rows: 54px 1fr;
+  gap: 12px;
   width: 100%;
   min-height: auto;
   height: calc(100vh - 40px);
   max-height: calc(100vh - 40px);
   align-self: stretch;
   overflow: hidden;
-  padding: 20px 24px;
+  padding: 10px 22px 14px;
   color: var(--text-main);
   font-family: "Pretendard", "Noto Sans KR", "Apple SD Gothic Neo", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   font-feature-settings: "tnum";
@@ -38,7 +38,7 @@
   max-width: 1600px;
   margin: 0 auto;
   align-content: start;
-  background: #fffaf4;
+  background: #f8fafc;
 }
 
 .dashboard-page__header {
@@ -49,14 +49,14 @@
 }
 
 .dashboard-page__hero h1 {
-  font-size: 28px;
+  font-size: 25px;
   font-weight: 700;
   color: var(--text-main);
   letter-spacing: 0;
 }
 
 .dashboard-page__hero p {
-  margin-top: 8px;
+  margin-top: 4px;
   color: var(--text-muted);
   font-size: 14px;
   font-weight: 500;
@@ -86,8 +86,8 @@
 .dashboard-grid {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
-  grid-template-rows: 120px 320px 220px;
-  gap: 20px;
+  grid-template-rows: 104px 292px 218px;
+  gap: 22px 16px;
   align-items: stretch;
   min-height: 0;
 }
@@ -105,16 +105,16 @@
   grid-column: span 3;
   display: flex;
   align-items: center;
-  gap: 18px;
-  height: 120px;
-  padding: 20px;
+  gap: 16px;
+  height: 104px;
+  padding: 18px;
 }
 
 .kpi-card__icon {
   display: grid;
-  flex: 0 0 58px;
-  width: 58px;
-  height: 58px;
+  flex: 0 0 56px;
+  width: 56px;
+  height: 56px;
   place-items: center;
   border-radius: 16px;
 }
@@ -136,7 +136,7 @@
 
 .kpi-card__label {
   color: var(--text-muted);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
 }
 
@@ -144,7 +144,7 @@
   display: block;
   margin-top: 6px;
   color: #0b0f19;
-  font-size: 28px;
+  font-size: 25px;
   font-weight: 700;
   line-height: 1;
 }
@@ -152,7 +152,7 @@
 .kpi-card__description {
   margin-top: 8px;
   color: var(--text-muted);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
 }
 
@@ -169,17 +169,17 @@
 .dashboard-card--large,
 .dashboard-card--medium {
   grid-column: span 6;
-  padding: 18px;
+  padding: 16px;
 }
 
 .dashboard-card--large {
-  height: 320px;
-  min-height: 320px;
+  height: 292px;
+  min-height: 292px;
 }
 
 .dashboard-card--medium {
-  height: 220px;
-  min-height: 220px;
+  height: 218px;
+  min-height: 218px;
 }
 
 .dashboard-card__header {
@@ -187,12 +187,12 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 .dashboard-card__header h2 {
   color: var(--text-main);
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 700;
   letter-spacing: 0;
 }
@@ -223,7 +223,7 @@
 }
 
 .dashboard-table th {
-  height: 34px;
+  height: 32px;
   padding: 0 10px;
   background: #fafbfc;
   color: var(--text-muted);
@@ -243,11 +243,11 @@
 }
 
 .dashboard-table td {
-  height: 38px;
+  height: 36px;
   padding: 0 10px;
   border-bottom: 1px solid var(--table-border);
   color: #202938;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
   vertical-align: middle;
 }
@@ -264,7 +264,7 @@
 }
 
 .screening-table__rank {
-  width: 8%;
+  width: 10%;
 }
 
 .screening-table__name {
@@ -272,15 +272,21 @@
 }
 
 .screening-table__role {
-  width: 21%;
+  width: 20%;
 }
 
 .screening-table__score {
-  width: 27%;
+  width: 26%;
 }
 
 .screening-table__summary {
   width: 30%;
+}
+
+.screening-table th:first-child,
+.screening-table td:first-child {
+  padding-left: 12px;
+  padding-right: 6px;
 }
 
 .screening-table td:nth-child(5) {
@@ -292,8 +298,8 @@
 
 .rank-badge {
   display: inline-grid;
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   place-items: center;
   border-radius: 999px;
   background: var(--orange-soft);
@@ -311,8 +317,8 @@
 
 .score-badge {
   display: inline-flex;
-  min-width: 44px;
-  height: 26px;
+  min-width: 42px;
+  height: 24px;
   align-items: center;
   justify-content: center;
   border-radius: 9px;
@@ -354,13 +360,13 @@
 .leave-summary-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-  margin-bottom: 14px;
+  gap: 10px;
+  margin-bottom: 10px;
 }
 
 .leave-summary {
-  min-height: 78px;
-  padding: 13px;
+  min-height: 52px;
+  padding: 8px 10px;
   border: 1px solid var(--orange-border);
   border-radius: 12px;
   background: #fffaf5;
@@ -372,15 +378,15 @@
 
 .leave-summary p {
   color: var(--text-muted);
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 500;
 }
 
 .leave-summary strong {
   display: block;
-  margin-top: 7px;
+  margin-top: 4px;
   color: var(--brand-orange);
-  font-size: 26px;
+  font-size: 19px;
   font-weight: 700;
   line-height: 1;
 }
@@ -393,21 +399,29 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-top: 8px;
+  margin-top: 5px;
 }
 
 .leave-summary__progress span:last-child {
   white-space: nowrap;
   color: var(--text-muted);
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 500;
 }
 
 .dashboard-subtitle {
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   color: var(--text-main);
   font-size: 15px;
   font-weight: 700;
+}
+
+.leave-table th {
+  height: 25px;
+}
+
+.leave-table td {
+  height: 25px;
 }
 
 .leave-table th:nth-child(1),
@@ -436,7 +450,7 @@
 
 .approval-table th,
 .approval-table td {
-  height: 46px;
+  height: 40px;
 }
 
 .document-type {
@@ -451,9 +465,9 @@
 
 .document-type__icon {
   display: inline-grid;
-  flex: 0 0 32px;
-  width: 32px;
-  height: 32px;
+  flex: 0 0 30px;
+  width: 30px;
+  height: 30px;
   place-items: center;
   border-radius: 10px;
 }
@@ -471,7 +485,7 @@
 .status-badge {
   display: inline-flex;
   min-width: 78px;
-  height: 30px;
+  height: 28px;
   align-items: center;
   justify-content: center;
   border-radius: 10px;
@@ -484,13 +498,13 @@
 .headcount-layout {
   display: grid;
   grid-template-columns: minmax(0, 1.45fr) minmax(168px, 0.75fr);
-  gap: 16px;
+  gap: 14px;
   align-items: center;
 }
 
 .headcount-table th,
 .headcount-table td {
-  height: 34px;
+  height: 28px;
   padding-left: 8px;
   padding-right: 8px;
 }
@@ -515,13 +529,13 @@
 .donut-panel {
   display: grid;
   justify-items: center;
-  gap: 10px;
+  gap: 6px;
 }
 
 .donut-chart {
   display: grid;
-  width: 98px;
-  height: 98px;
+  width: 82px;
+  height: 82px;
   place-items: center;
   border-radius: 999px;
   background: conic-gradient(
@@ -534,8 +548,8 @@
 
 .donut-chart > div {
   display: grid;
-  width: 58px;
-  height: 58px;
+  width: 48px;
+  height: 48px;
   place-items: center;
   border-radius: 999px;
   background: #ffffff;
@@ -553,30 +567,30 @@
 .donut-chart strong {
   align-self: start;
   color: var(--text-main);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
 }
 
 .donut-legend {
   display: grid;
-  gap: 5px;
+  gap: 2px;
   width: 100%;
   list-style: none;
 }
 
 .donut-legend li {
   display: grid;
-  grid-template-columns: 9px 42px minmax(0, 1fr);
+  grid-template-columns: 8px 38px minmax(0, 1fr);
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   color: var(--text-muted);
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 500;
 }
 
 .donut-legend li > span {
-  width: 9px;
-  height: 9px;
+  width: 8px;
+  height: 8px;
   border-radius: 999px;
 }
 
