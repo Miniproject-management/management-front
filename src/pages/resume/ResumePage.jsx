@@ -155,15 +155,18 @@ export default function ResumePage() {
 
   if (!hasToken() && !loading) {
     return (
-      <section className="dashboard-page">
+      <section className="dashboard-page resume-ai">
         <header className="dashboard-page__header">
           <div className="dashboard-page__hero">
             <h1>AI 채용</h1>
             <p>지원자 현황과 이력서 분석 결과를 확인합니다.</p>
           </div>
         </header>
-        <article className="panel resume-ai__login-hint">
+        <article className="resume-ai__login-hint">
           <p>AI 채용 대시보드는 로그인한 회원만 볼 수 있습니다.</p>
+          <span className="resume-ai__login-sub">
+            로그인 후 이 페이지에서 지원자 요약·목록·분석을 이용할 수 있습니다.
+          </span>
           <Link className="resume-ai__login-link" to="/login">
             로그인하기
           </Link>
@@ -173,7 +176,7 @@ export default function ResumePage() {
   }
 
   return (
-    <section className="dashboard-page">
+    <section className="dashboard-page resume-ai">
       <header className="dashboard-page__header">
         <div className="dashboard-page__hero">
           <h1>AI 채용</h1>
