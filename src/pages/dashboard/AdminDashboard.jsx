@@ -135,7 +135,7 @@ function AdminDashboard() {
     <section className="dashboard-page">
       <header className="dashboard-page__header">
         <div className="dashboard-page__hero">
-          <h1>대시보드 개요</h1>
+          <h1>대시보드</h1>
           <p>조직 현황과 채용, 연차, 결재 상태를 한눈에 확인하세요</p>
         </div>
 

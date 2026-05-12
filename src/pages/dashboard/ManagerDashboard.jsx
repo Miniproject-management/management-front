@@ -254,7 +254,7 @@ function ManagerDashboard() {
     <section className="dashboard-page">
       <header className="dashboard-page__header">
         <div className="dashboard-page__hero">
-          <h1>대시보드 개요 <span className="dashboard-page__wave">👋</span></h1>
+          <h1>대시보드 <span className="dashboard-page__wave">👋</span></h1>
           <p>우리 팀과 나의 현황을 한눈에 확인하세요.</p>
         </div>
 
