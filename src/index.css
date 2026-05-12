@@ -15,5 +15,6 @@ body {
 
 .main-content {
   flex: 1;
-  padding: 10px 20px;
+  min-height: 100vh;
+  padding: 20px;
 }
