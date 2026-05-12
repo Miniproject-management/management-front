@@ -13,6 +13,7 @@ import EmployeeDashboard from "./pages/dashboard/EmployeeDashboard";
 import JobApplicationPage from "./pages/apply/JobApplicationPage";
 import ApprovalDetailPage from "./pages/approval/ApprovalDetailPage";
 import LeaveApplyPage from "./pages/approval/LeaveApplyPage";
+import LeaveBalancePage from "./pages/approval/LeaveBalancePage";
 
 import "./index.css";
 
@@ -34,7 +35,8 @@ function App() {
             <Route path="/department" element={<DepartmentPage />} />
             <Route path="/apply" element={<JobApplicationPage />} />
             <Route path="/approval/:leaveId" element={<ApprovalDetailPage />} />    
-            <Route path="/approval/apply" element={<LeaveApplyPage />} />          
+            <Route path="/approval/apply" element={<LeaveApplyPage />} />      
+            <Route  path="/approval/leave-balance" element={<LeaveBalancePage />} />          
           </Routes>
         </main>
       </div>

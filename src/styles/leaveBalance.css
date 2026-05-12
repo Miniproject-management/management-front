@@ -1,0 +1,77 @@
+.balance-page {
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+}
+
+.balance-card {
+  width: 100%;
+  max-width: 600px;
+
+  background-color: white;
+
+  padding: 40px;
+
+  border-radius: 20px;
+}
+
+.balance-card h1 {
+  margin-bottom: 32px;
+}
+
+.balance-form {
+  display: flex;
+  flex-direction: column;
+
+  gap: 24px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+
+  gap: 10px;
+}
+
+.form-group label {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.form-group input {
+  border: 1px solid #ddd;
+
+  border-radius: 10px;
+
+  padding: 14px;
+
+  font-size: 14px;
+
+  outline: none;
+}
+
+.form-group input:focus {
+  border-color: #fea954;
+}
+
+.balance-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.create-btn {
+  border: none;
+
+  background-color: #fea954;
+  color: white;
+
+  padding: 14px 22px;
+
+  border-radius: 10px;
+
+  cursor: pointer;
+
+  font-size: 14px;
+  font-weight: 600;
+}
