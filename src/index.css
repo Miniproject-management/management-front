@@ -13,8 +13,15 @@ body {
   display: flex;
 }
 
+/* 메인 영역 */
 .main-content {
   flex: 1;
+
   min-height: 100vh;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   padding: 20px;
 }
