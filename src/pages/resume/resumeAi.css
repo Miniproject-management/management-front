@@ -1,0 +1,147 @@
+/* AI 채용(/resume): 탭 · 페이지네이션 (대시보드 톤은 dashboard.css 재사용) */
+
+.resume-ai__tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 22px;
+  flex-wrap: wrap;
+}
+
+.resume-ai__tab {
+  padding: 11px 20px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  color: #64748b;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    color 0.15s,
+    box-shadow 0.15s;
+}
+
+.resume-ai__tab:hover {
+  border-color: #cbd5e1;
+  color: #334155;
+}
+
+.resume-ai__tab.is-active {
+  border-color: #fdba74;
+  color: #c2410c;
+  background: #fff7ed;
+  box-shadow: 0 8px 22px rgba(234, 88, 12, 0.12);
+}
+
+.resume-ai__pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+
+.resume-ai__pager-info {
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.resume-ai__pager-btns {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.resume-ai__page-btn {
+  padding: 8px 14px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  color: #334155;
+  cursor: pointer;
+}
+
+.resume-ai__page-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.resume-ai__page-btn:not(:disabled):hover {
+  border-color: #fdba74;
+  color: #c2410c;
+}
+
+.resume-ai__name-btn {
+  border: none;
+  background: none;
+  padding: 0;
+  font: inherit;
+  color: #2563eb;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.resume-ai__name-btn:hover {
+  color: #1d4ed8;
+}
+
+.resume-ai__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 380px);
+  gap: 18px;
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .resume-ai__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.resume-ai__detail-pre {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 12px;
+  background: #f8fafc;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #f1f5f9;
+  max-height: 260px;
+  overflow: auto;
+}
+
+.resume-ai__login-hint {
+  padding: 28px;
+  text-align: center;
+}
+
+.resume-ai__login-hint p {
+  color: #64748b;
+  font-size: 15px;
+  margin-bottom: 18px;
+}
+
+.resume-ai__login-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  border-radius: 12px;
+  background: #ea580c;
+  color: #fff;
+  font-weight: 800;
+  text-decoration: none;
+  font-size: 15px;
+}
+
+.resume-ai__login-link:hover {
+  background: #c2410c;
+}
