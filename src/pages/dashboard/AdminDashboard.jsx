@@ -19,7 +19,7 @@ const summaryCards = [
     value: "124명",
     note: "전월 대비 +3명",
     noteTone: "up",
-    tone: "blue",
+    tone: "orange",
     Icon: Users,
   },
   {
@@ -72,10 +72,10 @@ const pendingDocs = [
 ];
 
 const headcount = [
-  { name: "개발팀", count: 46, lead: "김팀장", delta: "+2", Icon: Users, color: "#3b82f6" },
-  { name: "보안팀", count: 18, lead: "이팀장", delta: "0", Icon: Shield, color: "#a855f7" },
-  { name: "인사팀", count: 12, lead: "박팀장", delta: "+1", Icon: BarChart3, color: "#f59e0b" },
-  { name: "기획팀", count: 15, lead: "최팀장", delta: "-1", Icon: Users, color: "#22c55e" },
+  { name: "개발팀", count: 46, lead: "김팀장", delta: "+2", Icon: Users, color: "#f97316" },
+  { name: "보안팀", count: 18, lead: "이팀장", delta: "0", Icon: Shield, color: "#fdba74" },
+  { name: "인사팀", count: 12, lead: "박팀장", delta: "+1", Icon: BarChart3, color: "#facc15" },
+  { name: "기획팀", count: 15, lead: "최팀장", delta: "-1", Icon: Users, color: "#fde68a" },
 ];
 
 function ProgressBar({ value, max = 100, tone = "blue" }) {
@@ -132,7 +132,7 @@ function AdminDashboard() {
   const headcountTotal = headcount.reduce((sum, d) => sum + d.count, 0);
 
   return (
-    <section className="dashboard-page">
+    <section className="dashboard-page dashboard-page--admin">
       <header className="dashboard-page__header">
         <div className="dashboard-page__hero">
           <h1>대시보드</h1>

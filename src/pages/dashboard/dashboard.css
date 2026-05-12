@@ -481,6 +481,45 @@
   text-align: right;
 }
 
+/* ---------- admin dashboard orange theme ---------- */
+.dashboard-page--admin .panel__link,
+.dashboard-page--admin .summary-card__note.is-up,
+.dashboard-page--admin .rank-cell,
+.dashboard-page--admin .score-badge {
+  color: #f97316;
+}
+
+.dashboard-page--admin .rank-cell,
+.dashboard-page--admin .score-badge,
+.dashboard-page--admin .delta-pill.is-positive {
+  background: #fff7ed;
+}
+
+.dashboard-page--admin .progress-bar.tone-blue .progress-bar__fill,
+.dashboard-page--admin .progress-bar.tone-orange .progress-bar__fill {
+  background: #f97316;
+}
+
+.dashboard-page--admin .summary-card__icon.tone-orange {
+  color: #f97316;
+  background: #fff7ed;
+}
+
+.dashboard-page--admin .leave-card.tone-blue {
+  border-color: #fed7aa;
+  background: #fff7ed;
+}
+
+.dashboard-page--admin .leave-card.tone-blue strong,
+.dashboard-page--admin .leave-card.tone-orange strong {
+  color: #f97316;
+}
+
+.dashboard-page--admin .status-badge {
+  background: #fff7ed;
+  color: #f97316;
+}
+
 /* ---------- manager dashboard ---------- */
 .dashboard-page__wave {
   font-size: 22px;
