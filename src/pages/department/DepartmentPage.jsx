@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './DepartmentPage.css';
+import '../../styles/DepartmentPage.css';
 
 function DepartmentPage() {
   const [departments, setDepartments] = useState([]);
