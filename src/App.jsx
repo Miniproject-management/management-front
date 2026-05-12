@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Sidebar from "./components/Sidebar";
+import Footer from "./components/Footer";
 
 import LoginPage from "./pages/auth/LoginPage";
 import ApprovalPage from "./pages/approval/ApprovalPage";
@@ -34,10 +35,16 @@ function App() {
             <Route path="/resume" element={<ResumePage />} />
             <Route path="/department" element={<DepartmentPage />} />
             <Route path="/apply" element={<JobApplicationPage />} />
-            <Route path="/approval/:leaveId" element={<ApprovalDetailPage />} />    
-            <Route path="/approval/apply" element={<LeaveApplyPage />} />      
-            <Route  path="/approval/leave-balance" element={<LeaveBalancePage />} />          
+            <Route path="/approval/:leaveId" element={<ApprovalDetailPage />} />
+            <Route path="/approval/apply" element={<LeaveApplyPage />} />
+            <Route
+              path="/approval/leave-balance"
+              element={<LeaveBalancePage />}
+            />
           </Routes>
+
+          {/* 공통 Footer */}
+          <Footer />
         </main>
       </div>
     </BrowserRouter>
