@@ -186,7 +186,9 @@ function AdminDashboard() {
             <tbody>
               {topApplicants.map((a) => (
                 <tr key={a.rank}>
-                  <td className="rank-cell">{a.rank}</td>
+                  <td>
+                    <span className="rank-cell">{a.rank}</span>
+                  </td>
                   <td>{a.name}</td>
                   <td>{a.role}</td>
                   <td>

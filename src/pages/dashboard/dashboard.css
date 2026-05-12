@@ -1,7 +1,7 @@
 .dashboard-page {
   display: grid;
-  gap: 22px;
-  padding: 28px 32px 40px;
+  gap: 20px;
+  padding: 30px 42px 42px;
   width: 100%;
   align-self: stretch;
 }
@@ -14,23 +14,24 @@
 }
 
 .dashboard-page__hero h1 {
-  font-size: 28px;
+  font-size: 30px;
   font-weight: 800;
-  letter-spacing: -0.04em;
+  letter-spacing: 0;
   color: #0f172a;
 }
 
 .dashboard-page__hero p {
-  margin-top: 8px;
+  margin-top: 10px;
   color: #94a3b8;
   font-size: 14px;
+  font-weight: 600;
 }
 
 .dashboard-page__date-picker {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 14px;
+  padding: 11px 16px;
   border: 1px solid #e2e8f0;
   border-radius: 12px;
   background: #ffffff;
@@ -38,7 +39,7 @@
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.05);
 }
 
 .dashboard-page__date-picker:hover {
@@ -49,31 +50,32 @@
 .dashboard-page__summary-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 16px;
+  gap: 18px;
 }
 
 .summary-card,
 .panel {
   background: #ffffff;
-  border: 1px solid #f1f5f9;
-  border-radius: 18px;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  border: 1px solid #f4f0ea;
+  border-radius: 8px;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.06);
 }
 
 .summary-card {
   display: grid;
   grid-template-columns: auto 1fr;
-  gap: 16px;
+  gap: 18px;
   align-items: center;
-  padding: 20px;
+  min-height: 128px;
+  padding: 26px 26px;
 }
 
 .summary-card__icon {
   display: grid;
   place-items: center;
-  width: 52px;
-  height: 52px;
-  border-radius: 14px;
+  width: 72px;
+  height: 72px;
+  border-radius: 16px;
 }
 
 .summary-card__icon.tone-blue {
@@ -95,16 +97,16 @@
 
 .summary-card__label {
   color: #64748b;
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 14px;
+  font-weight: 700;
 }
 
 .summary-card__value {
   display: block;
-  margin-top: 6px;
-  font-size: 24px;
+  margin-top: 8px;
+  font-size: 30px;
   font-weight: 800;
-  letter-spacing: -0.03em;
+  letter-spacing: 0;
   color: #0f172a;
 }
 
@@ -112,9 +114,10 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  margin-top: 6px;
+  margin-top: 7px;
   color: #94a3b8;
-  font-size: 12px;
+  font-size: 14px;
+  font-weight: 600;
 }
 
 .summary-card__note.is-up {
@@ -129,24 +132,25 @@
 .dashboard-page__content-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
+  gap: 18px;
 }
 
 .panel {
-  padding: 22px;
+  min-width: 0;
+  padding: 24px 26px 26px;
 }
 
 .panel__head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 14px;
+  margin-bottom: 18px;
 }
 
 .panel__head h2 {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 700;
-  letter-spacing: -0.02em;
+  letter-spacing: 0;
   color: #0f172a;
 }
 
@@ -155,7 +159,7 @@
   align-items: center;
   gap: 2px;
   color: #2563eb;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   text-decoration: none;
 }
@@ -165,8 +169,8 @@
 }
 
 .panel__subhead {
-  margin: 20px 0 10px;
-  font-size: 14px;
+  margin: 24px 0 12px;
+  font-size: 15px;
   font-weight: 700;
   color: #0f172a;
 }
@@ -175,12 +179,12 @@
 .data-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .data-table th,
 .data-table td {
-  padding: 12px 12px;
+  padding: 14px 14px;
   text-align: left;
   white-space: nowrap;
   color: #334155;
@@ -189,8 +193,8 @@
 .data-table th {
   background: #f8fafc;
   color: #64748b;
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 700;
   border-top: 1px solid #f1f5f9;
   border-bottom: 1px solid #f1f5f9;
 }
@@ -218,6 +222,15 @@
   font-weight: 700;
 }
 
+.rank-cell {
+  display: inline-grid;
+  place-items: center;
+  min-width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  background: #eff6ff;
+}
+
 .muted-cell {
   color: #64748b;
 }
@@ -233,19 +246,19 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 50px;
-  padding: 5px 10px;
+  min-width: 54px;
+  padding: 6px 11px;
   border-radius: 8px;
   background: #eff6ff;
   color: #2563eb;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
 }
 
 .progress-bar {
   display: inline-block;
-  width: 70px;
-  height: 4px;
+  width: 76px;
+  height: 5px;
   background: #e2e8f0;
   border-radius: 999px;
   overflow: hidden;
@@ -274,12 +287,13 @@
 .leave-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
+  gap: 14px;
 }
 
 .leave-card {
-  padding: 16px;
-  border-radius: 14px;
+  padding: 18px 20px;
+  border: 1px solid #e8eef7;
+  border-radius: 8px;
   background: #f8fafc;
 }
 
@@ -295,16 +309,16 @@
 
 .leave-card p {
   color: #64748b;
-  font-size: 12px;
-  font-weight: 500;
+  font-size: 13px;
+  font-weight: 700;
 }
 
 .leave-card strong {
   display: block;
-  margin-top: 6px;
-  font-size: 22px;
+  margin-top: 8px;
+  font-size: 25px;
   font-weight: 800;
-  letter-spacing: -0.03em;
+  letter-spacing: 0;
 }
 
 .leave-card.tone-blue strong {
@@ -322,7 +336,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  margin-top: 10px;
+  margin-top: 13px;
 }
 
 .leave-card__progress .progress-bar {
@@ -342,8 +356,9 @@
 .doc-cell {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   color: #334155;
+  font-weight: 600;
 }
 
 .dept-cell svg {
@@ -353,8 +368,8 @@
 .doc-icon {
   display: inline-grid;
   place-items: center;
-  width: 28px;
-  height: 28px;
+  width: 36px;
+  height: 36px;
   border-radius: 8px;
 }
 
@@ -372,11 +387,11 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 5px 12px;
+  padding: 8px 14px;
   border-radius: 8px;
   background: #fff7ed;
   color: #ea580c;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
 }
 
@@ -409,8 +424,8 @@
 /* ---------- headcount + donut ---------- */
 .headcount-grid {
   display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 24px;
+  grid-template-columns: minmax(0, 1.4fr) 220px;
+  gap: 28px;
   align-items: center;
 }
 
