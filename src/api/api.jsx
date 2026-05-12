@@ -53,6 +53,19 @@ export async function fetchHrApplicantDetail(applicantId) {
   return data;
 }
 
+/** S3 PDF 브라우저 표시용 단기 프리사인 URL { url, expiresInSeconds } */
+export async function fetchResumePreviewUrl(applicantId) {
+  const res = await fetch(
+    `/api/hr/applicants/${applicantId}/resume/preview-url`,
+    { headers: authHeaders() },
+  );
+  const data = await handleJson(res);
+  if (!res.ok) {
+    throw new Error(httpErrorMessage(res, data));
+  }
+  return data;
+}
+
 /** 직무 기준이 필요하면 options.body 로 JSON 문자열 전달 (예: JSON.stringify({ jobDescription: '...' })) */
 export async function postAnalyzeApplicantResume(applicantId, options = {}) {
   const hasBody = options.body != null && options.body !== '';
