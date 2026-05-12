@@ -191,6 +191,7 @@ function ApprovalPage() {
               </tr>
             ))}
           </tbody>
+          
         </table>
       </section>
 
