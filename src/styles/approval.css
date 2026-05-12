@@ -102,7 +102,7 @@
 
   gap: 4px;
 
-  height: 100%;
+  padding-top: 2px;
 }
 
 /* 승인 / 반려 버튼 */
@@ -112,7 +112,7 @@
 
   color: white;
 
-  padding: 8px 12px;
+  padding: 7px 12px;
 
   border-radius: 8px;
 
