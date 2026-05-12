@@ -21,41 +21,53 @@
   --resume-ai-link-hover: #1d4ed8;
 }
 
-/* ----- 탭 (대시보드 date-picker / 카드 버튼 느낌) ----- */
+/* ----- 탭 바 (크게 · 세그먼트형) ----- */
 
-.resume-ai__tabs {
+.resume-ai__tab-bar {
   display: flex;
-  gap: 10px;
-  margin-bottom: 22px;
-  flex-wrap: wrap;
+  width: 100%;
+  max-width: 720px;
+  margin-bottom: 26px;
+  padding: 6px;
+  border-radius: 16px;
+  border: 1px solid var(--resume-ai-border);
+  background: #ffffff;
+  box-shadow: var(--resume-ai-shadow-soft);
+  gap: 6px;
 }
 
 .resume-ai__tab {
-  padding: 11px 20px;
+  flex: 1;
+  min-height: 52px;
+  padding: 14px 22px;
+  border: none;
   border-radius: 12px;
-  border: 1px solid var(--resume-ai-border-strong);
-  background: #ffffff;
+  background: transparent;
   color: var(--resume-ai-muted);
-  font-size: 14px;
+  font-size: 17px;
   font-weight: 700;
+  letter-spacing: -0.02em;
   cursor: pointer;
-  box-shadow: var(--resume-ai-shadow-soft);
   transition:
-    border-color 0.15s,
-    color 0.15s,
-    box-shadow 0.15s;
+    background 0.18s,
+    color 0.18s,
+    box-shadow 0.18s;
 }
 
-.resume-ai__tab:hover {
-  border-color: #cbd5e1;
+.resume-ai__tab:hover:not(.is-active) {
+  background: #f8fafc;
   color: #334155;
 }
 
 .resume-ai__tab.is-active {
-  border-color: var(--resume-ai-accent-border);
   color: var(--resume-ai-accent-hover);
   background: var(--resume-ai-accent-soft-bg);
-  box-shadow: 0 8px 22px rgba(234, 88, 12, 0.12);
+  box-shadow: 0 4px 14px rgba(234, 88, 12, 0.15);
+}
+
+.resume-ai__tab:focus-visible {
+  outline: 2px solid var(--resume-ai-accent-border);
+  outline-offset: 2px;
 }
 
 /* ----- 페이지네이션 ----- */
@@ -104,6 +116,179 @@
 .resume-ai__page-btn:not(:disabled):hover {
   border-color: var(--resume-ai-accent-border);
   color: var(--resume-ai-accent-hover);
+}
+
+.resume-ai__btn-accent {
+  padding: 9px 16px;
+  border-radius: 10px;
+  border: none;
+  background: var(--resume-ai-accent);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(234, 88, 12, 0.35);
+  transition:
+    background 0.15s,
+    transform 0.1s;
+}
+
+.resume-ai__btn-accent:hover:not(:disabled) {
+  background: var(--resume-ai-accent-hover);
+}
+
+.resume-ai__btn-accent:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.resume-ai__btn-accent:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* ----- 지원자 목록 패널 ----- */
+
+.resume-ai__list-panel .panel__head {
+  margin-bottom: 20px;
+}
+
+.resume-ai__list-panel .panel__head h2 {
+  font-size: 20px;
+}
+
+.resume-ai__table-wrap {
+  border-radius: 12px;
+  border: 1px solid #f1f5f9;
+  overflow: hidden;
+  background: #fff;
+}
+
+.resume-ai__table-wrap .data-table th:first-child,
+.resume-ai__table-wrap .data-table td:first-child {
+  padding-left: 18px;
+}
+
+.resume-ai__table-wrap .data-table th:last-child,
+.resume-ai__table-wrap .data-table td:last-child {
+  padding-right: 18px;
+}
+
+.resume-ai__badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.resume-ai__badge--ok {
+  background: #ecfdf5;
+  color: #15803d;
+}
+
+.resume-ai__badge--no {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+/* ----- 분석 모달 ----- */
+
+.resume-ai__modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(4px);
+}
+
+.resume-ai__modal {
+  width: 100%;
+  max-width: 520px;
+  max-height: min(90vh, 640px);
+  overflow: auto;
+  border-radius: 16px;
+  border: 1px solid var(--resume-ai-border);
+  background: #fff;
+  box-shadow: var(--resume-ai-shadow);
+  padding: 26px 28px 24px;
+}
+
+.resume-ai__modal h3 {
+  margin: 0 0 6px;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--resume-ai-text);
+}
+
+.resume-ai__modal-sub {
+  margin: 0 0 20px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--resume-ai-muted);
+}
+
+.resume-ai__modal label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #334155;
+}
+
+.resume-ai__modal textarea {
+  width: 100%;
+  min-height: 140px;
+  padding: 14px 16px;
+  margin-bottom: 8px;
+  border-radius: 12px;
+  border: 1px solid var(--resume-ai-border-strong);
+  font-size: 14px;
+  font-family: inherit;
+  line-height: 1.5;
+  resize: vertical;
+  box-sizing: border-box;
+  transition: border-color 0.15s;
+}
+
+.resume-ai__modal textarea:focus {
+  outline: none;
+  border-color: var(--resume-ai-accent-border);
+  box-shadow: 0 0 0 3px rgba(253, 186, 116, 0.35);
+}
+
+.resume-ai__modal-hint {
+  margin: 0 0 22px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--resume-ai-muted-light);
+}
+
+.resume-ai__modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.resume-ai__btn-ghost {
+  padding: 10px 18px;
+  border-radius: 10px;
+  border: 1px solid var(--resume-ai-border-strong);
+  background: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  color: #475569;
+  cursor: pointer;
+}
+
+.resume-ai__btn-ghost:hover {
+  background: #f8fafc;
 }
 
 /* ----- 목록 이름 링크 (대시보드 panel__link 계열 파랑) ----- */
