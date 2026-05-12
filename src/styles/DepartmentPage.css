@@ -1,0 +1,221 @@
+/* src/pages/department/DepartmentPage.css */
+
+/* 1. 기본 컨테이너 */
+.department-container {
+    padding: 1.5rem 2.5rem;
+    background-color: #f9fafb;
+    min-height: 100vh;
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+}
+
+/* 2. 기존 h1 태그 (페이지 인디케이터/위치) 스타일 */
+.department-container h1 {
+    font-size: 0.95rem;
+    color: #f97316;
+    /* 주황색 포인트 */
+    font-weight: 600;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+}
+
+.department-container h1::before {
+    content: '●';
+    font-size: 0.6rem;
+    margin-right: 0.5rem;
+}
+
+/* 3. 상단 헤더 영역 (제목 + 버튼) */
+.management-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 1.5rem;
+}
+
+.management-header h2 {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: #111827;
+    margin: 0 0 0.5rem 0;
+}
+
+.management-header p {
+    font-size: 0.9rem;
+    color: #6b7280;
+    margin: 0;
+}
+
+.btn-create {
+    background-color: #ff6b00;
+    color: white;
+    padding: 0.8rem 1.5rem;
+    border-radius: 10px;
+    border: none;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 6px -1px rgba(255, 107, 0, 0.2);
+}
+
+.btn-create:hover {
+    background-color: #e66000;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 12px -2px rgba(255, 107, 0, 0.3);
+}
+
+/* 4. 테이블 스타일 */
+.table-wrapper {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    border: 1px solid #f3f4f6;
+}
+
+.dept-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.dept-table th {
+    background-color: #fcfcfd;
+    padding: 1.2rem 1.5rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #4b5563;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 2px solid #f3f4f6;
+}
+
+.dept-table td {
+    padding: 1.2rem 1.5rem;
+    border-bottom: 1px solid #f3f4f6;
+    color: #374151;
+    font-size: 0.95rem;
+}
+
+.dept-table tr:last-child td {
+    border-bottom: none;
+}
+
+.dept-table tr:hover {
+    background-color: #fffaf5;
+}
+
+.font-bold {
+    font-weight: 700;
+    color: #111827;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.btn-more {
+    border: none;
+    background: none;
+    color: #9ca3af;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 6px;
+}
+
+.btn-more:hover {
+    background-color: #f3f4f6;
+    color: #4b5563;
+}
+
+/* 5. 모달 팝업 스타일 */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(17, 24, 39, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.modal-content {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 24px;
+    width: 90%;
+    max-width: 480px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.modal-content h3 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    color: #111827;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #374151;
+    margin-bottom: 0.5rem;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.2s;
+    box-sizing: border-box;
+    /* 패딩 포함 크기 계산 */
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #ff6b00;
+    box-shadow: 0 0 0 4px rgba(255, 107, 0, 0.1);
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 2rem;
+}
+
+.btn-cancel {
+    background-color: #f3f4f6;
+    color: #4b5563;
+    padding: 0.8rem 1.5rem;
+    border-radius: 10px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-save {
+    background-color: #ff6b00;
+    color: white;
+    padding: 0.8rem 1.5rem;
+    border-radius: 10px;
+    border: none;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.btn-save:hover {
+    background-color: #e66000;
+}
