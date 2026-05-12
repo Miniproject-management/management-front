@@ -19,7 +19,7 @@ const summaryCards = [
     value: "124명",
     note: "전월 대비 +3명",
     noteTone: "up",
-    tone: "orange",
+    tone: "blue",
     Icon: Users,
   },
   {
@@ -72,10 +72,10 @@ const pendingDocs = [
 ];
 
 const headcount = [
-  { name: "개발팀", count: 46, lead: "김팀장", delta: "+2", Icon: Users, color: "#ff7a1a" },
-  { name: "보안팀", count: 18, lead: "이팀장", delta: "0", Icon: Shield, color: "#ffb38a" },
-  { name: "인사팀", count: 12, lead: "박팀장", delta: "+1", Icon: BarChart3, color: "#ffc857" },
-  { name: "기획팀", count: 15, lead: "최팀장", delta: "-1", Icon: Users, color: "#ffd66b" },
+  { name: "개발팀", count: 46, lead: "김팀장", delta: "+2", Icon: Users, color: "#3b82f6" },
+  { name: "보안팀", count: 18, lead: "이팀장", delta: "0", Icon: Shield, color: "#a855f7" },
+  { name: "인사팀", count: 12, lead: "박팀장", delta: "+1", Icon: BarChart3, color: "#f59e0b" },
+  { name: "기획팀", count: 15, lead: "최팀장", delta: "-1", Icon: Users, color: "#22c55e" },
 ];
 
 function ProgressBar({ value, max = 100, tone = "blue" }) {
