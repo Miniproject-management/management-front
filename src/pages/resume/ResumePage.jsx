@@ -45,6 +45,12 @@ function hasToken() {
   return Boolean(localStorage.getItem('accessToken'));
 }
 
+function buildAnalyzeBody(jobDescription) {
+  const t = jobDescription.trim();
+  if (!t) return JSON.stringify({});
+  return JSON.stringify({ jobDescription: t });
+}
+
 export default function ResumePage() {
   const [tab, setTab] = useState('summary');
   const [rows, setRows] = useState([]);
@@ -58,6 +64,8 @@ export default function ResumePage() {
   const [detailLoading, setDetailLoading] = useState(false);
   const [detailError, setDetailError] = useState('');
   const [analyzeBusyId, setAnalyzeBusyId] = useState(null);
+  const [analyzeModalRow, setAnalyzeModalRow] = useState(null);
+  const [analyzeJd, setAnalyzeJd] = useState('');
 
   const loadDashboard = useCallback(async () => {
     setError('');
@@ -83,6 +91,18 @@ export default function ResumePage() {
   useEffect(() => {
     loadDashboard();
   }, [loadDashboard]);
+
+  useEffect(() => {
+    if (!analyzeModalRow) return;
+    const onKey = (e) => {
+      if (e.key === 'Escape') {
+        setAnalyzeModalRow(null);
+        setAnalyzeJd('');
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [analyzeModalRow]);
 
   const kpis = useMemo(() => {
     const total = rows.length;
@@ -130,17 +150,34 @@ export default function ResumePage() {
     }
   };
 
-  const runAnalyze = async (row) => {
+  const openAnalyzeModal = (row) => {
     if (!row.resumeAttached || !hasToken()) return;
+    setAnalyzeModalRow(row);
+    setAnalyzeJd('');
+    setError('');
+  };
+
+  const closeAnalyzeModal = () => {
+    setAnalyzeModalRow(null);
+    setAnalyzeJd('');
+  };
+
+  const confirmAnalyze = async () => {
+    const row = analyzeModalRow;
+    if (!row || !hasToken()) return;
     setAnalyzeBusyId(row.applicantId);
     setError('');
     try {
-      const result = await postAnalyzeApplicantResume(row.applicantId);
+      const body = buildAnalyzeBody(analyzeJd);
+      const result = await postAnalyzeApplicantResume(row.applicantId, {
+        body,
+      });
       setRows((prev) =>
         prev.map((r) =>
           r.applicantId === row.applicantId ? mergeAnalyzeIntoRow(r, result) : r,
         ),
       );
+      closeAnalyzeModal();
       if (selectedId === row.applicantId) {
         await openDetail(row.applicantId);
       }
@@ -189,7 +226,7 @@ export default function ResumePage() {
         </button>
       </header>
 
-      <nav className="resume-ai__tabs" aria-label="AI 채용 구역">
+      <nav className="resume-ai__tab-bar" aria-label="AI 채용 구역">
         <button
           type="button"
           className={`resume-ai__tab ${tab === 'summary' ? 'is-active' : ''}`}
@@ -261,7 +298,7 @@ export default function ResumePage() {
 
       {tab === 'list' && (
         <div className="resume-ai__grid">
-          <article className="panel">
+          <article className="panel resume-ai__list-panel">
             <div className="panel__head">
               <h2>지원자 목록</h2>
               <button
@@ -277,7 +314,7 @@ export default function ResumePage() {
               <p style={{ color: '#64748b', fontWeight: 600 }}>불러오는 중…</p>
             ) : (
               <>
-                <div style={{ overflowX: 'auto' }}>
+                <div className="resume-ai__table-wrap">
                   <table className="data-table">
                     <thead>
                       <tr>
@@ -318,15 +355,27 @@ export default function ResumePage() {
                                 </button>
                               </td>
                               <td className="muted-cell">{row.email || '—'}</td>
-                              <td>{row.resumeAttached ? '있음' : '없음'}</td>
-                              <td>{row.analysisStatus || '—'}</td>
+                              <td>
+                                {row.resumeAttached ? (
+                                  <span className="resume-ai__badge resume-ai__badge--ok">
+                                    제출됨
+                                  </span>
+                                ) : (
+                                  <span className="resume-ai__badge resume-ai__badge--no">
+                                    없음
+                                  </span>
+                                )}
+                              </td>
+                              <td className="muted-cell">
+                                {row.analysisStatus || '—'}
+                              </td>
                               <td>
                                 {row.overallScore != null ? (
                                   <span className="score-badge">
                                     {row.overallScore}점
                                   </span>
                                 ) : (
-                                  '—'
+                                  <span className="muted-cell">—</span>
                                 )}
                               </td>
                               <td className="muted-cell">
@@ -335,9 +384,9 @@ export default function ResumePage() {
                               <td>
                                 <button
                                   type="button"
-                                  className="resume-ai__page-btn"
+                                  className="resume-ai__btn-accent"
                                   disabled={!row.resumeAttached || busy}
-                                  onClick={() => runAnalyze(row)}
+                                  onClick={() => openAnalyzeModal(row)}
                                 >
                                   {busy ? '분석중…' : '분석'}
                                 </button>
@@ -479,6 +528,64 @@ export default function ResumePage() {
           </article>
         </div>
       )}
+
+      {analyzeModalRow ? (
+        <div
+          className="resume-ai__modal-backdrop"
+          role="presentation"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) closeAnalyzeModal();
+          }}
+        >
+          <div
+            className="resume-ai__modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="resume-ai-analyze-title"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 id="resume-ai-analyze-title">이력서 분석</h3>
+            <p className="resume-ai__modal-sub">
+              <strong>{analyzeModalRow.name || '지원자'}</strong>
+              {analyzeModalRow.email
+                ? ` · ${analyzeModalRow.email}`
+                : ''}
+            </p>
+            <label htmlFor="resume-ai-jd">직무 공고 (Job Description)</label>
+            <textarea
+              id="resume-ai-jd"
+              value={analyzeJd}
+              onChange={(e) => setAnalyzeJd(e.target.value)}
+              placeholder="예: Java, Spring Boot, REST API, AWS 운영 경험 우대…"
+              disabled={analyzeBusyId === analyzeModalRow.applicantId}
+            />
+            <p className="resume-ai__modal-hint">
+              비워 두면 직무 기준 없이 분석합니다. 입력 후「분석 실행」을 누르면
+              서버로 요청이 전송됩니다.
+            </p>
+            <div className="resume-ai__modal-actions">
+              <button
+                type="button"
+                className="resume-ai__btn-ghost"
+                onClick={closeAnalyzeModal}
+                disabled={analyzeBusyId === analyzeModalRow.applicantId}
+              >
+                취소
+              </button>
+              <button
+                type="button"
+                className="resume-ai__btn-accent"
+                onClick={confirmAnalyze}
+                disabled={analyzeBusyId === analyzeModalRow.applicantId}
+              >
+                {analyzeBusyId === analyzeModalRow.applicantId
+                  ? '분석 중…'
+                  : '분석 실행'}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </section>
   );
 }
