@@ -115,9 +115,12 @@ function ApprovalPage() {
       <div className="approval-header">
         <h1>전자결재</h1>
 
-        <button className="apply-btn">
+        <Link
+          to="/approval/apply"
+          className="apply-btn"
+        >
           + 연차 신청
-        </button>
+        </Link>
       </div>
 
       {/* 내 신청 내역 */}

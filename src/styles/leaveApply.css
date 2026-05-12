@@ -1,0 +1,85 @@
+.apply-page {
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+}
+
+.apply-card {
+  width: 100%;
+  max-width: 700px;
+
+  background-color: white;
+
+  border-radius: 20px;
+
+  padding: 40px;
+}
+
+.apply-card h1 {
+  margin-bottom: 32px;
+
+  font-size: 32px;
+}
+
+.apply-form {
+  display: flex;
+  flex-direction: column;
+
+  gap: 24px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+
+  gap: 10px;
+}
+
+.form-group label {
+  font-size: 14px;
+  font-weight: 600;
+
+  color: #333;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  border: 1px solid #ddd;
+
+  border-radius: 10px;
+
+  padding: 14px;
+
+  font-size: 14px;
+
+  outline: none;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: #fea954;
+}
+
+.apply-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.submit-btn {
+  border: none;
+
+  background-color: #fea954;
+  color: white;
+
+  padding: 14px 24px;
+
+  border-radius: 10px;
+
+  cursor: pointer;
+
+  font-size: 15px;
+  font-weight: 600;
+}
