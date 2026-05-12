@@ -76,12 +76,14 @@
   border-bottom: 1px solid #eee;
 
   word-break: keep-all;
+
+  vertical-align: middle;
 }
 
-/* 승인 요청 목록 - 관리 컬럼 너비 */
+/* 승인 요청 목록 - 관리 컬럼 */
 .approval-table th:nth-child(7),
 .approval-table td:nth-child(7) {
-  width: 140px;
+  width: 130px;
 }
 
 /* 관리 버튼 영역 */
@@ -91,52 +93,41 @@
   justify-content: center;
   align-items: center;
 
-  gap: 6px;
+  gap: 4px;
 
-  flex-wrap: nowrap;
   width: 100%;
 }
 
-/* 승인 버튼 */
-.approve-btn {
-  border: none;
-
-  background-color: #fea954;
-  color: white;
-
-  padding: 6px 10px;
-
-  border-radius: 8px;
-
-  cursor: pointer;
-
-  font-size: 12px;
-
-  white-space: nowrap;
-}
-
-.approve-btn:hover {
-  opacity: 0.9;
-}
-
-/* 반려 버튼 */
+/* 승인 / 반려 버튼 */
+.approve-btn,
 .reject-btn {
   border: none;
 
-  background-color: #ff4d4f;
   color: white;
 
-  padding: 6px 10px;
+  padding: 8px 12px;
 
   border-radius: 8px;
 
   cursor: pointer;
 
-  font-size: 12px;
+  font-size: 13px;
+  font-weight: 500;
+
+  line-height: 1;
 
   white-space: nowrap;
 }
 
+.approve-btn {
+  background-color: #fea954;
+}
+
+.reject-btn {
+  background-color: #ff4d4f;
+}
+
+.approve-btn:hover,
 .reject-btn:hover {
   opacity: 0.9;
 }
@@ -155,7 +146,12 @@
   font-size: 13px;
   font-weight: 500;
 
-  display: inline-block;
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  line-height: 1;
 
   white-space: nowrap;
 }
@@ -178,6 +174,9 @@
   cursor: pointer;
 
   font-size: 13px;
+  font-weight: 500;
+
+  line-height: 1;
 
   white-space: nowrap;
 }
