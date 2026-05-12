@@ -57,6 +57,8 @@
   width: 100%;
 
   border-collapse: collapse;
+
+  table-layout: fixed;
 }
 
 .approval-table th {
@@ -72,6 +74,14 @@
   text-align: center;
 
   border-bottom: 1px solid #eee;
+
+  word-break: keep-all;
+}
+
+/* 승인 요청 목록 - 관리 컬럼 너비 */
+.approval-table th:nth-child(7),
+.approval-table td:nth-child(7) {
+  width: 180px;
 }
 
 /* 관리 버튼 영역 */
@@ -83,7 +93,7 @@
 
   gap: 8px;
 
-  min-width: 140px;
+  flex-wrap: nowrap;
 }
 
 /* 승인 버튼 */
