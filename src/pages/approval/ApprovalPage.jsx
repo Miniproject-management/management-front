@@ -162,10 +162,10 @@ function ApprovalPage() {
 
                 {/* 관리 */}
                 <td>
-                  {(leave.leaveStatus ===
+                  {leave.leaveStatus ===
                     "PENDING_MANAGER" ||
-                    leave.leaveStatus ===
-                      "PENDING_HR") && (
+                  leave.leaveStatus ===
+                    "PENDING_HR" ? (
                     <button
                       className="cancel-btn"
                       onClick={() =>
@@ -176,6 +176,8 @@ function ApprovalPage() {
                     >
                       취소
                     </button>
+                  ) : (
+                    "-"
                   )}
                 </td>
 
