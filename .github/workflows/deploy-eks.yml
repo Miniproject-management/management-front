@@ -2,7 +2,7 @@ name: Frontend → ArgoCD Deploy
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main", "feature/*"]
   workflow_dispatch:
 
 env:
