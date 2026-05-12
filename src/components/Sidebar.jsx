@@ -4,7 +4,14 @@ import "../styles/sidebar.css";
 import useAuthStore from "../stores/authStore";
 
 function Sidebar() {
-  const { accessToken, logout } = useAuthStore();
+
+  const {
+    accessToken,
+    logout,
+    empName,
+    deptName
+  } = useAuthStore();
+
   const navigate = useNavigate();
 
   return (
@@ -32,12 +39,15 @@ function Sidebar() {
 
         <div className="preview-section">
           <p className="preview-title">디자인 미리보기</p>
+
           <Link className="preview-link" to="/dashboard/admin">
             인사팀 화면
           </Link>
+
           <Link className="preview-link" to="/dashboard/manager">
             팀장 화면
           </Link>
+
           <Link className="preview-link" to="/dashboard/employee">
             사원 화면
           </Link>
@@ -45,15 +55,38 @@ function Sidebar() {
       </div>
 
       {accessToken ? (
-        <button className="login-btn" 
-         onClick={() => {
-          logout();
-          alert("로그아웃되었습니다.");
-          navigate("/login");
-        }}
-        >
-          로그아웃
-        </button>
+        <div className="sidebar-bottom">
+
+          <div className="user-card">
+
+            <div className="user-avatar">
+              👤
+            </div>
+
+            <div className="user-info">
+              <p className="user-name">
+                {empName}
+              </p>
+
+              <p className="user-dept">
+                {deptName}
+              </p>
+            </div>
+
+          </div>
+
+          <button
+            className="login-btn"
+            onClick={() => {
+              logout();
+              alert("로그아웃되었습니다.");
+              navigate("/login");
+            }}
+          >
+            로그아웃
+          </button>
+
+        </div>
       ) : (
         <Link className="login-btn" to="/login">
           로그인
