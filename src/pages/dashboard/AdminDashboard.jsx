@@ -143,6 +143,13 @@ function AdminDashboard() {
           <CardHeader title="지원자 스크리닝 점수 TOP 5" hasLink />
 
           <table className="dashboard-table screening-table">
+            <colgroup>
+              <col className="screening-table__rank" />
+              <col className="screening-table__name" />
+              <col className="screening-table__role" />
+              <col className="screening-table__score" />
+              <col className="screening-table__summary" />
+            </colgroup>
             <thead>
               <tr>
                 <th>순위</th>
