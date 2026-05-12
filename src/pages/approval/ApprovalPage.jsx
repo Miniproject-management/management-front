@@ -31,6 +31,8 @@ function ApprovalPage() {
     try {
       const data = await getMyLeaveApi();
 
+      console.log(data);
+
       setMyLeaves(data);
     } catch (error) {
       console.error(error);
@@ -41,6 +43,8 @@ function ApprovalPage() {
   const fetchPendingLeaves = async () => {
     try {
       const data = await getPendingLeaveApi();
+
+      console.log(data);
 
       setPendingLeaves(data);
     } catch (error) {
