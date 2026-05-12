@@ -1,179 +1,155 @@
 import {
-  Users,
-  UserPlus,
-  Star,
-  Calendar,
+  BriefcaseBusiness,
   CalendarDays,
-  Plane,
-  Shield,
+  CalendarPlus,
   ChevronDown,
   ChevronRight,
-  BarChart3,
+  ClipboardCheck,
+  Plane,
+  ShieldCheck,
+  Star,
+  UserPlus,
+  Users,
 } from "lucide-react";
 
 import "./dashboard.css";
 
-const summaryCards = [
+const kpis = [
   {
     label: "전체 임직원",
     value: "124명",
-    note: "전월 대비 +3명",
-    noteTone: "up",
+    description: "전월 대비 +3명",
+    icon: Users,
     tone: "orange",
-    Icon: Users,
   },
   {
     label: "신규 지원자",
     value: "12명",
-    note: "이번 주 기준",
+    description: "이번 주 기준",
+    icon: UserPlus,
     tone: "green",
-    Icon: UserPlus,
   },
   {
     label: "평균 스크리닝 점수",
     value: "84점",
-    note: "고득점 후보 3명",
+    description: "고득점 후보 3명",
+    icon: Star,
     tone: "purple",
-    Icon: Star,
   },
   {
     label: "평균 잔여 연차",
     value: "9.8일",
-    note: "전체 직원 기준",
+    description: "전체 직원 기준",
+    icon: CalendarDays,
     tone: "orange",
-    Icon: Calendar,
   },
 ];
 
-const topApplicants = [
-  { rank: 1, name: "김예진", role: "백엔드 개발자", score: 92, summary: "Java · Spring 역량 우수" },
-  { rank: 2, name: "이준호", role: "보안 담당자", score: 88, summary: "보안 프로젝트 경험 보유" },
-  { rank: 3, name: "박서연", role: "데이터 분석가", score: 85, summary: "SQL · Python 역량 확인" },
-  { rank: 4, name: "최민우", role: "프론트엔드", score: 78, summary: "React 경험 보유" },
-  { rank: 5, name: "정다은", role: "HR Assistant", score: 74, summary: "문서화 경험 우수" },
+const screeningRows = [
+  ["1", "김예진", "백엔드 개발자", 92, "Java · Spring 역량 우수"],
+  ["2", "이준호", "보안 담당자", 88, "보안 프로젝트 경험 보유"],
+  ["3", "박서연", "데이터 분석가", 85, "SQL · Python 역량 확인"],
+  ["4", "최민우", "프론트엔드", 78, "React 경험 보유"],
+  ["5", "정다은", "HR Assistant", 74, "문서화 경험 우수"],
 ];
 
-const leaveOverview = [
-  { label: "이번 달 사용 연차", value: "24.5일", current: 24.5, target: 30, tone: "blue" },
-  { label: "승인 대기 연차", value: "6.0일", current: 6, target: 10, tone: "orange" },
-  { label: "평균 잔여 연차", value: "9.8일", current: 9.8, target: 15, tone: "green" },
+const leaveSummary = [
+  { label: "이번 달 사용 연차", value: "24.5일", goal: "목표 30일", percent: 82, tone: "orange" },
+  { label: "승인 대기 연차", value: "6.0일", goal: "목표 10일", percent: 60, tone: "orange" },
+  { label: "평균 잔여 연차", value: "9.8일", goal: "목표 15일", percent: 65, tone: "green" },
 ];
 
-const departmentLeave = [
-  { name: "개발팀", remain: 8.5, used: "12.5일", Icon: Users },
-  { name: "보안팀", remain: 10.2, used: "4.0일", Icon: Shield },
-  { name: "인사팀", remain: 9.0, used: "3.5일", Icon: BarChart3 },
-  { name: "기획팀", remain: 11.1, used: "4.5일", Icon: Users },
+const departmentLeaveRows = [
+  ["개발팀", "8.5일", "12.5일", 62, Users],
+  ["보안팀", "10.2일", "4.0일", 84, ShieldCheck],
+  ["인사팀", "9.0일", "3.5일", 70, ClipboardCheck],
+  ["기획팀", "11.1일", "4.5일", 88, BriefcaseBusiness],
 ];
 
-const pendingDocs = [
-  { type: "연차 신청", Icon: CalendarDays, tone: "orange", applicant: "김민수", date: "05.19" },
-  { type: "반차 신청", Icon: Plane, tone: "green", applicant: "이서연", date: "05.19" },
+const approvalRows = [
+  { type: "연차 신청", person: "김민수", date: "05.19", icon: CalendarPlus, tone: "orange" },
+  { type: "반차 신청", person: "이서연", date: "05.19", icon: Plane, tone: "green" },
 ];
 
-const headcount = [
-  { name: "개발팀", count: 46, lead: "김팀장", delta: "+2", Icon: Users, color: "#f97316" },
-  { name: "보안팀", count: 18, lead: "이팀장", delta: "0", Icon: Shield, color: "#fdba74" },
-  { name: "인사팀", count: 12, lead: "박팀장", delta: "+1", Icon: BarChart3, color: "#facc15" },
-  { name: "기획팀", count: 15, lead: "최팀장", delta: "-1", Icon: Users, color: "#fde68a" },
+const headcountRows = [
+  ["개발팀", "46명", "김팀장", "+2", Users],
+  ["보안팀", "18명", "이팀장", "0", ShieldCheck],
+  ["인사팀", "12명", "박팀장", "+1", Users],
+  ["기획팀", "15명", "최팀장", "-1", ClipboardCheck],
 ];
 
-function ProgressBar({ value, max = 100, tone = "blue" }) {
-  const pct = Math.min(100, Math.max(0, (value / max) * 100));
+const donutSegments = [
+  { label: "개발팀", value: "46명 (50.5%)", color: "#F97316" },
+  { label: "보안팀", value: "18명 (19.8%)", color: "#FDBA74" },
+  { label: "인사팀", value: "12명 (13.2%)", color: "#FDE68A" },
+  { label: "기획팀", value: "15명 (16.5%)", color: "#FACC15" },
+];
+
+function CardHeader({ title, hasLink = false }) {
   return (
-    <span className={`progress-bar tone-${tone}`}>
-      <span className="progress-bar__fill" style={{ width: `${pct}%` }} />
+    <div className="dashboard-card__header">
+      <h2>{title}</h2>
+      {hasLink ? (
+        <button className="dashboard-card__link" type="button">
+          전체 보기 <ChevronRight size={15} strokeWidth={2.4} />
+        </button>
+      ) : null}
+    </div>
+  );
+}
+
+function ProgressBar({ value, tone = "orange", compact = false }) {
+  return (
+    <span className={`progress-bar progress-bar--${tone} ${compact ? "progress-bar--compact" : ""}`}>
+      <span style={{ width: `${value}%` }} />
     </span>
   );
 }
 
-function DonutChart({ data, total }) {
-  const size = 130;
-  const stroke = 22;
-  const radius = (size - stroke) / 2;
-  const circumference = 2 * Math.PI * radius;
-
-  let offset = 0;
-  const segments = data.map((seg) => {
-    const dash = (seg.count / total) * circumference;
-    const node = (
-      <circle
-        key={seg.name}
-        cx={size / 2}
-        cy={size / 2}
-        r={radius}
-        fill="none"
-        stroke={seg.color}
-        strokeWidth={stroke}
-        strokeDasharray={`${dash} ${circumference - dash}`}
-        strokeDashoffset={-offset}
-        transform={`rotate(-90 ${size / 2} ${size / 2})`}
-      />
-    );
-    offset += dash;
-    return node;
-  });
-
-  return (
-    <svg className="donut-chart" viewBox={`0 0 ${size} ${size}`} width={size} height={size}>
-      <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="#f1f5f9" strokeWidth={stroke} />
-      {segments}
-      <text x="50%" y="46%" textAnchor="middle" className="donut-chart__label">
-        전체
-      </text>
-      <text x="50%" y="62%" textAnchor="middle" className="donut-chart__total">
-        {total}명
-      </text>
-    </svg>
-  );
-}
-
 function AdminDashboard() {
-  const headcountTotal = headcount.reduce((sum, d) => sum + d.count, 0);
-
   return (
-    <section className="dashboard-page dashboard-page--admin">
+    <section className="dashboard-page admin-dashboard">
       <header className="dashboard-page__header">
         <div className="dashboard-page__hero">
-          <h1>대시보드</h1>
+          <h1>대시보드 개요</h1>
           <p>조직 현황과 채용, 연차, 결재 상태를 한눈에 확인하세요</p>
         </div>
 
-        <button className="dashboard-page__date-picker" type="button">
-          <Calendar size={16} strokeWidth={1.8} />
+        <button className="dashboard-date-button" type="button">
+          <CalendarDays size={20} />
           <span>2024.05.19 (일)</span>
-          <ChevronDown size={16} strokeWidth={1.8} />
+          <ChevronDown size={18} />
         </button>
       </header>
 
-      <section className="dashboard-page__summary-grid">
-        {summaryCards.map(({ label, value, note, noteTone, tone, Icon }) => (
-          <article key={label} className="summary-card">
-            <div className={`summary-card__icon tone-${tone}`}>
-              <Icon size={22} strokeWidth={2} />
-            </div>
-            <div className="summary-card__body">
-              <p className="summary-card__label">{label}</p>
-              <strong className="summary-card__value">{value}</strong>
-              <span className={`summary-card__note ${noteTone === "up" ? "is-up" : ""}`}>
-                {note}
-                {noteTone === "up" && <span className="summary-card__arrow">↗</span>}
-              </span>
-            </div>
-          </article>
-        ))}
-      </section>
+      <div className="dashboard-grid">
+        {kpis.map((item) => {
+          const Icon = item.icon;
+          return (
+            <article className="dashboard-card kpi-card" key={item.label}>
+              <div className={`kpi-card__icon kpi-card__icon--${item.tone}`}>
+                <Icon size={34} fill="currentColor" strokeWidth={1.8} />
+              </div>
+              <div>
+                <p className="kpi-card__label">{item.label}</p>
+                <strong>{item.value}</strong>
+                <p className="kpi-card__description">{item.description}</p>
+              </div>
+            </article>
+          );
+        })}
 
-      <section className="dashboard-page__content-grid">
-        <article className="panel">
-          <div className="panel__head">
-            <h2>지원자 스크리닝 점수 TOP 5</h2>
-            <a className="panel__link" href="#">
-              전체 보기 <ChevronRight size={14} strokeWidth={2} />
-            </a>
-          </div>
+        <article className="dashboard-card dashboard-card--large">
+          <CardHeader title="지원자 스크리닝 점수 TOP 5" hasLink />
 
-          <table className="data-table">
+          <table className="dashboard-table screening-table">
+            <colgroup>
+              <col className="screening-table__rank" />
+              <col className="screening-table__name" />
+              <col className="screening-table__role" />
+              <col className="screening-table__score" />
+              <col className="screening-table__summary" />
+            </colgroup>
             <thead>
               <tr>
                 <th>순위</th>
@@ -184,46 +160,44 @@ function AdminDashboard() {
               </tr>
             </thead>
             <tbody>
-              {topApplicants.map((a) => (
-                <tr key={a.rank}>
+              {screeningRows.map(([rank, name, role, score, summary]) => (
+                <tr key={rank}>
                   <td>
-                    <span className="rank-cell">{a.rank}</span>
+                    <span className="rank-badge">{rank}</span>
                   </td>
-                  <td>{a.name}</td>
-                  <td>{a.role}</td>
+                  <td>{name}</td>
+                  <td>{role}</td>
                   <td>
                     <div className="score-cell">
-                      <span className="score-badge">{a.score}점</span>
-                      <ProgressBar value={a.score} tone="blue" />
+                      <span className="score-badge">{score}점</span>
+                      <ProgressBar value={score} compact />
                     </div>
                   </td>
-                  <td className="muted-cell">{a.summary}</td>
+                  <td>{summary}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </article>
 
-        <article className="panel">
-          <div className="panel__head">
-            <h2>전체 연차 현황</h2>
-          </div>
+        <article className="dashboard-card dashboard-card--large">
+          <CardHeader title="전체 연차 현황" />
 
-          <div className="leave-grid">
-            {leaveOverview.map((item) => (
-              <div key={item.label} className={`leave-card tone-${item.tone}`}>
+          <div className="leave-summary-grid">
+            {leaveSummary.map((item) => (
+              <div className={`leave-summary leave-summary--${item.tone}`} key={item.label}>
                 <p>{item.label}</p>
                 <strong>{item.value}</strong>
-                <div className="leave-card__progress">
-                  <ProgressBar value={item.current} max={item.target} tone={item.tone} />
-                  <span className="leave-card__target">목표 {item.target}일</span>
+                <div className="leave-summary__progress">
+                  <ProgressBar value={item.percent} tone={item.tone} />
+                  <span>{item.goal}</span>
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="panel__subhead">부서별 연차 요약</div>
-          <table className="data-table">
+          <h3 className="dashboard-subtitle">부서별 연차 요약</h3>
+          <table className="dashboard-table leave-table">
             <thead>
               <tr>
                 <th>부서</th>
@@ -232,19 +206,19 @@ function AdminDashboard() {
               </tr>
             </thead>
             <tbody>
-              {departmentLeave.map(({ name, remain, used, Icon }) => (
-                <tr key={name}>
+              {departmentLeaveRows.map(([department, remaining, used, percent, Icon]) => (
+                <tr key={department}>
                   <td>
-                    <div className="dept-cell">
-                      <Icon size={16} strokeWidth={1.8} />
-                      <span>{name}</span>
-                    </div>
+                    <span className="department-name">
+                      <Icon size={18} />
+                      {department}
+                    </span>
                   </td>
                   <td>
-                    <div className="score-cell">
-                      <span>{remain}일</span>
-                      <ProgressBar value={remain} max={15} tone="blue" />
-                    </div>
+                    <span className="leave-remaining">
+                      {remaining}
+                      <ProgressBar value={percent} compact />
+                    </span>
                   </td>
                   <td>{used}</td>
                 </tr>
@@ -253,15 +227,10 @@ function AdminDashboard() {
           </table>
         </article>
 
-        <article className="panel">
-          <div className="panel__head">
-            <h2>결재 대기 문서</h2>
-            <a className="panel__link" href="#">
-              전체 보기 <ChevronRight size={14} strokeWidth={2} />
-            </a>
-          </div>
+        <article className="dashboard-card dashboard-card--medium">
+          <CardHeader title="결재 대기 문서" hasLink />
 
-          <table className="data-table">
+          <table className="dashboard-table approval-table">
             <thead>
               <tr>
                 <th>문서 유형</th>
@@ -271,37 +240,35 @@ function AdminDashboard() {
               </tr>
             </thead>
             <tbody>
-              {pendingDocs.map(({ type, Icon, tone, applicant, date }) => (
-                <tr key={type}>
-                  <td>
-                    <div className="doc-cell">
-                      <span className={`doc-icon tone-${tone}`}>
-                        <Icon size={16} strokeWidth={1.8} />
+              {approvalRows.map((row) => {
+                const Icon = row.icon;
+                return (
+                  <tr key={row.type}>
+                    <td>
+                      <span className="document-type">
+                        <span className={`document-type__icon document-type__icon--${row.tone}`}>
+                          <Icon size={19} />
+                        </span>
+                        {row.type}
                       </span>
-                      <span>{type}</span>
-                    </div>
-                  </td>
-                  <td>{applicant}</td>
-                  <td>{date}</td>
-                  <td>
-                    <span className="status-badge">승인 대기</span>
-                  </td>
-                </tr>
-              ))}
+                    </td>
+                    <td>{row.person}</td>
+                    <td>{row.date}</td>
+                    <td>
+                      <span className="status-badge">승인 대기</span>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </article>
 
-        <article className="panel">
-          <div className="panel__head">
-            <h2>부서별 인원 현황</h2>
-            <a className="panel__link" href="#">
-              전체 보기 <ChevronRight size={14} strokeWidth={2} />
-            </a>
-          </div>
+        <article className="dashboard-card dashboard-card--medium">
+          <CardHeader title="부서별 인원 현황" hasLink />
 
-          <div className="headcount-grid">
-            <table className="data-table">
+          <div className="headcount-layout">
+            <table className="dashboard-table headcount-table">
               <thead>
                 <tr>
                   <th>부서</th>
@@ -311,51 +278,46 @@ function AdminDashboard() {
                 </tr>
               </thead>
               <tbody>
-                {headcount.map(({ name, count, lead, delta, Icon }) => {
-                  const deltaClass = delta.startsWith("+")
-                    ? "is-positive"
-                    : delta.startsWith("-")
-                      ? "is-negative"
-                      : "is-neutral";
-                  return (
-                    <tr key={name}>
-                      <td>
-                        <div className="dept-cell">
-                          <Icon size={16} strokeWidth={1.8} />
-                          <span>{name}</span>
-                        </div>
-                      </td>
-                      <td>{count}명</td>
-                      <td>{lead}</td>
-                      <td>
-                        <span className={`delta-pill ${deltaClass}`}>{delta}</span>
-                      </td>
-                    </tr>
-                  );
-                })}
+                {headcountRows.map(([department, count, leader, change, Icon]) => (
+                  <tr key={department}>
+                    <td>
+                      <span className="department-name">
+                        <Icon size={18} />
+                        {department}
+                      </span>
+                    </td>
+                    <td>{count}</td>
+                    <td>{leader}</td>
+                    <td>
+                      <span className={`change-badge ${change === "0" ? "change-badge--neutral" : ""}`}>
+                        {change}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
 
-            <div className="headcount-chart">
-              <DonutChart data={headcount} total={headcountTotal} />
-              <ul className="headcount-legend">
-                {headcount.map(({ name, count, color }) => {
-                  const pct = ((count / headcountTotal) * 100).toFixed(1);
-                  return (
-                    <li key={name}>
-                      <span className="legend-dot" style={{ background: color }} />
-                      <span className="legend-name">{name}</span>
-                      <span className="legend-value">
-                        {count}명 ({pct}%)
-                      </span>
-                    </li>
-                  );
-                })}
+            <div className="donut-panel">
+              <div className="donut-chart" aria-label="부서별 인원 도넛 차트">
+                <div>
+                  <span>전체</span>
+                  <strong>91명</strong>
+                </div>
+              </div>
+              <ul className="donut-legend">
+                {donutSegments.map((segment) => (
+                  <li key={segment.label}>
+                    <span style={{ backgroundColor: segment.color }} />
+                    <b>{segment.label}</b>
+                    <em>{segment.value}</em>
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
         </article>
-      </section>
+      </div>
     </section>
   );
 }

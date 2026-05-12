@@ -1,41 +1,17 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Calendar, ChevronDown, Users, FileText, Star, CheckCircle } from 'lucide-react';
+
 import {
   fetchHrApplicantDashboard,
   fetchHrApplicantDetail,
   postAnalyzeApplicantResume,
 } from '../../api/api.jsx';
 
-const layout = {
-  wrap: { display: 'flex', gap: '24px', alignItems: 'flex-start', flexWrap: 'wrap' },
-  tableBox: { flex: '1 1 520px', minWidth: 320, overflowX: 'auto' },
-  panel: {
-    flex: '1 1 360px',
-    minWidth: 280,
-    border: '1px solid #ddd',
-    borderRadius: 8,
-    padding: 16,
-    background: '#fafafa',
-  },
-  table: { width: '100%', borderCollapse: 'collapse', fontSize: 14 },
-  th: { textAlign: 'left', borderBottom: '2px solid #ccc', padding: '8px 6px' },
-  td: { borderBottom: '1px solid #eee', padding: '8px 6px', verticalAlign: 'top' },
-  btn: { cursor: 'pointer', padding: '4px 10px' },
-  btnDisabled: { opacity: 0.55, cursor: 'not-allowed' },
-  muted: { color: '#666', fontSize: 13 },
-  err: { color: '#b00020' },
-  pre: {
-    margin: 0,
-    whiteSpace: 'pre-wrap',
-    wordBreak: 'break-word',
-    fontSize: 12,
-    background: '#fff',
-    padding: 8,
-    borderRadius: 4,
-    border: '1px solid #eee',
-    maxHeight: 240,
-    overflow: 'auto',
-  },
-};
+import '../dashboard/dashboard.css';
+import './resumeAi.css';
+
+const PAGE_SIZE = 8;
 
 function formatDt(iso) {
   if (!iso) return '—';
@@ -53,7 +29,6 @@ function previewFromSummary(text) {
   return `${t.slice(0, 160)}…`;
 }
 
-/** 대시보드 한 행 + 분석 POST 응답으로 목록 상태 갱신 */
 function mergeAnalyzeIntoRow(row, analyzeResult) {
   const a = analyzeResult?.analysis;
   if (!a) return row;
@@ -66,22 +41,45 @@ function mergeAnalyzeIntoRow(row, analyzeResult) {
   };
 }
 
+function hasToken() {
+  return Boolean(localStorage.getItem('accessToken'));
+}
+
+function buildAnalyzeBody(jobDescription) {
+  const t = jobDescription.trim();
+  if (!t) return JSON.stringify({});
+  return JSON.stringify({ jobDescription: t });
+}
+
 export default function ResumePage() {
+  const [tab, setTab] = useState('summary');
   const [rows, setRows] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(
+    () => Boolean(localStorage.getItem('accessToken')),
+  );
   const [error, setError] = useState('');
+  const [page, setPage] = useState(1);
   const [selectedId, setSelectedId] = useState(null);
   const [detail, setDetail] = useState(null);
   const [detailLoading, setDetailLoading] = useState(false);
   const [detailError, setDetailError] = useState('');
   const [analyzeBusyId, setAnalyzeBusyId] = useState(null);
+  const [analyzeModalRow, setAnalyzeModalRow] = useState(null);
+  const [analyzeJd, setAnalyzeJd] = useState('');
 
   const loadDashboard = useCallback(async () => {
     setError('');
+    if (!hasToken()) {
+      setRows([]);
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     try {
       const data = await fetchHrApplicantDashboard();
-      setRows(Array.isArray(data) ? data : []);
+      const list = Array.isArray(data) ? data : [];
+      setRows(list);
+      setPage(1);
     } catch (e) {
       setError(e.message || '목록을 불러오지 못했습니다.');
       setRows([]);
@@ -94,7 +92,50 @@ export default function ResumePage() {
     loadDashboard();
   }, [loadDashboard]);
 
+  useEffect(() => {
+    if (!analyzeModalRow) return;
+    const onKey = (e) => {
+      if (e.key === 'Escape') {
+        setAnalyzeModalRow(null);
+        setAnalyzeJd('');
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [analyzeModalRow]);
+
+  const kpis = useMemo(() => {
+    const total = rows.length;
+    const withResume = rows.filter((r) => r.resumeAttached).length;
+    const analyzed = rows.filter(
+      (r) => r.analysisStatus || r.overallScore != null,
+    ).length;
+    const scores = rows
+      .map((r) => r.overallScore)
+      .filter((s) => s != null && !Number.isNaN(Number(s)));
+    const avgScore =
+      scores.length === 0
+        ? null
+        : Math.round(
+            scores.reduce((a, b) => a + Number(b), 0) / scores.length,
+          );
+    return { total, withResume, analyzed, avgScore };
+  }, [rows]);
+
+  const totalPages = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
+  const safePage = Math.min(page, totalPages);
+  const pageSlice = useMemo(() => {
+    const p = Math.min(page, totalPages);
+    const start = (p - 1) * PAGE_SIZE;
+    return rows.slice(start, start + PAGE_SIZE);
+  }, [rows, page, totalPages]);
+
+  useEffect(() => {
+    if (page > totalPages) setPage(totalPages);
+  }, [page, totalPages]);
+
   const openDetail = async (applicantId) => {
+    if (!hasToken()) return;
     setSelectedId(applicantId);
     setDetail(null);
     setDetailError('');
@@ -109,17 +150,34 @@ export default function ResumePage() {
     }
   };
 
-  const runAnalyze = async (row) => {
-    if (!row.resumeAttached) return;
+  const openAnalyzeModal = (row) => {
+    if (!row.resumeAttached || !hasToken()) return;
+    setAnalyzeModalRow(row);
+    setAnalyzeJd('');
+    setError('');
+  };
+
+  const closeAnalyzeModal = () => {
+    setAnalyzeModalRow(null);
+    setAnalyzeJd('');
+  };
+
+  const confirmAnalyze = async () => {
+    const row = analyzeModalRow;
+    if (!row || !hasToken()) return;
     setAnalyzeBusyId(row.applicantId);
     setError('');
     try {
-      const result = await postAnalyzeApplicantResume(row.applicantId);
+      const body = buildAnalyzeBody(analyzeJd);
+      const result = await postAnalyzeApplicantResume(row.applicantId, {
+        body,
+      });
       setRows((prev) =>
         prev.map((r) =>
           r.applicantId === row.applicantId ? mergeAnalyzeIntoRow(r, result) : r,
         ),
       );
+      closeAnalyzeModal();
       if (selectedId === row.applicantId) {
         await openDetail(row.applicantId);
       }
@@ -132,177 +190,402 @@ export default function ResumePage() {
 
   const selectedRow = rows.find((r) => r.applicantId === selectedId);
 
+  if (!hasToken() && !loading) {
+    return (
+      <section className="dashboard-page resume-ai">
+        <header className="dashboard-page__header">
+          <div className="dashboard-page__hero">
+            <h1>AI 채용</h1>
+            <p>지원자 현황과 이력서 분석 결과를 확인합니다.</p>
+          </div>
+        </header>
+        <article className="resume-ai__login-hint">
+          <p>AI 채용 대시보드는 로그인한 회원만 볼 수 있습니다.</p>
+          <span className="resume-ai__login-sub">
+            로그인 후 이 페이지에서 지원자 요약·목록·분석을 이용할 수 있습니다.
+          </span>
+          <Link className="resume-ai__login-link" to="/login">
+            로그인하기
+          </Link>
+        </article>
+      </section>
+    );
+  }
+
   return (
-    <div>
-      <h1>지원자 · 이력서 분석 (HR)</h1>
-      <p style={layout.muted}>
-        목록: <code>/api/hr/applicants/dashboard</code> · 분석:{' '}
-        <code>POST /api/hr/applicants/:id/analyze</code>
-      </p>
-
-      {error ? <p style={layout.err}>{error}</p> : null}
-
-      <div style={layout.wrap}>
-        <div style={layout.tableBox}>
-          {loading ? (
-            <p>불러오는 중…</p>
-          ) : (
-            <table style={layout.table}>
-              <thead>
-                <tr>
-                  <th style={layout.th}>지원자</th>
-                  <th style={layout.th}>이메일</th>
-                  <th style={layout.th}>이력서</th>
-                  <th style={layout.th}>분석</th>
-                  <th style={layout.th}>점수</th>
-                  <th style={layout.th}>분석일시</th>
-                  <th style={layout.th}>작업</th>
-                </tr>
-              </thead>
-              <tbody>
-                {rows.length === 0 ? (
-                  <tr>
-                    <td colSpan={7} style={layout.td}>
-                      지원자가 없습니다.
-                    </td>
-                  </tr>
-                ) : (
-                  rows.map((row) => {
-                    const busy = analyzeBusyId === row.applicantId;
-                    const sel = selectedId === row.applicantId;
-                    return (
-                      <tr
-                        key={row.applicantId}
-                        style={{
-                          background: sel ? '#f0f7ff' : undefined,
-                        }}
-                      >
-                        <td style={layout.td}>
-                          <button
-                            type="button"
-                            style={{
-                              ...layout.btn,
-                              border: 'none',
-                              background: 'none',
-                              color: '#1565c0',
-                              textDecoration: 'underline',
-                              padding: 0,
-                            }}
-                            onClick={() => openDetail(row.applicantId)}
-                          >
-                            {row.name || '—'}
-                          </button>
-                        </td>
-                        <td style={layout.td}>{row.email || '—'}</td>
-                        <td style={layout.td}>
-                          {row.resumeAttached ? '있음' : '없음'}
-                        </td>
-                        <td style={layout.td}>
-                          {row.analysisStatus || '—'}
-                        </td>
-                        <td style={layout.td}>
-                          {row.overallScore != null ? row.overallScore : '—'}
-                        </td>
-                        <td style={layout.td}>{formatDt(row.analyzedAt)}</td>
-                        <td style={layout.td}>
-                          <button
-                            type="button"
-                            style={
-                              !row.resumeAttached || busy
-                                ? { ...layout.btn, ...layout.btnDisabled }
-                                : layout.btn
-                            }
-                            disabled={!row.resumeAttached || busy}
-                            onClick={() => runAnalyze(row)}
-                          >
-                            {busy ? '분석중…' : '분석하기'}
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })
-                )}
-              </tbody>
-            </table>
-          )}
-          <p>
-            <button type="button" style={layout.btn} onClick={loadDashboard}>
-              새로고침
-            </button>
-          </p>
+    <section className="dashboard-page resume-ai">
+      <header className="dashboard-page__header">
+        <div className="dashboard-page__hero">
+          <h1>AI 채용</h1>
+          <p>지원자 현황과 이력서 분석 결과를 한곳에서 확인하세요.</p>
         </div>
+        <button className="dashboard-page__date-picker" type="button" disabled>
+          <Calendar size={16} strokeWidth={1.8} />
+          <span>{new Date().toLocaleDateString('ko-KR')}</span>
+          <ChevronDown size={16} strokeWidth={1.8} />
+        </button>
+      </header>
 
-        <aside style={layout.panel}>
-          <h2 style={{ marginTop: 0, fontSize: 18 }}>이력서 분석 결과</h2>
-          {!selectedId ? (
-            <p style={layout.muted}>왼쪽에서 지원자 이름을 눌러 상세를 확인하세요.</p>
-          ) : detailLoading ? (
-            <p>상세 불러오는 중…</p>
-          ) : detailError ? (
-            <p style={layout.err}>{detailError}</p>
-          ) : detail ? (
-            <>
-              <p>
-                <strong>{detail.name}</strong>
-                <br />
-                <span style={layout.muted}>
-                  {detail.email} · {detail.phone}
-                </span>
-              </p>
-              <p style={layout.muted}>
-                제출: {formatDt(detail.submittedAt)}
-                <br />
-                파일: {detail.originalFileName || '—'}
-                <br />
-                저장소 키:{' '}
-                <span style={{ wordBreak: 'break-all' }}>
-                  {detail.storageKey || '—'}
-                </span>
-              </p>
-              {detail.analysis ? (
-                <>
-                  <p>
-                    상태: {detail.analysis.status} · 모델:{' '}
-                    {detail.analysis.model || '—'} · 점수:{' '}
-                    {detail.analysis.overallScore != null
-                      ? detail.analysis.overallScore
-                      : '—'}
+      <nav className="resume-ai__tab-bar" aria-label="AI 채용 구역">
+        <button
+          type="button"
+          className={`resume-ai__tab ${tab === 'summary' ? 'is-active' : ''}`}
+          onClick={() => setTab('summary')}
+        >
+          요약
+        </button>
+        <button
+          type="button"
+          className={`resume-ai__tab ${tab === 'list' ? 'is-active' : ''}`}
+          onClick={() => setTab('list')}
+        >
+          지원자 목록
+        </button>
+      </nav>
+
+      {error ? (
+        <p style={{ color: '#b91c1c', fontWeight: 700, marginBottom: 16 }}>
+          {error}
+        </p>
+      ) : null}
+
+      {tab === 'summary' && (
+        <section className="dashboard-page__summary-grid">
+          <article className="summary-card">
+            <div className="summary-card__icon tone-blue">
+              <Users size={22} strokeWidth={2} />
+            </div>
+            <div className="summary-card__body">
+              <p className="summary-card__label">전체 지원자</p>
+              <strong className="summary-card__value">{kpis.total}명</strong>
+              <span className="summary-card__note">등록된 지원자 수</span>
+            </div>
+          </article>
+          <article className="summary-card">
+            <div className="summary-card__icon tone-green">
+              <FileText size={22} strokeWidth={2} />
+            </div>
+            <div className="summary-card__body">
+              <p className="summary-card__label">이력서 제출</p>
+              <strong className="summary-card__value">{kpis.withResume}명</strong>
+              <span className="summary-card__note">첨부파일 있는 지원자</span>
+            </div>
+          </article>
+          <article className="summary-card">
+            <div className="summary-card__icon tone-purple">
+              <Star size={22} strokeWidth={2} />
+            </div>
+            <div className="summary-card__body">
+              <p className="summary-card__label">평균 스크리닝 점수</p>
+              <strong className="summary-card__value">
+                {kpis.avgScore != null ? `${kpis.avgScore}점` : '—'}
+              </strong>
+              <span className="summary-card__note">분석 완료 건 기준</span>
+            </div>
+          </article>
+          <article className="summary-card">
+            <div className="summary-card__icon tone-orange">
+              <CheckCircle size={22} strokeWidth={2} />
+            </div>
+            <div className="summary-card__body">
+              <p className="summary-card__label">분석 이력 있음</p>
+              <strong className="summary-card__value">{kpis.analyzed}명</strong>
+              <span className="summary-card__note">상태 또는 점수 보유</span>
+            </div>
+          </article>
+        </section>
+      )}
+
+      {tab === 'list' && (
+        <div className="resume-ai__grid">
+          <article className="panel resume-ai__list-panel">
+            <div className="panel__head">
+              <h2>지원자 목록</h2>
+              <button
+                type="button"
+                className="resume-ai__page-btn"
+                onClick={() => loadDashboard()}
+                disabled={loading}
+              >
+                새로고침
+              </button>
+            </div>
+            {loading ? (
+              <p style={{ color: '#64748b', fontWeight: 600 }}>불러오는 중…</p>
+            ) : (
+              <>
+                <div className="resume-ai__table-wrap">
+                  <table className="data-table">
+                    <thead>
+                      <tr>
+                        <th>지원자</th>
+                        <th>이메일</th>
+                        <th>이력서</th>
+                        <th>분석</th>
+                        <th>점수</th>
+                        <th>분석일시</th>
+                        <th>작업</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {pageSlice.length === 0 ? (
+                        <tr>
+                          <td colSpan={7} className="muted-cell">
+                            지원자가 없습니다.
+                          </td>
+                        </tr>
+                      ) : (
+                        pageSlice.map((row) => {
+                          const busy = analyzeBusyId === row.applicantId;
+                          const sel = selectedId === row.applicantId;
+                          return (
+                            <tr
+                              key={row.applicantId}
+                              style={{
+                                background: sel ? '#fff7ed' : undefined,
+                              }}
+                            >
+                              <td>
+                                <button
+                                  type="button"
+                                  className="resume-ai__name-btn"
+                                  onClick={() => openDetail(row.applicantId)}
+                                >
+                                  {row.name || '—'}
+                                </button>
+                              </td>
+                              <td className="muted-cell">{row.email || '—'}</td>
+                              <td>
+                                {row.resumeAttached ? (
+                                  <span className="resume-ai__badge resume-ai__badge--ok">
+                                    제출됨
+                                  </span>
+                                ) : (
+                                  <span className="resume-ai__badge resume-ai__badge--no">
+                                    없음
+                                  </span>
+                                )}
+                              </td>
+                              <td className="muted-cell">
+                                {row.analysisStatus || '—'}
+                              </td>
+                              <td>
+                                {row.overallScore != null ? (
+                                  <span className="score-badge">
+                                    {row.overallScore}점
+                                  </span>
+                                ) : (
+                                  <span className="muted-cell">—</span>
+                                )}
+                              </td>
+                              <td className="muted-cell">
+                                {formatDt(row.analyzedAt)}
+                              </td>
+                              <td>
+                                <button
+                                  type="button"
+                                  className="resume-ai__btn-accent"
+                                  disabled={!row.resumeAttached || busy}
+                                  onClick={() => openAnalyzeModal(row)}
+                                >
+                                  {busy ? '분석중…' : '분석'}
+                                </button>
+                              </td>
+                            </tr>
+                          );
+                        })
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+                <div className="resume-ai__pager">
+                  <span className="resume-ai__pager-info">
+                    총 {rows.length}명 · {safePage} / {totalPages} 페이지
+                  </span>
+                  <div className="resume-ai__pager-btns">
+                    <button
+                      type="button"
+                      className="resume-ai__page-btn"
+                      disabled={safePage <= 1}
+                      onClick={() => setPage((p) => Math.max(1, p - 1))}
+                    >
+                      이전
+                    </button>
+                    <button
+                      type="button"
+                      className="resume-ai__page-btn"
+                      disabled={safePage >= totalPages}
+                      onClick={() =>
+                        setPage((p) => Math.min(totalPages, p + 1))
+                      }
+                    >
+                      다음
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
+          </article>
+
+          <article className="panel">
+            <div className="panel__head">
+              <h2>이력서 분석</h2>
+            </div>
+            {!selectedId ? (
+              <p className="muted-cell">목록에서 지원자 이름을 눌러 상세를 확인하세요.</p>
+            ) : detailLoading ? (
+              <p style={{ color: '#64748b', fontWeight: 600 }}>상세 불러오는 중…</p>
+            ) : detailError ? (
+              <p style={{ color: '#b91c1c', fontWeight: 700 }}>{detailError}</p>
+            ) : detail ? (
+              <>
+                <p>
+                  <strong>{detail.name}</strong>
+                  <br />
+                  <span className="muted-cell">
+                    {detail.email} · {detail.phone}
+                  </span>
+                </p>
+                <p className="muted-cell" style={{ fontSize: 13 }}>
+                  제출: {formatDt(detail.submittedAt)}
+                  <br />
+                  파일: {detail.originalFileName || '—'}
+                  <br />
+                  저장소 키:{' '}
+                  <span style={{ wordBreak: 'break-all' }}>
+                    {detail.storageKey || '—'}
+                  </span>
+                </p>
+                {detail.analysis ? (
+                  <>
+                    <p style={{ fontSize: 14, fontWeight: 700, color: '#0f172a' }}>
+                      상태: {detail.analysis.status} · 모델:{' '}
+                      {detail.analysis.model || '—'} · 점수:{' '}
+                      {detail.analysis.overallScore != null
+                        ? detail.analysis.overallScore
+                        : '—'}
+                    </p>
+                    <p
+                      style={{
+                        marginBottom: 6,
+                        fontSize: 13,
+                        fontWeight: 700,
+                        color: '#64748b',
+                      }}
+                    >
+                      요약
+                    </p>
+                    <div className="resume-ai__detail-pre">
+                      {detail.analysis.summary || '—'}
+                    </div>
+                    <p
+                      style={{
+                        marginBottom: 6,
+                        marginTop: 14,
+                        fontSize: 13,
+                        fontWeight: 700,
+                        color: '#64748b',
+                      }}
+                    >
+                      resultJson
+                    </p>
+                    <pre className="resume-ai__detail-pre">
+                      {detail.analysis.resultJson
+                        ? (() => {
+                            try {
+                              return JSON.stringify(
+                                JSON.parse(detail.analysis.resultJson),
+                                null,
+                                2,
+                              );
+                            } catch {
+                              return detail.analysis.resultJson;
+                            }
+                          })()
+                        : '—'}
+                    </pre>
+                    {detail.analysis.failureMessage ? (
+                      <p style={{ color: '#b91c1c', marginTop: 10 }}>
+                        {detail.analysis.failureMessage}
+                      </p>
+                    ) : null}
+                    <p className="muted-cell" style={{ marginTop: 10 }}>
+                      분석일시: {formatDt(detail.analysis.analyzedAt)}
+                    </p>
+                  </>
+                ) : (
+                  <p className="muted-cell">
+                    아직 분석 결과가 없습니다. 목록에서 분석을 실행하세요.
                   </p>
-                  <p style={{ marginBottom: 4 }}>요약</p>
-                  <div style={layout.pre}>{detail.analysis.summary || '—'}</div>
-                  <p style={{ marginBottom: 4, marginTop: 12 }}>resultJson</p>
-                  <pre style={layout.pre}>
-                    {detail.analysis.resultJson
-                      ? (() => {
-                          try {
-                            return JSON.stringify(
-                              JSON.parse(detail.analysis.resultJson),
-                              null,
-                              2,
-                            );
-                          } catch {
-                            return detail.analysis.resultJson;
-                          }
-                        })()
-                      : '—'}
-                  </pre>
-                  {detail.analysis.failureMessage ? (
-                    <p style={layout.err}>{detail.analysis.failureMessage}</p>
-                  ) : null}
-                  <p style={layout.muted}>
-                    분석일시: {formatDt(detail.analysis.analyzedAt)}
+                )}
+                {selectedRow?.summaryPreview && !detail.analysis?.summary ? (
+                  <p className="muted-cell" style={{ marginTop: 10 }}>
+                    목록 요약: {selectedRow.summaryPreview}
                   </p>
-                </>
-              ) : (
-                <p style={layout.muted}>아직 분석 결과가 없습니다. 목록에서 분석하기를 누르세요.</p>
-              )}
-              {selectedRow?.summaryPreview && !detail.analysis?.summary ? (
-                <p style={layout.muted}>목록 요약: {selectedRow.summaryPreview}</p>
-              ) : null}
-            </>
-          ) : null}
-        </aside>
-      </div>
-    </div>
+                ) : null}
+              </>
+            ) : null}
+          </article>
+        </div>
+      )}
+
+      {analyzeModalRow ? (
+        <div
+          className="resume-ai__modal-backdrop"
+          role="presentation"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) closeAnalyzeModal();
+          }}
+        >
+          <div
+            className="resume-ai__modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="resume-ai-analyze-title"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 id="resume-ai-analyze-title">이력서 분석</h3>
+            <p className="resume-ai__modal-sub">
+              <strong>{analyzeModalRow.name || '지원자'}</strong>
+              {analyzeModalRow.email
+                ? ` · ${analyzeModalRow.email}`
+                : ''}
+            </p>
+            <label htmlFor="resume-ai-jd">직무 공고 (Job Description)</label>
+            <textarea
+              id="resume-ai-jd"
+              value={analyzeJd}
+              onChange={(e) => setAnalyzeJd(e.target.value)}
+              placeholder="예: Java, Spring Boot, REST API, AWS 운영 경험 우대…"
+              disabled={analyzeBusyId === analyzeModalRow.applicantId}
+            />
+            <p className="resume-ai__modal-hint">
+              비워 두면 직무 기준 없이 분석합니다. 입력 후「분석 실행」을 누르면
+              서버로 요청이 전송됩니다.
+            </p>
+            <div className="resume-ai__modal-actions">
+              <button
+                type="button"
+                className="resume-ai__btn-ghost"
+                onClick={closeAnalyzeModal}
+                disabled={analyzeBusyId === analyzeModalRow.applicantId}
+              >
+                취소
+              </button>
+              <button
+                type="button"
+                className="resume-ai__btn-accent"
+                onClick={confirmAnalyze}
+                disabled={analyzeBusyId === analyzeModalRow.applicantId}
+              >
+                {analyzeBusyId === analyzeModalRow.applicantId
+                  ? '분석 중…'
+                  : '분석 실행'}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+    </section>
   );
 }

@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 import {
   getMyLeaveApi,
   getPendingLeaveApi,
   approveLeaveApi,
   rejectLeaveApi,
+  cancelLeaveApi,
 } from "../../api/leaveApi";
 
 import "../../styles/approval.css";
@@ -57,6 +59,8 @@ function ApprovalPage() {
     try {
       await approveLeaveApi(leaveId);
 
+      alert("승인 완료");
+
       await fetchPendingLeaves();
       await fetchMyLeaves();
     } catch (error) {
@@ -69,7 +73,22 @@ function ApprovalPage() {
     try {
       await rejectLeaveApi(leaveId);
 
+      alert("반려 완료");
+
       await fetchPendingLeaves();
+      await fetchMyLeaves();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // 취소
+  const handleCancel = async (leaveId) => {
+    try {
+      await cancelLeaveApi(leaveId);
+
+      alert("연차 신청이 취소되었습니다.");
+
       await fetchMyLeaves();
     } catch (error) {
       console.error(error);
@@ -96,9 +115,12 @@ function ApprovalPage() {
       <div className="approval-header">
         <h1>전자결재</h1>
 
-        <button className="apply-btn">
+        <Link
+          to="/approval/apply"
+          className="apply-btn"
+        >
           + 연차 신청
-        </button>
+        </Link>
       </div>
 
       {/* 내 신청 내역 */}
@@ -112,21 +134,27 @@ function ApprovalPage() {
               <th>연차 종류</th>
               <th>일수</th>
               <th>상태</th>
+              <th>관리</th>
+              <th>상세</th>
             </tr>
           </thead>
 
           <tbody>
             {myLeaves.map((leave) => (
               <tr key={leave.leaveId}>
+                {/* 기간 */}
                 <td>
                   {leave.startDate} ~{" "}
                   {leave.endDate}
                 </td>
 
+                {/* 연차 종류 */}
                 <td>{leave.leaveType}</td>
 
+                {/* 일수 */}
                 <td>{leave.leaveDays}일</td>
 
+                {/* 상태 */}
                 <td>
                   {
                     statusMap[
@@ -134,9 +162,41 @@ function ApprovalPage() {
                     ]
                   }
                 </td>
+
+                {/* 관리 */}
+                <td>
+                  {leave.leaveStatus ===
+                    "PENDING_MANAGER" ||
+                  leave.leaveStatus ===
+                    "PENDING_HR" ? (
+                    <button
+                      className="cancel-btn"
+                      onClick={() =>
+                        handleCancel(
+                          leave.leaveId
+                        )
+                      }
+                    >
+                      취소
+                    </button>
+                  ) : (
+                    "-"
+                  )}
+                </td>
+
+                {/* 상세 */}
+                <td>
+                  <Link
+                    to={`/approval/${leave.leaveId}`}
+                    className="detail-btn"
+                  >
+                    상세보기
+                  </Link>
+                </td>
               </tr>
             ))}
           </tbody>
+          
         </table>
       </section>
 
@@ -153,6 +213,7 @@ function ApprovalPage() {
                 <th>연차 종류</th>
                 <th>기간</th>
                 <th>상태</th>
+                <th>상세</th>
                 <th>관리</th>
               </tr>
             </thead>
@@ -160,17 +221,22 @@ function ApprovalPage() {
             <tbody>
               {pendingLeaves.map((leave) => (
                 <tr key={leave.leaveId}>
+                  {/* 이름 */}
                   <td>{leave.empName}</td>
 
+                  {/* 부서 */}
                   <td>{leave.deptName}</td>
 
+                  {/* 종류 */}
                   <td>{leave.leaveType}</td>
 
+                  {/* 기간 */}
                   <td>
                     {leave.startDate} ~{" "}
                     {leave.endDate}
                   </td>
 
+                  {/* 상태 */}
                   <td>
                     {
                       statusMap[
@@ -179,6 +245,17 @@ function ApprovalPage() {
                     }
                   </td>
 
+                  {/* 상세 */}
+                  <td>
+                    <Link
+                      to={`/approval/${leave.leaveId}`}
+                      className="detail-btn"
+                    >
+                      상세보기
+                    </Link>
+                  </td>
+
+                  {/* 관리 */}
                   <td className="action-buttons">
                     <button
                       className="approve-btn"
