@@ -11,6 +11,7 @@ import AdminDashboard from "./pages/dashboard/AdminDashboard";
 import ManagerDashboard from "./pages/dashboard/ManagerDashboard";
 import EmployeeDashboard from "./pages/dashboard/EmployeeDashboard";
 import JobApplicationPage from "./pages/apply/JobApplicationPage";
+import ApprovalDetailPage from "./pages/approval/ApprovalDetailPage";
 
 import "./index.css";
 
@@ -31,6 +32,7 @@ function App() {
             <Route path="/resume" element={<ResumePage />} />
             <Route path="/department" element={<DepartmentPage />} />
             <Route path="/apply" element={<JobApplicationPage />} />
+            <Route path="/approval/:leaveId" element={<ApprovalDetailPage />} />            
           </Routes>
         </main>
       </div>

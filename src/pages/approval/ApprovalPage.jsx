@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 import {
   getMyLeaveApi,
@@ -112,6 +113,7 @@ function ApprovalPage() {
               <th>연차 종류</th>
               <th>일수</th>
               <th>상태</th>
+              <th>상세</th>
             </tr>
           </thead>
 
@@ -134,6 +136,15 @@ function ApprovalPage() {
                     ]
                   }
                 </td>
+
+                <td>
+                  <Link
+                    to={`/approval/${leave.leaveId}`}
+                    className="detail-btn"
+                  >
+                    상세보기
+                  </Link>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -153,6 +164,7 @@ function ApprovalPage() {
                 <th>연차 종류</th>
                 <th>기간</th>
                 <th>상태</th>
+                <th>상세</th>
                 <th>관리</th>
               </tr>
             </thead>
@@ -177,6 +189,15 @@ function ApprovalPage() {
                         leave.leaveStatus
                       ]
                     }
+                  </td>
+
+                  <td>
+                    <Link
+                      to={`/approval/${leave.leaveId}`}
+                      className="detail-btn"
+                    >
+                      상세보기
+                    </Link>
                   </td>
 
                   <td className="action-buttons">

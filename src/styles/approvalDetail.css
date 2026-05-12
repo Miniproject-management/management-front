@@ -1,0 +1,52 @@
+.detail-page {
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+}
+
+.detail-card {
+  width: 100%;
+  max-width: 700px;
+
+  background-color: white;
+
+  padding: 40px;
+
+  border-radius: 16px;
+}
+
+.detail-card h1 {
+  margin-bottom: 40px;
+}
+
+.detail-item {
+  margin-bottom: 24px;
+}
+
+.detail-item span {
+  display: block;
+
+  font-size: 14px;
+  color: #888;
+
+  margin-bottom: 8px;
+}
+
+.detail-item p {
+  font-size: 16px;
+  color: #222;
+}
+
+.detail-btn {
+  background-color: #fea954;
+  color: white;
+
+  padding: 6px 10px;
+
+  border-radius: 8px;
+
+  text-decoration: none;
+
+  font-size: 13px;
+}
