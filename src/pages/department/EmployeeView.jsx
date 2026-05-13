@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Users, Building2, Edit } from "lucide-react";
 import api from '../../api/axios'; // 인증된 axios 인스턴스
 import useAuthStore from '../../stores/authStore';
 
@@ -19,6 +20,8 @@ const EmployeeView = () => {
         position: '사원',
         hireDate: ''
     });
+    // selected employee for edit (null means create)
+    const [selectedEmployee, setSelectedEmployee] = useState(null);
 
     // 임직원 목록 조회 함수 (초기 로딩 및 등록 후 재호출용)
     const fetchEmployees = async () => {
@@ -38,22 +41,36 @@ const EmployeeView = () => {
     }, []);
 
     // 신규 등록 모달 열기 (+ 부서 목록 조회)
-    const handleOpenModal = async () => {
+    const handleOpenModal = async (emp = null) => {
         setIsModalOpen(true);
         try {
             const res = await api.get('/api/hr/departments/tree');
             // 부서 목록이 배열로 온다고 가정
             setDepartments(res.data);
             
-            // 폼 데이터 초기화
-            setFormData({
-                empName: '',
-                password: '',
-                deptNo: '',
-                jobTitle: '',
-                position: '사원',
-                hireDate: ''
-            });
+            if (emp) {
+                // edit mode: prefill form with employee data
+                setSelectedEmployee(emp);
+                setFormData({
+                    empName: emp.empName,
+                    password: '', // password not edited here
+                    deptNo: emp.deptNo,
+                    jobTitle: emp.jobTitle,
+                    position: emp.position,
+                    hireDate: emp.hireDate
+                });
+            } else {
+                // create mode: reset form
+                setSelectedEmployee(null);
+                setFormData({
+                    empName: '',
+                    password: '',
+                    deptNo: '',
+                    jobTitle: '',
+                    position: '사원',
+                    hireDate: ''
+                });
+            }
         } catch (error) {
             console.error("부서 목록 조회 실패", error);
         }
@@ -61,6 +78,7 @@ const EmployeeView = () => {
 
     const handleCloseModal = () => {
         setIsModalOpen(false);
+        setSelectedEmployee(null);
     };
 
     // 폼 입력값 변경 핸들러
@@ -73,19 +91,30 @@ const EmployeeView = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            // 빈 값이 있는지 간단한 유효성 검사 (옵션)
-            if (!formData.empName || !formData.password || !formData.deptNo || !formData.jobTitle || !formData.hireDate) {
-                alert("모든 필수 항목을 입력해주세요.");
+            // 기본 validation
+            if (!formData.empName || !formData.deptNo || !formData.jobTitle || !formData.hireDate) {
+                alert("필수 항목을 모두 입력해주세요.");
                 return;
             }
 
-            await api.post('/api/hr/employees', formData);
-            alert("신규 임직원이 성공적으로 등록되었습니다.");
+            if (selectedEmployee) {
+                // Update existing employee
+                await api.put(`/api/hr/employees/${selectedEmployee.empNo}`, formData);
+                alert("직원 정보가 성공적으로 수정되었습니다.");
+            } else {
+                // Create new employee (password required)
+                if (!formData.password) {
+                    alert("비밀번호를 입력해주세요.");
+                    return;
+                }
+                await api.post('/api/hr/employees', formData);
+                alert("신규 임직원이 성공적으로 등록되었습니다.");
+            }
             handleCloseModal();
             fetchEmployees(); // 목록 새로고침
         } catch (error) {
-            console.error("신규 임직원 등록 실패", error);
-            alert("등록에 실패했습니다. 입력값을 확인해주세요.");
+            console.error(selectedEmployee ? "직원 수정 실패" : "신규 임직원 등록 실패", error);
+            alert("처리 중 오류가 발생했습니다. 확인 후 다시 시도해주세요.");
         }
     };
 
@@ -98,7 +127,7 @@ const EmployeeView = () => {
                 </div>
                 {/* 관리자 권한이 있을 때만 버튼 표시 */}
                 {role === 'ROLE_ADMIN' && (
-                    <button className="btn-primary" onClick={handleOpenModal}>
+                    <button className="btn-primary" onClick={() => handleOpenModal()}>
                         + 신규 임직원 등록
                     </button>
                 )}
@@ -113,7 +142,7 @@ const EmployeeView = () => {
                             <th>직무</th>
                             <th>직급</th>
                             <th>입사일</th>
-                            <th className="text-center">상태</th>
+                            <th className="text-center">관리</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -128,7 +157,11 @@ const EmployeeView = () => {
                                     <td>{emp.position}</td>
                                     <td>{emp.hireDate}</td>
                                     <td className="text-center">
-                                        <span className="status-badge active">재직</span>
+                                        {role === 'ROLE_ADMIN' && (
+                                            <button className="btn-icon" onClick={() => handleOpenModal(emp)}>
+                                                <Edit size={16} />
+                                            </button>
+                                        )}
                                     </td>
                                 </tr>
                             ))
@@ -144,17 +177,19 @@ const EmployeeView = () => {
                 <div className="modal-overlay" onClick={handleCloseModal}>
                     {/* 모달 내부 클릭 시 닫히지 않도록 e.stopPropagation() */}
                     <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                        <h3>신규 임직원 등록</h3>
+                        <h3>{selectedEmployee ? '직원 정보 수정' : '신규 임직원 등록'}</h3>
                         <form onSubmit={handleSubmit}>
                             <div className="form-row">
                                 <div className="form-group">
                                     <label>이름</label>
                                     <input type="text" name="empName" value={formData.empName} onChange={handleChange} placeholder="홍길동" required />
                                 </div>
-                                <div className="form-group">
-                                    <label>초기 비밀번호</label>
-                                    <input type="password" name="password" value={formData.password} onChange={handleChange} placeholder="임시 비밀번호 입력" required />
-                                </div>
+                                {!selectedEmployee && (
+                                    <div className="form-group">
+                                        <label>초기 비밀번호</label>
+                                        <input type="password" name="password" value={formData.password} onChange={handleChange} placeholder="임시 비밀번호 입력" required />
+                                    </div>
+                                )}
                             </div>
 
                             <div className="form-row">
@@ -195,7 +230,7 @@ const EmployeeView = () => {
                                     취소
                                 </button>
                                 <button type="submit" className="btn-primary">
-                                    등록하기
+                                    {selectedEmployee ? '수정하기' : '등록하기'}
                                 </button>
                             </div>
                         </form>

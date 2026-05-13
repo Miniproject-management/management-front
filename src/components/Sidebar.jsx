@@ -55,21 +55,6 @@ function Sidebar() {
           </NavLink>
         </nav>
 
-        <div className="preview-section">
-          <p className="preview-title">디자인 미리보기</p>
-
-          <NavLink className="preview-link" to="/dashboard/admin">
-            인사팀 화면
-          </NavLink>
-
-          <NavLink className="preview-link" to="/dashboard/manager">
-            팀장 화면
-          </NavLink>
-
-          <NavLink className="preview-link" to="/dashboard/employee">
-            사원 화면
-          </NavLink>
-        </div>
       </div>
 
       {accessToken ? (
