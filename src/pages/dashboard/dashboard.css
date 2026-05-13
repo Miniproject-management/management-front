@@ -191,8 +191,23 @@
 }
 
 .dashboard-card__header h2 {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   color: var(--text-main);
   font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.dashboard-card__hint {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: #fff3e8;
+  color: #d97706;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0;
 }

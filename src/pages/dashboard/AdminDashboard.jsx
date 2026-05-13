@@ -73,10 +73,13 @@ function formatShortDate(value) {
   return `${String(date.getMonth() + 1).padStart(2, "0")}.${String(date.getDate()).padStart(2, "0")}`;
 }
 
-function CardHeader({ title, hasLink = false }) {
+function CardHeader({ title, hasLink = false, hint = null }) {
   return (
     <div className="dashboard-card__header">
-      <h2>{title}</h2>
+      <h2>
+        {title}
+        {hint ? <span className="dashboard-card__hint">{hint}</span> : null}
+      </h2>
       {hasLink ? (
         <button className="dashboard-card__link" type="button">
           전체 보기 <ChevronRight size={15} strokeWidth={2.4} />
@@ -224,8 +227,6 @@ function AdminDashboard() {
         </button>
       </header>
 
-      {error ? <p className="dashboard-page__error">데이터를 불러오지 못했습니다.</p> : null}
-
       <div className="dashboard-grid">
         {kpis.map((item) => {
           const Icon = item.icon;
@@ -244,7 +245,7 @@ function AdminDashboard() {
         })}
 
         <article className="dashboard-card dashboard-card--large">
-          <CardHeader title="지원자 스크리닝 점수 TOP 5" hasLink />
+          <CardHeader title="지원자 스크리닝 점수 TOP 5" hasLink hint="백엔드 API 연결 예정" />
 
           <table className="dashboard-table screening-table">
             <colgroup>
@@ -385,7 +386,7 @@ function AdminDashboard() {
         </article>
 
         <article className="dashboard-card dashboard-card--medium">
-          <CardHeader title="부서별 인원 현황" hasLink />
+          <CardHeader title="부서별 인원 현황" hasLink hint="백엔드 API 연결 예정" />
 
           <div className="headcount-layout">
             <table className="dashboard-table headcount-table">
