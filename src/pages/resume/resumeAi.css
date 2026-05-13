@@ -359,6 +359,15 @@
   box-shadow: none;
 }
 
+.resume-ai__btn-accent--with-spinner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 56px;
+  min-height: 36px;
+  vertical-align: middle;
+}
+
 /* ----- 패널(목록·상세): 전체 폭 카드 ----- */
 
 .resume-ai .panel {
@@ -523,6 +532,7 @@
 }
 
 .resume-ai__modal {
+  position: relative;
   width: 100%;
   max-width: 520px;
   max-height: min(90vh, 640px);
@@ -532,6 +542,51 @@
   background: #fff;
   box-shadow: var(--resume-ai-shadow);
   padding: 26px 28px 24px;
+}
+
+.resume-ai__modal-busy {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  border-radius: inherit;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(3px);
+}
+
+.resume-ai__spinner-donut {
+  box-sizing: border-box;
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 4px solid #e8edf3;
+  border-top-color: var(--resume-ai-accent);
+  border-right-color: #fb923c;
+  animation: resume-ai-spin 0.72s linear infinite;
+}
+
+.resume-ai__spinner-donut--sm {
+  width: 20px;
+  height: 20px;
+  border-width: 2px;
+  animation-duration: 0.65s;
+}
+
+.resume-ai__sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .resume-ai__modal h3 {

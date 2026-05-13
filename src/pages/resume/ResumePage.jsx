@@ -153,14 +153,14 @@ export default function ResumePage() {
   useEffect(() => {
     if (!analyzeModalRow) return;
     const onKey = (e) => {
-      if (e.key === 'Escape') {
+      if (e.key === 'Escape' && analyzeBusyId !== analyzeModalRow.applicantId) {
         setAnalyzeModalRow(null);
         setAnalyzeJd('');
       }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [analyzeModalRow]);
+  }, [analyzeModalRow, analyzeBusyId]);
 
   const kpis = useMemo(() => {
     const total = rows.length;
@@ -573,11 +573,19 @@ export default function ResumePage() {
                               <td>
                                 <button
                                   type="button"
-                                  className="resume-ai__btn-accent"
+                                  className="resume-ai__btn-accent resume-ai__btn-accent--with-spinner"
                                   disabled={!row.resumeAttached || busy}
                                   onClick={() => openAnalyzeModal(row)}
+                                  aria-busy={busy}
                                 >
-                                  {busy ? '분석중…' : '분석'}
+                                  {busy ? (
+                                    <span
+                                      className="resume-ai__spinner-donut resume-ai__spinner-donut--sm"
+                                      aria-hidden="true"
+                                    />
+                                  ) : (
+                                    '분석'
+                                  )}
                                 </button>
                               </td>
                             </tr>
@@ -851,6 +859,7 @@ export default function ResumePage() {
           className="resume-ai__modal-backdrop"
           role="presentation"
           onClick={(e) => {
+            if (analyzeBusyId === analyzeModalRow?.applicantId) return;
             if (e.target === e.currentTarget) closeAnalyzeModal();
           }}
         >
@@ -895,11 +904,19 @@ export default function ResumePage() {
                 onClick={confirmAnalyze}
                 disabled={analyzeBusyId === analyzeModalRow.applicantId}
               >
-                {analyzeBusyId === analyzeModalRow.applicantId
-                  ? '분석 중…'
-                  : '분석 실행'}
+                분석 실행
               </button>
             </div>
+            {analyzeBusyId === analyzeModalRow.applicantId ? (
+              <div
+                className="resume-ai__modal-busy"
+                role="status"
+                aria-live="polite"
+              >
+                <span className="resume-ai__spinner-donut" aria-hidden="true" />
+                <span className="resume-ai__sr-only">Resume analysis in progress</span>
+              </div>
+            ) : null}
           </div>
         </div>
       ) : null}
