@@ -23,6 +23,18 @@ async function handleJson(res) {
   }
 }
 
+/** ALB/Nginx 가 HTML 502 페이지를 주면 JSON 이 아니라 raw 로 들어옴 → 사용자에게 HTML 을 숨김 */
+function pickUserFacingMessage(candidate) {
+  if (typeof candidate !== 'string') return '';
+  const t = candidate.trim();
+  if (!t) return '';
+  const lower = t.toLowerCase();
+  if (lower.startsWith('<!doctype') || lower.startsWith('<html')) {
+    return '';
+  }
+  return t;
+}
+
 function httpErrorMessage(res, data) {
   if (res.status === 401) {
     return '로그인이 필요합니다. 로그인 후 다시 시도해 주세요.';
@@ -31,11 +43,18 @@ function httpErrorMessage(res, data) {
     return '접근이 거부되었습니다(403). 로그인·권한 또는 배포된 API 버전을 확인해 주세요.';
   }
   if (res.status === 502 || res.status === 503) {
-    const m = data.message || data.error || data.raw;
-    if (typeof m === 'string' && m.length > 0) return m;
-    return '서버 또는 S3 연결에 문제가 있습니다. 잠시 후 다시 시도하거나 관리자에게 문의해 주세요.';
+    const m =
+      pickUserFacingMessage(data.message) ||
+      pickUserFacingMessage(data.error) ||
+      pickUserFacingMessage(data.raw);
+    if (m.length > 0) return m;
+    return '게이트웨이(502/503): 백엔드가 응답하지 않거나 연결이 끊겼습니다. 잠시 후 다시 시도하거나 관리자에게 문의해 주세요.';
   }
-  const msg = data.message || data.error || data.raw || `HTTP ${res.status}`;
+  const msg =
+    pickUserFacingMessage(data.message) ||
+    pickUserFacingMessage(data.error) ||
+    pickUserFacingMessage(data.raw) ||
+    `HTTP ${res.status}`;
   return typeof msg === 'string' ? msg : JSON.stringify(msg);
 }
 

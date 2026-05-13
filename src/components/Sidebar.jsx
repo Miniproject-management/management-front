@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import "../styles/sidebar.css";
 
 import useAuthStore from "../stores/authStore";
@@ -17,40 +17,55 @@ function Sidebar() {
   return (
     <aside className="sidebar">
       <div>
-        <h2 className="logo">SECURE HR</h2>
+        <div className="brand-section">
+          <img
+            src="/hellohr-logo.png"
+            alt="HELLO HR"
+            className="brand-logo"
+          />
+
+          <div className="brand-text">
+            <h2 className="logo">HELLO HR</h2>
+
+            <p className="logo-title">
+              당신의 안전한 안녕이 시작됩니다.
+            </p>
+          </div>
+
+        </div>
 
         <nav className="nav-menu">
-          <Link className="menu-item" to="/">
+          <NavLink className="menu-item" to="/" end>
             대시보드
-          </Link>
+          </NavLink>
 
-          <Link className="menu-item" to="/department">
+          <NavLink className="menu-item" to="/department">
             조직관리
-          </Link>
+          </NavLink>
 
-          <Link className="menu-item" to="/resume">
+          <NavLink className="menu-item" to="/resume">
             AI 채용
-          </Link>
+          </NavLink>
 
-          <Link className="menu-item" to="/approval">
+          <NavLink className="menu-item" to="/approval">
             전자결재
-          </Link>
+          </NavLink>
         </nav>
 
         <div className="preview-section">
           <p className="preview-title">디자인 미리보기</p>
 
-          <Link className="preview-link" to="/dashboard/admin">
+          <NavLink className="preview-link" to="/dashboard/admin">
             인사팀 화면
-          </Link>
+          </NavLink>
 
-          <Link className="preview-link" to="/dashboard/manager">
+          <NavLink className="preview-link" to="/dashboard/manager">
             팀장 화면
-          </Link>
+          </NavLink>
 
-          <Link className="preview-link" to="/dashboard/employee">
+          <NavLink className="preview-link" to="/dashboard/employee">
             사원 화면
-          </Link>
+          </NavLink>
         </div>
       </div>
 

@@ -58,13 +58,6 @@ const approvalRows = [
   ["연차 신청", "박서연", "05.18", CalendarPlus],
 ];
 
-const upcomingLeaves = [
-  ["김민수", "05.21 (수) ~ 05.22 (목)", "연차 (2일)", "blue"],
-  ["정다은", "05.30 (금)", "연차 (1일)", "purple"],
-  ["이서연", "05.26 (월)", "반차 (오후)", "orange"],
-  ["박서연", "06.02 (월) ~ 06.03 (화)", "연차 (2일)", "blue"],
-];
-
 const calendarWeeks = [
   ["27", "28", "29", "30", "1", "2", "3"],
   ["4", "5", "6", "7", "8", "9", "10"],
@@ -82,7 +75,7 @@ function ManagerDashboard() {
     <section className="manager-dashboard">
       <header className="manager-dashboard__header">
         <div>
-          <h1>대시보드 개요 <span aria-hidden="true">👋</span></h1>
+          <h1>대시보드 개요</h1>
           <p>우리 팀과 나의 현황을 한눈에 확인하세요.</p>
         </div>
 
@@ -131,13 +124,6 @@ function ManagerDashboard() {
         </article>
 
         <article className="manager-card manager-card--team">
-          <h2>우리 팀 연차 요약</h2>
-          <div className="manager-team-summary">
-            <div className="is-blue"><span>이번 달 사용 연차</span><b>8.5일</b></div>
-            <div className="is-orange"><span>승인 대기 연차</span><b>1.5일</b></div>
-            <div className="is-green"><span>평균 잔여 연차</span><b>8.7일</b></div>
-          </div>
-
           <div className="manager-calendar-head">
             <h3>팀 휴가 일정</h3>
             <div><ChevronLeft size={16} /> <b>2025년 5월</b> <ChevronRight size={16} /></div>
@@ -152,18 +138,6 @@ function ManagerDashboard() {
                 {day}
                 {["2", "7", "13", "23"].includes(day) ? <MiniDot tone={day === "13" ? "purple" : day === "23" ? "orange" : "blue"} /> : null}
               </span>
-            ))}
-          </div>
-
-          <h3 className="manager-section-title">다가오는 휴가</h3>
-          <div className="manager-upcoming">
-            {upcomingLeaves.map(([name, date, type, tone]) => (
-              <div key={`${name}-${date}`}>
-                <MiniDot tone={tone} />
-                <b>{name}</b>
-                <span>{date}</span>
-                <em>{type}</em>
-              </div>
             ))}
           </div>
           <div className="manager-legend">
