@@ -120,21 +120,23 @@ function ApprovalPage() {
 
         <div className="header-buttons">
 
-          {role === "ROLE_ADMIN" && (
+          {/* 관리자 */}
+          {role === "ROLE_ADMIN" ? (
             <Link
               to="/approval/leave-balance"
-              className="balance-btn"
+              className="apply-btn"
             >
-              연차 생성
+              + 연차 생성
+            </Link>
+          ) : (
+            /* 일반 사용자 / 팀장 */
+            <Link
+              to="/approval/apply"
+              className="apply-btn"
+            >
+              + 연차 신청
             </Link>
           )}
-
-          <Link
-            to="/approval/apply"
-            className="apply-btn"
-          >
-            + 연차 신청
-          </Link>
 
         </div>
       </div>
