@@ -76,6 +76,14 @@ function parseAnalysisResultJson(resultJson) {
   }
 }
 
+/** 종합 점수 막대 색 (구간별) */
+function scoreBarTierClass(score) {
+  if (score < 50) return 'resume-ai__score-fill--tier-bad';
+  if (score < 70) return 'resume-ai__score-fill--tier-fair';
+  if (score < 85) return 'resume-ai__score-fill--tier-good';
+  return 'resume-ai__score-fill--tier-great';
+}
+
 function mergeAnalyzeIntoRow(row, analyzeResult) {
   const a = analyzeResult?.analysis;
   if (!a) return row;
@@ -762,7 +770,7 @@ export default function ResumePage() {
                             aria-valuemax={100}
                           >
                             <div
-                              className="resume-ai__score-fill"
+                              className={`resume-ai__score-fill ${scoreBarTierClass(sc)}`}
                               style={{ width: `${sc}%` }}
                             />
                           </div>

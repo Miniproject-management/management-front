@@ -864,7 +864,7 @@
 
 .resume-ai__section-title {
   margin: 0 0 12px;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 800;
   color: var(--resume-ai-text);
   letter-spacing: -0.02em;
@@ -1001,20 +1001,20 @@ button.resume-ai__icon-btn--link {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  margin-bottom: 8px;
-  font-size: 13px;
+  margin-bottom: 10px;
+  font-size: 15px;
   font-weight: 600;
   color: var(--resume-ai-muted);
 }
 
 .resume-ai__score-head strong {
-  font-size: 18px;
+  font-size: 22px;
   font-weight: 800;
   color: var(--resume-ai-text);
 }
 
 .resume-ai__score-track {
-  height: 10px;
+  height: 12px;
   border-radius: 999px;
   background: #e2e8f0;
   overflow: hidden;
@@ -1024,15 +1024,33 @@ button.resume-ai__icon-btn--link {
   height: 100%;
   border-radius: inherit;
   background: linear-gradient(90deg, #fb923c, #ea580c);
-  transition: width 0.35s ease;
+  transition:
+    width 0.35s ease,
+    background 0.25s ease;
+}
+
+.resume-ai__score-fill--tier-bad {
+  background: linear-gradient(90deg, #fca5a5, #dc2626);
+}
+
+.resume-ai__score-fill--tier-fair {
+  background: linear-gradient(90deg, #fdba74, #ea580c);
+}
+
+.resume-ai__score-fill--tier-good {
+  background: linear-gradient(90deg, #bef264, #65a30d);
+}
+
+.resume-ai__score-fill--tier-great {
+  background: linear-gradient(90deg, #4ade80, #15803d);
 }
 
 .resume-ai__summary-box {
-  padding: 14px 16px;
-  font-size: 14px;
-  line-height: 1.65;
+  padding: 18px 20px;
+  font-size: 16px;
+  line-height: 1.72;
   font-weight: 500;
-  color: #334155;
+  color: #1e293b;
   background: #fafaf9;
   border: 1px solid var(--resume-ai-border);
   border-radius: 12px;
@@ -1046,14 +1064,14 @@ button.resume-ai__icon-btn--link {
 }
 
 .resume-ai__analysis-block {
-  margin-top: 18px;
+  margin-top: 22px;
 }
 
 .resume-ai__analysis-block-title {
-  margin: 0 0 10px;
-  padding-bottom: 8px;
+  margin: 0 0 12px;
+  padding-bottom: 10px;
   border-bottom: 2px solid var(--resume-ai-accent-border);
-  font-size: 14px;
+  font-size: 18px;
   font-weight: 800;
   color: var(--resume-ai-text);
   letter-spacing: -0.02em;
@@ -1061,15 +1079,15 @@ button.resume-ai__icon-btn--link {
 
 .resume-ai__bullet-list {
   margin: 0;
-  padding-left: 1.2rem;
-  font-size: 14px;
-  line-height: 1.65;
+  padding-left: 1.35rem;
+  font-size: 16px;
+  line-height: 1.72;
   font-weight: 500;
-  color: #334155;
+  color: #1e293b;
 }
 
 .resume-ai__bullet-list li {
-  margin-bottom: 8px;
+  margin-bottom: 12px;
 }
 
 .resume-ai__bullet-list li:last-child {
