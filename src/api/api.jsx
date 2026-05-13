@@ -58,15 +58,80 @@ function httpErrorMessage(res, data) {
   return typeof msg === 'string' ? msg : JSON.stringify(msg);
 }
 
-export async function fetchHrApplicantDashboard() {
-  const res = await fetch('/api/hr/applicants/dashboard', {
+function previewFromSummary(text) {
+  if (text == null || text === '') return null;
+  const t = String(text).trim();
+  if (!t) return null;
+  if (t.length <= 120) return t;
+  return `${t.slice(0, 120)}...`;
+}
+
+function parseAnalysisResultJson(resultJson) {
+  if (!resultJson || typeof resultJson !== 'string') return {};
+  try {
+    return JSON.parse(resultJson);
+  } catch {
+    return {};
+  }
+}
+
+function normalizeApplicantDashboardRow(row) {
+  const analysis = row?.analysis || {};
+  const parsed = parseAnalysisResultJson(analysis.resultJson);
+  return {
+    ...row,
+    applicantId: row?.applicantId,
+    name: row?.name,
+    email: row?.email,
+    phone: row?.phone,
+    submittedAt: row?.submittedAt,
+    resumeAttached: row?.resumeAttached ?? Boolean(row?.resumeId),
+    analysisStatus: row?.analysisStatus ?? analysis.status ?? null,
+    overallScore: row?.overallScore ?? analysis.overallScore ?? parsed.overallScore ?? null,
+    analyzedAt: row?.analyzedAt ?? analysis.analyzedAt ?? null,
+    summaryPreview:
+      row?.summaryPreview ??
+      previewFromSummary(analysis.summary) ??
+      previewFromSummary(parsed.summary) ??
+      previewFromSummary(parsed.decision) ??
+      null,
+  };
+}
+
+async function fetchApplicantListFallback() {
+  const res = await fetch('/api/hr/applicants', {
     headers: authHeaders(),
   });
   const data = await handleJson(res);
   if (!res.ok) {
     throw new Error(httpErrorMessage(res, data));
   }
-  return data;
+  const list = Array.isArray(data) ? data : [];
+  const details = await Promise.all(
+    list.map(async (item) => {
+      try {
+        const detail = await fetchHrApplicantDetail(item.applicantId);
+        return normalizeApplicantDashboardRow({ ...item, ...detail });
+      } catch {
+        return normalizeApplicantDashboardRow(item);
+      }
+    }),
+  );
+  return details;
+}
+
+export async function fetchHrApplicantDashboard() {
+  const res = await fetch('/api/hr/applicants/dashboard', {
+    headers: authHeaders(),
+  });
+  const data = await handleJson(res);
+  if (!res.ok) {
+    if (res.status === 404 || res.status === 405) {
+      return fetchApplicantListFallback();
+    }
+    throw new Error(httpErrorMessage(res, data));
+  }
+  return Array.isArray(data) ? data.map(normalizeApplicantDashboardRow) : data;
 }
 
 export async function fetchHrApplicantDetail(applicantId) {
