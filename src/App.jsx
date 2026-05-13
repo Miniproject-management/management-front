@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Sidebar from "./components/Sidebar";
+import Footer from "./components/Footer";
 
 import LoginPage from "./pages/auth/LoginPage";
 import ApprovalPage from "./pages/approval/ApprovalPage";
@@ -23,22 +24,29 @@ function App() {
       <div className="layout">
         <Sidebar />
 
-        <main className="main-content">
-          <Routes>
-            <Route path="/" element={<DashboardPage />} />
-            <Route path="/dashboard/admin" element={<AdminDashboard />} />
-            <Route path="/dashboard/manager" element={<ManagerDashboard />} />
-            <Route path="/dashboard/employee" element={<EmployeeDashboard />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/approval" element={<ApprovalPage />} />
-            <Route path="/resume" element={<ResumePage />} />
-            <Route path="/department" element={<DepartmentPage />} />
-            <Route path="/apply" element={<JobApplicationPage />} />
-            <Route path="/approval/:leaveId" element={<ApprovalDetailPage />} />    
-            <Route path="/approval/apply" element={<LeaveApplyPage />} />      
-            <Route  path="/approval/leave-balance" element={<LeaveBalancePage />} />          
-          </Routes>
-        </main>
+        <div className="content-wrapper">
+          <main className="main-content">
+            <Routes>
+              <Route path="/" element={<DashboardPage />} />
+              <Route path="/dashboard/admin" element={<AdminDashboard />} />
+              <Route path="/dashboard/manager" element={<ManagerDashboard />} />
+              <Route path="/dashboard/employee" element={<EmployeeDashboard />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/approval" element={<ApprovalPage />} />
+              <Route path="/resume" element={<ResumePage />} />
+              <Route path="/department" element={<DepartmentPage />} />
+              <Route path="/apply" element={<JobApplicationPage />} />
+              <Route path="/approval/:leaveId" element={<ApprovalDetailPage />} />
+              <Route path="/approval/apply" element={<LeaveApplyPage />} />
+              <Route
+                path="/approval/leave-balance"
+                element={<LeaveBalancePage />}
+              />
+            </Routes>
+          </main>
+
+          <Footer />
+        </div>
       </div>
     </BrowserRouter>
   );

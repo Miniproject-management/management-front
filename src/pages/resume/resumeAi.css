@@ -1,7 +1,6 @@
 /**
  * AI 채용 (/resume) 전용 스타일.
- * 대시보드(dashboard.css)의 카드·패널 톤과 맞춤: #f4f0ea 테두리, 동일 그림자 계열, #0f172a / #64748b 텍스트.
- * dashboard.css 는 수정하지 않음 — 레이아웃·summary-card·panel·data-table 은 그대로 import 해서 사용.
+ * 대시보드(dashboard.css)의 톤과 맞춤. 목록·상세 패널·테이블·탭은 이 파일에서 정의한다.
  */
 
 .resume-ai {
@@ -32,32 +31,137 @@
   overflow-x: hidden;
   overflow-y: visible;
   align-content: start;
+  width: 100%;
+  max-width: none;
 }
 
-/* ----- 탭 바 (크게 · 세그먼트형) ----- */
-
-.resume-ai__tab-bar {
-  display: flex;
+/* /resume 만 메인 영역을 가로로 꽉 채움 (index.css 의 main-content 중앙 정렬 보정) */
+.main-content:has(.dashboard-page.resume-ai) {
+  align-items: stretch;
+  justify-content: flex-start;
   width: 100%;
-  max-width: 720px;
-  margin-bottom: 26px;
-  padding: 6px;
+}
+
+/* 요약 탭 KPI 그리드: 가로 전체 사용 */
+.dashboard-page.resume-ai .dashboard-page__summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+@media (max-width: 960px) {
+  .dashboard-page.resume-ai .dashboard-page__summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 520px) {
+  .dashboard-page.resume-ai .dashboard-page__summary-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.resume-ai .summary-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 100px;
+  padding: 18px 20px;
   border-radius: 16px;
   border: 1px solid var(--resume-ai-border);
   background: #ffffff;
   box-shadow: var(--resume-ai-shadow-soft);
-  gap: 6px;
+}
+
+.resume-ai .summary-card__icon {
+  display: grid;
+  flex: 0 0 48px;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  border-radius: 14px;
+  font-size: 0;
+}
+
+.resume-ai .summary-card__icon.tone-blue {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.resume-ai .summary-card__icon.tone-green {
+  background: #ecfdf5;
+  color: #15803d;
+}
+
+.resume-ai .summary-card__icon.tone-purple {
+  background: #faf5ff;
+  color: #9333ea;
+}
+
+.resume-ai .summary-card__icon.tone-orange {
+  background: var(--resume-ai-accent-soft-bg);
+  color: var(--resume-ai-accent);
+}
+
+.resume-ai .summary-card__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.resume-ai .summary-card__label {
+  margin: 0 0 4px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--resume-ai-muted);
+}
+
+.resume-ai .summary-card__value {
+  display: block;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--resume-ai-text);
+}
+
+.resume-ai .summary-card__note {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--resume-ai-muted-light);
+}
+
+/* ----- 탭 바: 항상 동일 높이 · 2열 그리드로 너비 고정 분할 ----- */
+
+.resume-ai__tab-bar {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 100%;
+  max-width: none;
+  margin-bottom: 22px;
+  padding: 5px;
+  border-radius: 14px;
+  border: 1px solid var(--resume-ai-border);
+  background: #ffffff;
+  box-shadow: var(--resume-ai-shadow-soft);
+  gap: 5px;
+  box-sizing: border-box;
 }
 
 .resume-ai__tab {
-  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   min-height: 52px;
-  padding: 14px 22px;
+  height: 52px;
+  padding: 0 16px;
   border: none;
-  border-radius: 12px;
+  border-radius: 11px;
   background: transparent;
   color: var(--resume-ai-muted);
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 700;
   letter-spacing: -0.02em;
   cursor: pointer;
@@ -160,14 +264,42 @@
   box-shadow: none;
 }
 
-/* ----- 지원자 목록 패널 ----- */
+/* ----- 패널(목록·상세): 전체 폭 카드 ----- */
+
+.resume-ai .panel {
+  width: 100%;
+  max-width: none;
+  margin-inline: 0;
+  padding: 22px 24px 24px;
+  border-radius: 16px;
+  border: 1px solid var(--resume-ai-border);
+  background: #ffffff;
+  box-shadow: var(--resume-ai-shadow);
+  box-sizing: border-box;
+}
+
+.resume-ai .panel__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.resume-ai .panel__head h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--resume-ai-text);
+}
 
 .resume-ai__list-panel .panel__head {
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
 .resume-ai__list-panel .panel__head h2 {
-  font-size: 20px;
+  font-size: 18px;
 }
 
 .resume-ai__table-wrap {
@@ -175,6 +307,81 @@
   border: 1px solid #f1f5f9;
   overflow: hidden;
   background: #fff;
+  width: 100%;
+}
+
+.resume-ai__table-wrap .data-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.resume-ai__table-wrap .data-table thead th {
+  padding: 12px 10px;
+  background: #f8fafc;
+  color: var(--resume-ai-muted);
+  font-size: 12px;
+  font-weight: 800;
+  text-align: left;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.resume-ai__table-wrap .data-table tbody td {
+  padding: 12px 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #334155;
+  vertical-align: middle;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.resume-ai__table-wrap .data-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.resume-ai__table-wrap .data-table .muted-cell {
+  color: var(--resume-ai-muted);
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.resume-ai__table-wrap .data-table th:nth-child(1),
+.resume-ai__table-wrap .data-table td:nth-child(1) {
+  width: 13%;
+}
+
+.resume-ai__table-wrap .data-table th:nth-child(2),
+.resume-ai__table-wrap .data-table td:nth-child(2) {
+  width: 22%;
+}
+
+.resume-ai__table-wrap .data-table th:nth-child(3),
+.resume-ai__table-wrap .data-table td:nth-child(3) {
+  width: 11%;
+}
+
+.resume-ai__table-wrap .data-table th:nth-child(4),
+.resume-ai__table-wrap .data-table td:nth-child(4) {
+  width: 11%;
+}
+
+.resume-ai__table-wrap .data-table th:nth-child(5),
+.resume-ai__table-wrap .data-table td:nth-child(5) {
+  width: 9%;
+}
+
+.resume-ai__table-wrap .data-table th:nth-child(6),
+.resume-ai__table-wrap .data-table td:nth-child(6) {
+  width: 20%;
+}
+
+.resume-ai__table-wrap .data-table th:nth-child(7),
+.resume-ai__table-wrap .data-table td:nth-child(7) {
+  width: 14%;
 }
 
 .resume-ai__table-wrap .data-table th:first-child,
@@ -304,22 +511,42 @@
   background: #f8fafc;
 }
 
-/* ----- 목록 이름 링크 (대시보드 panel__link 계열 파랑) ----- */
+/* ----- 지원자 이름: 링크 느낌 제거, 행 선택용 컨트롤 톤 ----- */
 
 .resume-ai__name-btn {
-  border: none;
-  background: none;
-  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  margin: 0;
+  padding: 7px 12px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: transparent;
   font: inherit;
-  color: var(--resume-ai-link);
+  font-size: 14px;
   font-weight: 700;
+  color: var(--resume-ai-text);
   cursor: pointer;
-  text-decoration: underline;
-  text-underline-offset: 2px;
+  text-decoration: none;
+  text-align: left;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    color 0.15s;
 }
 
 .resume-ai__name-btn:hover {
-  color: var(--resume-ai-link-hover);
+  background: #f1f5f9;
+  color: var(--resume-ai-text);
+}
+
+.resume-ai__name-btn:focus-visible {
+  outline: 2px solid var(--resume-ai-accent-border);
+  outline-offset: 2px;
 }
 
 /* ----- 본문: 목록 위 · 상세(이력서·분석) 아래 ----- */
@@ -338,18 +565,12 @@
 
 .resume-ai__detail-panel {
   width: 100%;
-  max-width: 960px;
-  margin-inline: auto;
-}
-
-@media (max-width: 1024px) {
-  .resume-ai__detail-panel {
-    max-width: 100%;
-  }
+  max-width: none;
+  margin-inline: 0;
 }
 
 .resume-ai__detail-panel .panel__head h2 {
-  font-size: 20px;
+  font-size: 18px;
 }
 
 /* ----- 테이블 선택 행 ----- */
@@ -359,6 +580,8 @@
 }
 
 .resume-ai__row.is-selected .resume-ai__name-btn {
+  background: rgba(255, 255, 255, 0.72);
+  border-color: var(--resume-ai-accent-border);
   color: var(--resume-ai-accent-hover);
 }
 
@@ -405,13 +628,17 @@
 }
 
 .resume-ai__identity {
-  padding-bottom: 4px;
-  border-bottom: 1px solid #f1f5f9;
+  padding: 18px 20px;
+  margin: 0 -4px 4px;
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
+  background: linear-gradient(135deg, #fafafa 0%, #f8fafc 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85);
 }
 
 .resume-ai__identity-name {
-  margin: 0 0 6px;
-  font-size: 22px;
+  margin: 0 0 8px;
+  font-size: 24px;
   font-weight: 800;
   letter-spacing: -0.03em;
   color: var(--resume-ai-text);
@@ -584,8 +811,8 @@ button.resume-ai__icon-btn--link {
 .resume-ai__pdf-frame {
   display: block;
   width: 100%;
-  height: min(70vh, 720px);
-  min-height: 480px;
+  height: min(72vh, 840px);
+  min-height: 520px;
   border: none;
   background: #fff;
 }
