@@ -828,7 +828,7 @@
   color: var(--manager-text);
   font-size: 17px;
   line-height: 1.25;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .manager-card h3 {
@@ -878,9 +878,17 @@
 .manager-kpi span {
   margin: 0;
   color: var(--manager-muted);
-  font-size: 13px;
   line-height: 1.35;
-  font-weight: 700;
+}
+
+.manager-kpi p {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.manager-kpi span {
+  font-size: 12px;
+  font-weight: 500;
 }
 
 .manager-kpi strong {
@@ -1170,10 +1178,36 @@
   font-size: 13px;
 }
 
+.manager-calendar-nav,
+.employee-calendar-nav {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 1px solid #e5eaf0;
+  border-radius: 8px;
+  background: #fff;
+  color: #64748b;
+  cursor: pointer;
+}
+
+.manager-calendar-nav:hover,
+.employee-calendar-nav:hover {
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+.manager-calendar .is-other-month {
+  color: #cbd5e1;
+}
+
 .manager-calendar {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  grid-template-rows: 28px repeat(5, 34px);
+  grid-template-rows: 28px;
+  grid-auto-rows: minmax(0, 1fr);
   flex: 1;
   min-height: 0;
   overflow: hidden;
@@ -1321,16 +1355,16 @@
   text-align: left;
   white-space: nowrap;
   text-overflow: ellipsis;
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1;
-  font-weight: 700;
+  font-weight: 500;
 }
 
 .manager-table th {
   height: 34px;
   color: var(--manager-muted);
-  font-size: 12px;
-  font-weight: 800;
+  font-size: 13px;
+  font-weight: 600;
   background: #f8fafc;
 }
 
@@ -1613,9 +1647,17 @@
 .employee-kpi span {
   margin: 0;
   color: var(--employee-muted);
-  font-size: 13px;
   line-height: 1.35;
-  font-weight: 600;
+}
+
+.employee-kpi p {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.employee-kpi span {
+  font-size: 12px;
+  font-weight: 500;
 }
 
 .employee-kpi strong {
@@ -1778,14 +1820,14 @@
   white-space: nowrap;
   text-overflow: ellipsis;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .employee-table th {
   height: 36px;
   color: var(--employee-muted);
-  font-size: 12px;
-  font-weight: 700;
+  font-size: 13px;
+  font-weight: 600;
   background: #f8fafc;
 }
 
@@ -1829,7 +1871,8 @@
 .employee-calendar {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
-  grid-template-rows: 34px repeat(5, 55px);
+  grid-template-rows: 34px;
+  grid-auto-rows: minmax(45px, 1fr);
   overflow: hidden;
   border: 1px solid #e5eaf0;
   border-radius: 12px;

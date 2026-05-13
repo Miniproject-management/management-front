@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 
 import { getAdminDashboardApi } from "../../api/dashboardApi";
+import { getDepartmentTreeApi } from "../../api/departmentApi";
 import { fetchHrApplicantDashboard } from "../../api/api.jsx";
 
 import "./dashboard.css";
@@ -63,19 +64,7 @@ function clampScore0to100(v) {
   return Math.max(0, Math.min(100, Math.round(n)));
 }
 
-const headcountRows = [
-  ["개발팀", "46명", "김팀장", "+2"],
-  ["보안팀", "18명", "이팀장", "0"],
-  ["인사팀", "12명", "박팀장", "+1"],
-  ["기획팀", "15명", "최팀장", "-1"],
-];
-
-const donutSegments = [
-  { label: "개발팀", value: "46명 (50.5%)", color: "#F97316" },
-  { label: "보안팀", value: "18명 (19.8%)", color: "#FDBA74" },
-  { label: "인사팀", value: "12명 (13.2%)", color: "#FDE68A" },
-  { label: "기획팀", value: "15명 (16.5%)", color: "#FACC15" },
-];
+const DEPT_COLORS = ["#F97316", "#FDBA74", "#FDE68A", "#FACC15", "#FB923C", "#FCD34D", "#FEF3C7"];
 
 function formatShortDate(value) {
   if (!value) return "-";
@@ -121,8 +110,9 @@ function ProgressBar({ value, tone = "orange", compact = false }) {
 
 function AdminDashboard() {
   const [data, setData] = useState(null);
+  const [departments, setDepartments] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [, setError] = useState(null);
   const [applicantRows, setApplicantRows] = useState([]);
   const [applicantsLoading, setApplicantsLoading] = useState(true);
   const [applicantsError, setApplicantsError] = useState(null);
@@ -130,17 +120,19 @@ function AdminDashboard() {
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
-    getAdminDashboardApi()
-      .then((res) => {
-        if (!cancelled) {
-          setData(res);
-          setError(null);
+    Promise.allSettled([getAdminDashboardApi(), getDepartmentTreeApi()])
+      .then(([dashboardRes, deptRes]) => {
+        if (cancelled) return;
+        if (dashboardRes.status === "fulfilled") {
+          setData(dashboardRes.value);
+        } else {
+          console.error("인사팀 대시보드 조회 실패", dashboardRes.reason);
+          setError(dashboardRes.reason);
         }
-      })
-      .catch((err) => {
-        if (!cancelled) {
-          console.error("인사팀 대시보드 조회 실패", err);
-          setError(err);
+        if (deptRes.status === "fulfilled") {
+          setDepartments(deptRes.value || []);
+        } else {
+          console.error("부서 트리 조회 실패", deptRes.reason);
         }
       })
       .finally(() => {
@@ -207,11 +199,29 @@ function AdminDashboard() {
     [pendingRequests],
   );
 
+  const totalHeadcount = useMemo(
+    () => departments.reduce((acc, d) => acc + Number(d.employeeCount || 0), 0),
+    [departments],
+  );
+
+  const donutSegments = useMemo(() => {
+    if (departments.length === 0 || totalHeadcount === 0) return [];
+    return departments.map((dept, index) => {
+      const count = Number(dept.employeeCount || 0);
+      const percent = ((count / totalHeadcount) * 100).toFixed(1);
+      return {
+        label: dept.deptName,
+        value: `${count}명 (${percent}%)`,
+        color: DEPT_COLORS[index % DEPT_COLORS.length],
+      };
+    });
+  }, [departments, totalHeadcount]);
+
   const kpis = [
     {
       label: "전체 임직원",
-      value: "91명",
-      description: "전월 대비 +3명",
+      value: totalHeadcount > 0 ? `${totalHeadcount}명` : "-",
+      description: `${departments.length}개 부서 합계`,
       icon: Users,
       tone: "orange",
     },
@@ -472,7 +482,7 @@ function AdminDashboard() {
         </article>
 
         <article className="dashboard-card dashboard-card--medium">
-          <CardHeader title="부서별 인원 현황" hasLink hint="백엔드 API 연결 예정" />
+          <CardHeader title="부서별 인원 현황" hasLink hint="팀장·변동 정보 추가 필요" />
 
           <div className="headcount-layout">
             <table className="dashboard-table headcount-table">
@@ -485,26 +495,30 @@ function AdminDashboard() {
                 </tr>
               </thead>
               <tbody>
-                {headcountRows.map(([department, count, leader, change]) => {
-                  const Icon = DEPT_ICON[department] || Users;
-                  return (
-                    <tr key={department}>
-                      <td>
-                        <span className="department-name">
-                          <Icon size={18} />
-                          {department}
-                        </span>
-                      </td>
-                      <td>{count}</td>
-                      <td>{leader}</td>
-                      <td>
-                        <span className={`change-badge ${change === "0" ? "change-badge--neutral" : ""}`}>
-                          {change}
-                        </span>
-                      </td>
-                    </tr>
-                  );
-                })}
+                {loading ? (
+                  <tr><td colSpan="4" className="dashboard-table__empty">불러오는 중...</td></tr>
+                ) : departments.length === 0 ? (
+                  <tr><td colSpan="4" className="dashboard-table__empty">부서 정보를 불러올 수 없습니다.</td></tr>
+                ) : (
+                  departments.map((dept) => {
+                    const Icon = DEPT_ICON[dept.deptName] || Users;
+                    return (
+                      <tr key={dept.deptNo}>
+                        <td>
+                          <span className="department-name">
+                            <Icon size={18} />
+                            {dept.deptName}
+                          </span>
+                        </td>
+                        <td>{dept.employeeCount}명</td>
+                        <td>-</td>
+                        <td>
+                          <span className="change-badge change-badge--neutral">-</span>
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
               </tbody>
             </table>
 
@@ -512,7 +526,7 @@ function AdminDashboard() {
               <div className="donut-chart" aria-label="부서별 인원 도넛 차트">
                 <div>
                   <span>전체</span>
-                  <strong>91명</strong>
+                  <strong>{loading ? "..." : `${totalHeadcount}명`}</strong>
                 </div>
               </div>
               <ul className="donut-legend">

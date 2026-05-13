@@ -63,15 +63,17 @@ function buildCalendarWeeks(year, month) {
   const start = new Date(first);
   start.setDate(first.getDate() - first.getDay());
 
+  const lastDay = new Date(year, month + 1, 0);
   const weeks = [];
-  for (let w = 0; w < 6; w += 1) {
+  const cursor = new Date(start);
+  while (weeks.length < 6) {
     const week = [];
     for (let d = 0; d < 7; d += 1) {
-      const cell = new Date(start);
-      cell.setDate(start.getDate() + w * 7 + d);
-      week.push(cell);
+      week.push(new Date(cursor));
+      cursor.setDate(cursor.getDate() + 1);
     }
     weeks.push(week);
+    if (week[6] >= lastDay) break;
   }
   return weeks;
 }
@@ -171,8 +173,13 @@ function EmployeeDashboard() {
   }, [empNo]);
 
   const today = useMemo(() => new Date(), []);
-  const year = today.getFullYear();
-  const month = today.getMonth();
+  const [viewDate, setViewDate] = useState(() => new Date(today.getFullYear(), today.getMonth(), 1));
+  const year = viewDate.getFullYear();
+  const month = viewDate.getMonth();
+
+  const goPrevMonth = () => setViewDate(new Date(year, month - 1, 1));
+  const goNextMonth = () => setViewDate(new Date(year, month + 1, 1));
+  const goToday = () => setViewDate(new Date(today.getFullYear(), today.getMonth(), 1));
 
   const balance = data?.leaveBalance;
   const myRequests = data?.myRequests || [];
@@ -325,11 +332,15 @@ function EmployeeDashboard() {
           <div className="employee-calendar-head">
             <h2>내 휴가 캘린더</h2>
             <div>
-              <ChevronLeft size={16} />
+              <button type="button" className="employee-calendar-nav" onClick={goPrevMonth} aria-label="이전 달">
+                <ChevronLeft size={16} />
+              </button>
               <b>{year}년 {month + 1}월</b>
-              <ChevronRight size={16} />
+              <button type="button" className="employee-calendar-nav" onClick={goNextMonth} aria-label="다음 달">
+                <ChevronRight size={16} />
+              </button>
             </div>
-            <button type="button">오늘</button>
+            <button type="button" onClick={goToday}>오늘</button>
           </div>
 
           <div className="employee-calendar">
