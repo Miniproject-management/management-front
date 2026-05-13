@@ -17,7 +17,22 @@ function Sidebar() {
   return (
     <aside className="sidebar">
       <div>
-        <h2 className="logo">SECURE HR</h2>
+        <div className="brand-section">
+          <img
+            src="/hellohr-logo.png"
+            alt="HELLO HR"
+            className="brand-logo"
+          />
+
+          <div className="brand-text">
+            <h2 className="logo">HELLO HR</h2>
+
+            <p className="logo-title">
+              당신의 안전한 안녕이 시작됩니다.
+            </p>
+          </div>
+
+        </div>
 
         <nav className="nav-menu">
           <NavLink className="menu-item" to="/" end>
