@@ -1,87 +1,119 @@
 .login-page {
-  width: 100%;
+  flex: 1;
 
   display: flex;
   justify-content: center;
   align-items: center;
+
+  padding: 40px;
+
+  background: linear-gradient(
+    135deg,
+    #f8f9fc 0%,
+    #f3f4f6 100%
+  );
 }
 
-/* 로그인 박스 */
+/* 로그인 카드 */
 .login-container {
   width: 100%;
-  max-width: 340px;
+  max-width: 420px;
 
-  padding: 40px 30px;
+  padding: 48px 40px;
 
-  background-color: #f5f5f5;
+  background-color: white;
 
-  border-radius: 16px;
+  border-radius: 24px;
+
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.06),
+    0 2px 10px rgba(0, 0, 0, 0.03);
 }
 
 /* 제목 */
 .login-title {
   text-align: center;
 
-  font-size: 28px;
+  font-size: 36px;
   font-weight: 700;
 
-  margin-bottom: 30px;
-
   color: #111;
+
+  margin-bottom: 10px;
+}
+
+/* 설명 */
+.login-description {
+  text-align: center;
+
+  font-size: 14px;
+  color: #777;
+
+  margin-bottom: 36px;
 }
 
 /* form */
 .login-form {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 22px;
 }
 
-/* input 묶음 */
+/* input 그룹 */
 .input-group {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 
 .input-group label {
-  font-size: 13px;
-  color: #222;
+  font-size: 14px;
+  font-weight: 600;
+
+  color: #333;
 }
 
 /* input */
 .input-group input {
-  height: 40px;
+  height: 48px;
 
-  border: 1px solid #d9d9d9;
-  border-radius: 8px;
+  border: 1px solid #e1e1e1;
+  border-radius: 12px;
 
-  padding: 0 12px;
+  padding: 0 16px;
 
-  font-size: 13px;
+  font-size: 14px;
+
+  background-color: #fafafa;
+
+  transition: 0.2s;
 
   outline: none;
-  background-color: white;
 }
 
 .input-group input:focus {
   border-color: #fea954;
+
+  background-color: white;
+
+  box-shadow: 0 0 0 4px rgba(254, 169, 84, 0.15);
 }
 
 /* 버튼 */
 .login-button {
-  margin-top: 10px;
+  margin-top: 8px;
 
-  height: 40px;
+  height: 50px;
 
   border: none;
-  border-radius: 8px;
+  border-radius: 12px;
 
   background-color: #fea954;
+
   color: white;
 
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 700;
 
   cursor: pointer;
 
@@ -89,5 +121,7 @@
 }
 
 .login-button:hover {
-  opacity: 0.9;
+  transform: translateY(-1px);
+
+  box-shadow: 0 8px 20px rgba(254, 169, 84, 0.3);
 }

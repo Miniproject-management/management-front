@@ -38,9 +38,16 @@ function LoginPage() {
   return (
     <div className="login-page">
       <div className="login-container">
+
+        {/* 제목 */}
         <h1 className="login-title">
           로그인
         </h1>
+
+        {/* 설명 문구 추가 */}
+        <p className="login-description">
+          사번과 비밀번호를 입력해주세요.
+        </p>
 
         <form
           className="login-form"
@@ -79,6 +86,7 @@ function LoginPage() {
             로그인
           </button>
         </form>
+
       </div>
     </div>
   );
