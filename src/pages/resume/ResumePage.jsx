@@ -76,6 +76,14 @@ function parseAnalysisResultJson(resultJson) {
   }
 }
 
+/** 종합 점수 막대 색 (구간별) */
+function scoreBarTierClass(score) {
+  if (score < 50) return 'resume-ai__score-fill--tier-bad';
+  if (score < 70) return 'resume-ai__score-fill--tier-fair';
+  if (score < 85) return 'resume-ai__score-fill--tier-good';
+  return 'resume-ai__score-fill--tier-great';
+}
+
 function mergeAnalyzeIntoRow(row, analyzeResult) {
   const a = analyzeResult?.analysis;
   if (!a) return row;
@@ -153,14 +161,14 @@ export default function ResumePage() {
   useEffect(() => {
     if (!analyzeModalRow) return;
     const onKey = (e) => {
-      if (e.key === 'Escape') {
+      if (e.key === 'Escape' && analyzeBusyId !== analyzeModalRow.applicantId) {
         setAnalyzeModalRow(null);
         setAnalyzeJd('');
       }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [analyzeModalRow]);
+  }, [analyzeModalRow, analyzeBusyId]);
 
   const kpis = useMemo(() => {
     const total = rows.length;
@@ -573,11 +581,19 @@ export default function ResumePage() {
                               <td>
                                 <button
                                   type="button"
-                                  className="resume-ai__btn-accent"
+                                  className="resume-ai__btn-accent resume-ai__btn-accent--with-spinner"
                                   disabled={!row.resumeAttached || busy}
                                   onClick={() => openAnalyzeModal(row)}
+                                  aria-busy={busy}
                                 >
-                                  {busy ? '분석중…' : '분석'}
+                                  {busy ? (
+                                    <span
+                                      className="resume-ai__spinner-donut resume-ai__spinner-donut--sm"
+                                      aria-hidden="true"
+                                    />
+                                  ) : (
+                                    '분석'
+                                  )}
                                 </button>
                               </td>
                             </tr>
@@ -754,7 +770,7 @@ export default function ResumePage() {
                             aria-valuemax={100}
                           >
                             <div
-                              className="resume-ai__score-fill"
+                              className={`resume-ai__score-fill ${scoreBarTierClass(sc)}`}
                               style={{ width: `${sc}%` }}
                             />
                           </div>
@@ -851,6 +867,7 @@ export default function ResumePage() {
           className="resume-ai__modal-backdrop"
           role="presentation"
           onClick={(e) => {
+            if (analyzeBusyId === analyzeModalRow?.applicantId) return;
             if (e.target === e.currentTarget) closeAnalyzeModal();
           }}
         >
@@ -895,11 +912,19 @@ export default function ResumePage() {
                 onClick={confirmAnalyze}
                 disabled={analyzeBusyId === analyzeModalRow.applicantId}
               >
-                {analyzeBusyId === analyzeModalRow.applicantId
-                  ? '분석 중…'
-                  : '분석 실행'}
+                분석 실행
               </button>
             </div>
+            {analyzeBusyId === analyzeModalRow.applicantId ? (
+              <div
+                className="resume-ai__modal-busy"
+                role="status"
+                aria-live="polite"
+              >
+                <span className="resume-ai__spinner-donut" aria-hidden="true" />
+                <span className="resume-ai__sr-only">Resume analysis in progress</span>
+              </div>
+            ) : null}
           </div>
         </div>
       ) : null}

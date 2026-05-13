@@ -3,6 +3,7 @@ import { LayoutDashboard, Users, Building2, Network } from "lucide-react";
 import DashboardView from './DashboardView';
 import EmployeeView from './EmployeeView';
 import DeptListView from './DeptListView';
+import OrgChartView from './OrgChartView';
 import '../../styles/DepartmentPage.css';
 
 function DepartmentPage() {
@@ -36,7 +37,7 @@ function DepartmentPage() {
         {activeTab === 'dashboard' && <DashboardView />}
         {activeTab === 'employees' && <EmployeeView />}
         {activeTab === 'departments' && <DeptListView />}
-        {activeTab === 'orgchart' && <div className="empty-state">준비 중인 기능입니다.</div>}
+        {activeTab === 'orgchart' && <OrgChartView />}
       </div>
     </div>
   );

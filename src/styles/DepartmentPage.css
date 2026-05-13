@@ -363,3 +363,166 @@
   color: white;
   white-space: nowrap;
 }
+
+/* ----------------------------------
+   조직도 (Org Chart) 스타일
+----------------------------------- */
+.org-chart-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-bottom: 40px;
+}
+
+.org-dept-card {
+  background: white;
+  border-radius: 16px;
+  border: 1px solid #f0f0f0;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.org-dept-card.expanded {
+  box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+}
+
+.dept-card-header {
+  padding: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  background-color: white;
+  transition: background-color 0.2s;
+}
+
+.dept-card-header:hover {
+  background-color: #fafafa;
+}
+
+.dept-title-area {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.dept-icon-box {
+  background-color: #fff5ed;
+  color: #ff6b00;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 12px;
+}
+
+.dept-name {
+  font-size: 18px;
+  font-weight: 800;
+  color: #1a1a1a;
+}
+
+.dept-toggle-icon {
+  color: #9ca3af;
+}
+
+.dept-card-body {
+  padding: 0 24px 24px 24px;
+  border-top: 1px solid #f9f9f9;
+  animation: fadeInDown 0.3s ease-out;
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 멤버 아이템 공통 */
+.member-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 0;
+}
+
+.member-info-main {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.member-profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.member-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.member-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+/* 부서장 전용 스타일 */
+.member-item.leader {
+  background-color: #fffaf5;
+  margin: 16px 0;
+  padding: 12px 20px;
+  border-radius: 12px;
+}
+
+.role-label {
+  font-size: 12px;
+  font-weight: 700;
+  width: 70px;
+}
+
+.leader-label {
+  color: #ff6b00;
+}
+
+.inline-icon {
+  vertical-align: middle;
+  margin-top: -3px;
+}
+
+/* 부서원 리스트 스타일 */
+.member-list {
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.member-list .member-item {
+  border-bottom: 1px solid #fcfcfc;
+}
+
+.member-list .member-item:last-child {
+  border-bottom: none;
+}
+
+.member-info-sub {
+  color: #9ca3af;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.empty-msg {
+  text-align: center;
+  padding: 20px;
+  color: #bbb;
+  font-size: 13px;
+}

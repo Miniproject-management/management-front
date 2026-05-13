@@ -16,6 +16,7 @@ import {
 
 import { getAdminDashboardApi } from "../../api/dashboardApi";
 import { getDepartmentTreeApi } from "../../api/departmentApi";
+import { getEmployeesApi } from "../../api/employeeApi";
 import { fetchHrApplicantDashboard } from "../../api/api.jsx";
 
 import "./dashboard.css";
@@ -64,13 +65,37 @@ function clampScore0to100(v) {
   return Math.max(0, Math.min(100, Math.round(n)));
 }
 
-const DEPT_COLORS = ["#F97316", "#FDBA74", "#FDE68A", "#FACC15", "#FB923C", "#FCD34D", "#FEF3C7"];
+const DEPT_COLORS = ["#64748B", "#94A3B8", "#CBD5E1", "#86A789", "#A7C7A1", "#D8E2DC", "#E5E7EB"];
 
 function formatShortDate(value) {
   if (!value) return "-";
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return value;
   return `${String(date.getMonth() + 1).padStart(2, "0")}.${String(date.getDate()).padStart(2, "0")}`;
+}
+
+function dateTimeValue(value) {
+  if (!value) return 0;
+  const time = new Date(value).getTime();
+  return Number.isNaN(time) ? 0 : time;
+}
+
+function isTeamLeader(emp) {
+  const position = String(emp?.position || "").toLowerCase();
+  const title = String(emp?.jobTitle || "").toLowerCase();
+  return position.includes("팀장") || position.includes("leader") || title.includes("팀장") || title.includes("leader");
+}
+
+function buildDonutGradient(segments) {
+  if (!segments.length) return "conic-gradient(#E5E7EB 0deg 360deg)";
+  let cursor = 0;
+  const stops = segments.map((segment) => {
+    const start = cursor;
+    const end = cursor + segment.degrees;
+    cursor = end;
+    return `${segment.color} ${start}deg ${end}deg`;
+  });
+  return `conic-gradient(${stops.join(", ")})`;
 }
 
 function CardHeader({ title, hasLink = false, hint = null, linkTo = null }) {
@@ -111,6 +136,7 @@ function ProgressBar({ value, tone = "orange", compact = false }) {
 function AdminDashboard() {
   const [data, setData] = useState(null);
   const [departments, setDepartments] = useState([]);
+  const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
   const [, setError] = useState(null);
   const [applicantRows, setApplicantRows] = useState([]);
@@ -120,8 +146,8 @@ function AdminDashboard() {
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
-    Promise.allSettled([getAdminDashboardApi(), getDepartmentTreeApi()])
-      .then(([dashboardRes, deptRes]) => {
+    Promise.allSettled([getAdminDashboardApi(), getDepartmentTreeApi(), getEmployeesApi()])
+      .then(([dashboardRes, deptRes, employeeRes]) => {
         if (cancelled) return;
         if (dashboardRes.status === "fulfilled") {
           setData(dashboardRes.value);
@@ -133,6 +159,11 @@ function AdminDashboard() {
           setDepartments(deptRes.value || []);
         } else {
           console.error("부서 트리 조회 실패", deptRes.reason);
+        }
+        if (employeeRes.status === "fulfilled") {
+          setEmployees(Array.isArray(employeeRes.value) ? employeeRes.value : []);
+        } else {
+          console.error("사원 목록 조회 실패", employeeRes.reason);
         }
       })
       .finally(() => {
@@ -173,6 +204,72 @@ function AdminDashboard() {
   const deptSummaries = data?.deptSummaries || [];
   const allRequests = data?.allRequests || [];
 
+  const applicantRowsSorted = useMemo(
+    () =>
+      [...applicantRows].sort((a, b) => {
+        const bTime = dateTimeValue(b.submittedAt) || dateTimeValue(b.analyzedAt) || Number(b.applicantId || 0);
+        const aTime = dateTimeValue(a.submittedAt) || dateTimeValue(a.analyzedAt) || Number(a.applicantId || 0);
+        return bTime - aTime;
+      }),
+    [applicantRows],
+  );
+
+  const applicantStats = useMemo(() => {
+    const scores = applicantRows
+      .map((row) => clampScore0to100(row.overallScore))
+      .filter((score) => score != null);
+    const avgScore =
+      scores.length === 0
+        ? null
+        : Math.round(scores.reduce((acc, score) => acc + score, 0) / scores.length);
+    const startOfWeek = new Date(today);
+    const day = startOfWeek.getDay() || 7;
+    startOfWeek.setHours(0, 0, 0, 0);
+    startOfWeek.setDate(startOfWeek.getDate() - day + 1);
+    const datedRows = applicantRows.filter((row) => dateTimeValue(row.submittedAt) > 0);
+    const newThisWeek = datedRows.length
+      ? datedRows.filter((row) => new Date(row.submittedAt) >= startOfWeek).length
+      : applicantRows.length;
+    return {
+      newThisWeek,
+      avgScore,
+      highScoreCount: scores.filter((score) => score >= 85).length,
+    };
+  }, [applicantRows, today]);
+
+  const departmentRows = useMemo(() => {
+    const byDept = employees.reduce((acc, emp) => {
+      const key = emp.deptName || "미지정";
+      if (!acc.has(key)) acc.set(key, []);
+      acc.get(key).push(emp);
+      return acc;
+    }, new Map());
+    const names = departments.length
+      ? departments.map((dept) => dept.deptName)
+      : Array.from(byDept.keys());
+
+    return names.map((deptName) => {
+      const dept = departments.find((item) => item.deptName === deptName);
+      const members = byDept.get(deptName) || [];
+      const currentMonthHires = members.filter((emp) => {
+        const hireDate = new Date(emp.hireDate);
+        return (
+          !Number.isNaN(hireDate.getTime()) &&
+          hireDate.getFullYear() === today.getFullYear() &&
+          hireDate.getMonth() === today.getMonth()
+        );
+      }).length;
+      const leader = members.find(isTeamLeader);
+      return {
+        deptNo: dept?.deptNo ?? deptName,
+        deptName,
+        employeeCount: members.length || Number(dept?.employeeCount || 0),
+        leaderName: leader?.empName || "-",
+        recentChange: currentMonthHires,
+      };
+    });
+  }, [departments, employees, today]);
+
   const avgRemaining = useMemo(() => {
     if (deptSummaries.length === 0) return null;
     const sum = deptSummaries.reduce((acc, d) => acc + Number(d.avgRemainingLeave || 0), 0);
@@ -200,42 +297,45 @@ function AdminDashboard() {
   );
 
   const totalHeadcount = useMemo(
-    () => departments.reduce((acc, d) => acc + Number(d.employeeCount || 0), 0),
-    [departments],
+    () => departmentRows.reduce((acc, d) => acc + Number(d.employeeCount || 0), 0),
+    [departmentRows],
   );
 
   const donutSegments = useMemo(() => {
-    if (departments.length === 0 || totalHeadcount === 0) return [];
-    return departments.map((dept, index) => {
+    if (departmentRows.length === 0 || totalHeadcount === 0) return [];
+    return departmentRows.map((dept, index) => {
       const count = Number(dept.employeeCount || 0);
-      const percent = ((count / totalHeadcount) * 100).toFixed(1);
+      const rawPercent = (count / totalHeadcount) * 100;
       return {
         label: dept.deptName,
-        value: `${count}명 (${percent}%)`,
+        value: `${count}명 (${rawPercent.toFixed(1)}%)`,
+        degrees: (count / totalHeadcount) * 360,
         color: DEPT_COLORS[index % DEPT_COLORS.length],
       };
     });
-  }, [departments, totalHeadcount]);
+  }, [departmentRows, totalHeadcount]);
+
+  const donutGradient = useMemo(() => buildDonutGradient(donutSegments), [donutSegments]);
 
   const kpis = [
     {
       label: "전체 임직원",
       value: totalHeadcount > 0 ? `${totalHeadcount}명` : "-",
-      description: `${departments.length}개 부서 합계`,
+      description: `${departmentRows.length}개 부서 합계`,
       icon: Users,
       tone: "orange",
     },
     {
       label: "신규 지원자",
-      value: "12명",
+      value: `${applicantStats.newThisWeek}명`,
       description: "이번 주 기준",
       icon: UserPlus,
       tone: "green",
     },
     {
       label: "평균 스크리닝 점수",
-      value: "84점",
-      description: "고득점 후보 3명",
+      value: applicantStats.avgScore == null ? "-" : `${applicantStats.avgScore}점`,
+      description: `고득점 후보 ${applicantStats.highScoreCount}명`,
       icon: Star,
       tone: "purple",
     },
@@ -350,7 +450,7 @@ function AdminDashboard() {
                     </td>
                   </tr>
                 ) : (
-                  applicantRows.map((row, index) => {
+                  applicantRowsSorted.slice(0, 5).map((row, index) => {
                     const rank = index + 1;
                     const score = clampScore0to100(row.overallScore);
                     const summary = row.summaryPreview?.trim() || "—";
@@ -438,7 +538,7 @@ function AdminDashboard() {
         </article>
 
         <article className="dashboard-card dashboard-card--medium">
-          <CardHeader title="결재 대기 문서" hasLink />
+          <CardHeader title="결재 대기 문서" hasLink linkTo="/approval" />
 
           <table className="dashboard-table approval-table">
             <thead>
@@ -482,7 +582,7 @@ function AdminDashboard() {
         </article>
 
         <article className="dashboard-card dashboard-card--medium">
-          <CardHeader title="부서별 인원 현황" hasLink hint="팀장·변동 정보 추가 필요" />
+          <CardHeader title="부서별 인원 현황" hasLink />
 
           <div className="headcount-layout">
             <table className="dashboard-table headcount-table">
@@ -497,11 +597,21 @@ function AdminDashboard() {
               <tbody>
                 {loading ? (
                   <tr><td colSpan="4" className="dashboard-table__empty">불러오는 중...</td></tr>
-                ) : departments.length === 0 ? (
+                ) : departmentRows.length === 0 ? (
                   <tr><td colSpan="4" className="dashboard-table__empty">부서 정보를 불러올 수 없습니다.</td></tr>
                 ) : (
-                  departments.map((dept) => {
+                  departmentRows.map((dept) => {
                     const Icon = DEPT_ICON[dept.deptName] || Users;
+                    const changeClass =
+                      dept.recentChange > 0
+                        ? "change-badge--positive"
+                        : dept.recentChange < 0
+                          ? "change-badge--negative"
+                          : "change-badge--neutral";
+                    const changeLabel =
+                      dept.recentChange > 0
+                        ? `+${dept.recentChange}`
+                        : String(dept.recentChange);
                     return (
                       <tr key={dept.deptNo}>
                         <td>
@@ -511,9 +621,9 @@ function AdminDashboard() {
                           </span>
                         </td>
                         <td>{dept.employeeCount}명</td>
-                        <td>-</td>
+                        <td>{dept.leaderName}</td>
                         <td>
-                          <span className="change-badge change-badge--neutral">-</span>
+                          <span className={`change-badge ${changeClass}`}>{changeLabel}</span>
                         </td>
                       </tr>
                     );
@@ -523,7 +633,11 @@ function AdminDashboard() {
             </table>
 
             <div className="donut-panel">
-              <div className="donut-chart" aria-label="부서별 인원 도넛 차트">
+              <div
+                className="donut-chart"
+                style={{ "--donut-gradient": donutGradient }}
+                aria-label="부서별 인원 도넛 차트"
+              >
                 <div>
                   <span>전체</span>
                   <strong>{loading ? "..." : `${totalHeadcount}명`}</strong>
