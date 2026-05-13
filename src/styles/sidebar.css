@@ -13,24 +13,21 @@
 }
 
 .brand-section {
-  display: flex;
-  align-items: center;
-
-  gap: 12px;
-
   margin-bottom: 40px;
 }
 
-.brand-logo {
-  width: 52px;
-  height: 52px;
+.brand-top {
+  display: flex;
+  align-items: center;
 
-  object-fit: contain;
+  gap: 10px;
 }
 
-.brand-text {
-  display: flex;
-  flex-direction: column;
+.brand-logo {
+  width: 42px;
+  height: 42px;
+
+  object-fit: contain;
 }
 
 .logo {
@@ -45,7 +42,7 @@
 }
 
 .logo-title {
-  margin-top: 4px;
+  margin-top: 8px;
 
   color: #94a3b8;
 

@@ -18,19 +18,22 @@ function Sidebar() {
     <aside className="sidebar">
       <div>
         <div className="brand-section">
-          <img
-            src="/hellohr-logo.png"
-            alt="HELLO HR"
-            className="brand-logo"
-          />
+          <div className="brand-top">
+            <img
+              src="/hellohr-logo.png"
+              alt="HELLO HR"
+              className="brand-logo"
+            />
 
-          <div className="brand-text">
-            <h2 className="logo">HELLO HR</h2>
+            <h2 className="logo">
+              HELLO HR
+            </h2>
 
-            <p className="logo-title">
-              당신의 안전한 안녕이 시작됩니다.
-            </p>
           </div>
+
+          <p className="logo-title">
+            당신의 안전한 안녕이 시작됩니다.
+          </p>
 
         </div>
 
