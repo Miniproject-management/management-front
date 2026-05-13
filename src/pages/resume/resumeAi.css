@@ -25,12 +25,17 @@
  * /resume 에서 목록·상세가 길어지면 하단(이력서 PDF·분석)이 잘리고 스크롤로도 안 보임.
  */
 .dashboard-page.resume-ai {
+  /* 기본 .dashboard-page 는 grid-template-rows: 54px 1fr 이라
+     두 번째 자식(탭 바)이 남은 높이를 전부 먹고 요약 카드가 아래로 밀림 → flex 로 재정의 */
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
   height: auto;
   min-height: calc(100vh - 40px);
   max-height: none;
   overflow-x: hidden;
   overflow-y: visible;
-  align-content: start;
   width: 100%;
   max-width: none;
 }
@@ -42,13 +47,22 @@
   width: 100%;
 }
 
+/* 요약 탭: KPI + 점수 분포를 한 덩어리로 상단 정렬 */
+.resume-ai__summary-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  flex: 0 0 auto;
+}
+
 /* 요약 탭 KPI 그리드: 가로 전체 사용 */
 .dashboard-page.resume-ai .dashboard-page__summary-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 16px;
   width: 100%;
-  margin-bottom: 8px;
+  margin-bottom: 0;
 }
 
 @media (max-width: 960px) {
@@ -61,6 +75,87 @@
   .dashboard-page.resume-ai .dashboard-page__summary-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* ----- 요약 탭: 점수 분포(막대) ----- */
+
+.resume-ai__score-chart {
+  padding: 20px 22px 22px;
+  border-radius: 16px;
+  border: 1px solid var(--resume-ai-border);
+  background: #ffffff;
+  box-shadow: var(--resume-ai-shadow-soft);
+}
+
+.resume-ai__score-chart-title {
+  margin: 0 0 4px;
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--resume-ai-text);
+}
+
+.resume-ai__score-chart-sub {
+  margin: 0 0 18px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--resume-ai-muted);
+}
+
+.resume-ai__score-chart-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.resume-ai__dist-row {
+  display: grid;
+  grid-template-columns: 100px 1fr 52px;
+  align-items: center;
+  gap: 12px;
+}
+
+@media (max-width: 520px) {
+  .resume-ai__dist-row {
+    grid-template-columns: 84px 1fr 44px;
+    gap: 8px;
+  }
+}
+
+.resume-ai__dist-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #334155;
+}
+
+.resume-ai__dist-track {
+  height: 12px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  overflow: hidden;
+}
+
+.resume-ai__dist-fill {
+  height: 100%;
+  min-width: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #fb923c, var(--resume-ai-accent));
+  transition: width 0.35s ease;
+}
+
+.resume-ai__dist-count {
+  font-size: 13px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--resume-ai-text);
+  text-align: right;
+}
+
+.resume-ai__score-chart-foot {
+  margin: 14px 0 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--resume-ai-muted-light);
 }
 
 .resume-ai .summary-card {
@@ -264,6 +359,15 @@
   box-shadow: none;
 }
 
+.resume-ai__btn-accent--with-spinner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 56px;
+  min-height: 36px;
+  vertical-align: middle;
+}
+
 /* ----- 패널(목록·상세): 전체 폭 카드 ----- */
 
 .resume-ai .panel {
@@ -428,6 +532,7 @@
 }
 
 .resume-ai__modal {
+  position: relative;
   width: 100%;
   max-width: 520px;
   max-height: min(90vh, 640px);
@@ -437,6 +542,51 @@
   background: #fff;
   box-shadow: var(--resume-ai-shadow);
   padding: 26px 28px 24px;
+}
+
+.resume-ai__modal-busy {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  border-radius: inherit;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(3px);
+}
+
+.resume-ai__spinner-donut {
+  box-sizing: border-box;
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 4px solid #e8edf3;
+  border-top-color: var(--resume-ai-accent);
+  border-right-color: #fb923c;
+  animation: resume-ai-spin 0.72s linear infinite;
+}
+
+.resume-ai__spinner-donut--sm {
+  width: 20px;
+  height: 20px;
+  border-width: 2px;
+  animation-duration: 0.65s;
+}
+
+.resume-ai__sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .resume-ai__modal h3 {
@@ -557,6 +707,8 @@
   gap: 20px;
   align-items: stretch;
   width: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
 .resume-ai__list-panel {
@@ -712,7 +864,7 @@
 
 .resume-ai__section-title {
   margin: 0 0 12px;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 800;
   color: var(--resume-ai-text);
   letter-spacing: -0.02em;
@@ -849,20 +1001,20 @@ button.resume-ai__icon-btn--link {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  margin-bottom: 8px;
-  font-size: 13px;
+  margin-bottom: 10px;
+  font-size: 15px;
   font-weight: 600;
   color: var(--resume-ai-muted);
 }
 
 .resume-ai__score-head strong {
-  font-size: 18px;
+  font-size: 22px;
   font-weight: 800;
   color: var(--resume-ai-text);
 }
 
 .resume-ai__score-track {
-  height: 10px;
+  height: 12px;
   border-radius: 999px;
   background: #e2e8f0;
   overflow: hidden;
@@ -872,15 +1024,33 @@ button.resume-ai__icon-btn--link {
   height: 100%;
   border-radius: inherit;
   background: linear-gradient(90deg, #fb923c, #ea580c);
-  transition: width 0.35s ease;
+  transition:
+    width 0.35s ease,
+    background 0.25s ease;
+}
+
+.resume-ai__score-fill--tier-bad {
+  background: linear-gradient(90deg, #fca5a5, #dc2626);
+}
+
+.resume-ai__score-fill--tier-fair {
+  background: linear-gradient(90deg, #fdba74, #ea580c);
+}
+
+.resume-ai__score-fill--tier-good {
+  background: linear-gradient(90deg, #bef264, #65a30d);
+}
+
+.resume-ai__score-fill--tier-great {
+  background: linear-gradient(90deg, #4ade80, #15803d);
 }
 
 .resume-ai__summary-box {
-  padding: 14px 16px;
-  font-size: 14px;
-  line-height: 1.65;
+  padding: 18px 20px;
+  font-size: 16px;
+  line-height: 1.72;
   font-weight: 500;
-  color: #334155;
+  color: #1e293b;
   background: #fafaf9;
   border: 1px solid var(--resume-ai-border);
   border-radius: 12px;
@@ -893,30 +1063,66 @@ button.resume-ai__icon-btn--link {
   color: var(--resume-ai-muted-light);
 }
 
-.resume-ai__json-details {
-  margin-top: 14px;
-  border-radius: 10px;
-  border: 1px solid #e2e8f0;
-  background: #f8fafc;
-  padding: 0 12px 10px;
+.resume-ai__analysis-block {
+  margin-top: 22px;
 }
 
-.resume-ai__json-details summary {
-  padding: 10px 4px;
+.resume-ai__analysis-block-title {
+  margin: 0 0 12px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--resume-ai-accent-border);
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--resume-ai-text);
+  letter-spacing: -0.02em;
+}
+
+.resume-ai__bullet-list {
+  margin: 0;
+  padding-left: 1.35rem;
+  font-size: 16px;
+  line-height: 1.72;
+  font-weight: 500;
+  color: #1e293b;
+}
+
+.resume-ai__bullet-list li {
+  margin-bottom: 12px;
+}
+
+.resume-ai__bullet-list li:last-child {
+  margin-bottom: 0;
+}
+
+.resume-ai__bullet-list--strength li::marker {
+  color: #15803d;
+}
+
+.resume-ai__bullet-list--risk li::marker {
+  color: #dc2626;
+}
+
+.resume-ai__analysis-decision {
+  margin: 16px 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
   font-size: 13px;
+}
+
+.resume-ai__analysis-decision-label {
   font-weight: 700;
   color: var(--resume-ai-muted);
-  cursor: pointer;
-  user-select: none;
 }
 
-.resume-ai__json-details summary:hover {
-  color: #334155;
-}
-
-.resume-ai__detail-pre--json {
-  max-height: 200px;
-  margin-top: 0;
+.resume-ai__analysis-decision-value {
+  font-weight: 800;
+  color: var(--resume-ai-text);
+  padding: 4px 10px;
+  border-radius: 8px;
+  background: #f1f5f9;
+  border: 1px solid var(--resume-ai-border-strong);
 }
 
 .resume-ai__list-preview {

@@ -102,7 +102,7 @@ function ApprovalPage() {
     const fetchData = async () => {
       await fetchMyLeaves();
 
-      // 사원 아닐 때만 승인 목록 조회
+      // 사원이 아닐 때만 승인 목록 조회
       if (role !== "ROLE_EMPLOYEE") {
         await fetchPendingLeaves();
       }
@@ -113,11 +113,13 @@ function ApprovalPage() {
 
   return (
     <div className="approval-page">
+
       {/* 상단 */}
       <div className="approval-header">
         <h1>전자결재</h1>
 
         <div className="header-buttons">
+
           {role === "ROLE_ADMIN" && (
             <Link
               to="/approval/leave-balance"
@@ -133,6 +135,7 @@ function ApprovalPage() {
           >
             + 연차 신청
           </Link>
+
         </div>
       </div>
 
@@ -155,10 +158,10 @@ function ApprovalPage() {
           <tbody>
             {myLeaves.map((leave) => (
               <tr key={leave.leaveId}>
+
                 {/* 기간 */}
                 <td>
-                  {leave.startDate} ~{" "}
-                  {leave.endDate}
+                  {leave.startDate} ~ {leave.endDate}
                 </td>
 
                 {/* 연차 종류 */}
@@ -206,10 +209,10 @@ function ApprovalPage() {
                     상세보기
                   </Link>
                 </td>
+
               </tr>
             ))}
           </tbody>
-          
         </table>
       </section>
 
@@ -234,13 +237,14 @@ function ApprovalPage() {
             <tbody>
               {pendingLeaves.map((leave) => (
                 <tr key={leave.leaveId}>
+
                   {/* 이름 */}
                   <td>{leave.empName}</td>
 
                   {/* 부서 */}
                   <td>{leave.deptName}</td>
 
-                  {/* 종류 */}
+                  {/* 연차 종류 */}
                   <td>{leave.leaveType}</td>
 
                   {/* 기간 */}
@@ -269,32 +273,38 @@ function ApprovalPage() {
                   </td>
 
                   {/* 관리 */}
-                  <td className="action-buttons">
-                    <button
-                      className="approve-btn"
-                      onClick={() =>
-                        handleApprove(
-                          leave.leaveId
-                        )
-                      }
-                    >
-                      승인
-                    </button>
+                  <td>
+                    <div className="action-buttons">
 
-                    <button
-                      className="reject-btn"
-                      onClick={() =>
-                        handleReject(
-                          leave.leaveId
-                        )
-                      }
-                    >
-                      반려
-                    </button>
+                      <button
+                        className="approve-btn"
+                        onClick={() =>
+                          handleApprove(
+                            leave.leaveId
+                          )
+                        }
+                      >
+                        승인
+                      </button>
+
+                      <button
+                        className="reject-btn"
+                        onClick={() =>
+                          handleReject(
+                            leave.leaveId
+                          )
+                        }
+                      >
+                        반려
+                      </button>
+
+                    </div>
                   </td>
+
                 </tr>
               ))}
             </tbody>
+
           </table>
         </section>
       )}

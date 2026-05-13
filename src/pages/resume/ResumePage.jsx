@@ -47,6 +47,43 @@ function previewFromSummary(text) {
   return `${t.slice(0, 160)}…`;
 }
 
+/** resultJson(strengths·risks·decision 등) 안전 파싱 */
+function parseAnalysisResultJson(resultJson) {
+  const empty = {
+    strengths: [],
+    risks: [],
+    decision: null,
+    summaryFromJson: null,
+  };
+  if (!resultJson || typeof resultJson !== 'string') return empty;
+  try {
+    const o = JSON.parse(resultJson);
+    const strengths = Array.isArray(o.strengths)
+      ? o.strengths.filter((x) => typeof x === 'string' && String(x).trim())
+      : [];
+    const risks = Array.isArray(o.risks)
+      ? o.risks.filter((x) => typeof x === 'string' && String(x).trim())
+      : [];
+    const decision =
+      o.decision != null && String(o.decision).trim()
+        ? String(o.decision).trim()
+        : null;
+    const summaryFromJson =
+      typeof o.summary === 'string' && o.summary.trim() ? o.summary.trim() : null;
+    return { strengths, risks, decision, summaryFromJson };
+  } catch {
+    return empty;
+  }
+}
+
+/** 종합 점수 막대 색 (구간별) */
+function scoreBarTierClass(score) {
+  if (score < 50) return 'resume-ai__score-fill--tier-bad';
+  if (score < 70) return 'resume-ai__score-fill--tier-fair';
+  if (score < 85) return 'resume-ai__score-fill--tier-good';
+  return 'resume-ai__score-fill--tier-great';
+}
+
 function mergeAnalyzeIntoRow(row, analyzeResult) {
   const a = analyzeResult?.analysis;
   if (!a) return row;
@@ -124,14 +161,14 @@ export default function ResumePage() {
   useEffect(() => {
     if (!analyzeModalRow) return;
     const onKey = (e) => {
-      if (e.key === 'Escape') {
+      if (e.key === 'Escape' && analyzeBusyId !== analyzeModalRow.applicantId) {
         setAnalyzeModalRow(null);
         setAnalyzeJd('');
       }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [analyzeModalRow]);
+  }, [analyzeModalRow, analyzeBusyId]);
 
   const kpis = useMemo(() => {
     const total = rows.length;
@@ -149,6 +186,27 @@ export default function ResumePage() {
             scores.reduce((a, b) => a + Number(b), 0) / scores.length,
           );
     return { total, withResume, analyzed, avgScore };
+  }, [rows]);
+
+  /** 요약 탭: 종합 점수 구간별 인원(막대 그래프용) */
+  const scoreDistribution = useMemo(() => {
+    const bins = [
+      { label: '0–59점', min: 0, max: 59, count: 0 },
+      { label: '60–74점', min: 60, max: 74, count: 0 },
+      { label: '75–89점', min: 75, max: 89, count: 0 },
+      { label: '90–100점', min: 90, max: 100, count: 0 },
+    ];
+    let scored = 0;
+    for (const r of rows) {
+      const s = clampScore0to100(r.overallScore);
+      if (s == null) continue;
+      scored += 1;
+      const bin = bins.find((b) => s >= b.min && s <= b.max);
+      if (bin) bin.count += 1;
+    }
+    const maxBar = Math.max(...bins.map((b) => b.count), 1);
+    const noScore = rows.length - scored;
+    return { bins, scored, noScore, maxBar };
   }, [rows]);
 
   const totalPages = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
@@ -344,50 +402,97 @@ export default function ResumePage() {
       {error ? <p className="resume-ai__alert resume-ai__alert--error">{error}</p> : null}
 
       {tab === 'summary' && (
-        <section className="dashboard-page__summary-grid">
-          <article className="summary-card">
-            <div className="summary-card__icon tone-blue">
-              <Users size={22} strokeWidth={2} />
-            </div>
-            <div className="summary-card__body">
-              <p className="summary-card__label">전체 지원자</p>
-              <strong className="summary-card__value">{kpis.total}명</strong>
-              <span className="summary-card__note">등록된 지원자 수</span>
-            </div>
-          </article>
-          <article className="summary-card">
-            <div className="summary-card__icon tone-green">
-              <FileText size={22} strokeWidth={2} />
-            </div>
-            <div className="summary-card__body">
-              <p className="summary-card__label">이력서 제출</p>
-              <strong className="summary-card__value">{kpis.withResume}명</strong>
-              <span className="summary-card__note">첨부파일 있는 지원자</span>
-            </div>
-          </article>
-          <article className="summary-card">
-            <div className="summary-card__icon tone-purple">
-              <Star size={22} strokeWidth={2} />
-            </div>
-            <div className="summary-card__body">
-              <p className="summary-card__label">평균 스크리닝 점수</p>
-              <strong className="summary-card__value">
-                {kpis.avgScore != null ? `${kpis.avgScore}점` : '—'}
-              </strong>
-              <span className="summary-card__note">분석 완료 건 기준</span>
-            </div>
-          </article>
-          <article className="summary-card">
-            <div className="summary-card__icon tone-orange">
-              <CheckCircle size={22} strokeWidth={2} />
-            </div>
-            <div className="summary-card__body">
-              <p className="summary-card__label">분석 이력 있음</p>
-              <strong className="summary-card__value">{kpis.analyzed}명</strong>
-              <span className="summary-card__note">상태 또는 점수 보유</span>
-            </div>
-          </article>
-        </section>
+        <div className="resume-ai__summary-layout">
+          {loading ? (
+            <p className="resume-ai__hint">불러오는 중…</p>
+          ) : (
+            <>
+              <section className="dashboard-page__summary-grid">
+                <article className="summary-card">
+                  <div className="summary-card__icon tone-blue">
+                    <Users size={22} strokeWidth={2} />
+                  </div>
+                  <div className="summary-card__body">
+                    <p className="summary-card__label">전체 지원자</p>
+                    <strong className="summary-card__value">{kpis.total}명</strong>
+                    <span className="summary-card__note">등록된 지원자 수</span>
+                  </div>
+                </article>
+                <article className="summary-card">
+                  <div className="summary-card__icon tone-green">
+                    <FileText size={22} strokeWidth={2} />
+                  </div>
+                  <div className="summary-card__body">
+                    <p className="summary-card__label">이력서 제출</p>
+                    <strong className="summary-card__value">{kpis.withResume}명</strong>
+                    <span className="summary-card__note">첨부파일 있는 지원자</span>
+                  </div>
+                </article>
+                <article className="summary-card">
+                  <div className="summary-card__icon tone-purple">
+                    <Star size={22} strokeWidth={2} />
+                  </div>
+                  <div className="summary-card__body">
+                    <p className="summary-card__label">평균 스크리닝 점수</p>
+                    <strong className="summary-card__value">
+                      {kpis.avgScore != null ? `${kpis.avgScore}점` : '—'}
+                    </strong>
+                    <span className="summary-card__note">분석 완료 건 기준</span>
+                  </div>
+                </article>
+                <article className="summary-card">
+                  <div className="summary-card__icon tone-orange">
+                    <CheckCircle size={22} strokeWidth={2} />
+                  </div>
+                  <div className="summary-card__body">
+                    <p className="summary-card__label">분석 이력 있음</p>
+                    <strong className="summary-card__value">{kpis.analyzed}명</strong>
+                    <span className="summary-card__note">상태 또는 점수 보유</span>
+                  </div>
+                </article>
+              </section>
+
+              <section
+                className="resume-ai__score-chart"
+                aria-labelledby="resume-ai-score-dist-title"
+              >
+                <h2 id="resume-ai-score-dist-title" className="resume-ai__score-chart-title">
+                  지원자 점수 분포
+                </h2>
+                <p className="resume-ai__score-chart-sub">
+                  종합 점수가 있는 지원자만 구간별로 집계합니다.
+                </p>
+                {scoreDistribution.scored === 0 ? (
+                  <p className="resume-ai__muted">
+                    아직 집계할 점수 데이터가 없습니다. 지원자 목록에서 분석을 실행해 보세요.
+                  </p>
+                ) : (
+                  <div className="resume-ai__score-chart-bars">
+                    {scoreDistribution.bins.map((bin) => (
+                      <div key={bin.label} className="resume-ai__dist-row">
+                        <span className="resume-ai__dist-label">{bin.label}</span>
+                        <div className="resume-ai__dist-track">
+                          <div
+                            className="resume-ai__dist-fill"
+                            style={{
+                              width: `${(bin.count / scoreDistribution.maxBar) * 100}%`,
+                            }}
+                          />
+                        </div>
+                        <span className="resume-ai__dist-count">{bin.count}명</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {scoreDistribution.noScore > 0 ? (
+                  <p className="resume-ai__score-chart-foot">
+                    점수 없음(미분석·실패 등): {scoreDistribution.noScore}명
+                  </p>
+                ) : null}
+              </section>
+            </>
+          )}
+        </div>
       )}
 
       {tab === 'list' && (
@@ -476,11 +581,19 @@ export default function ResumePage() {
                               <td>
                                 <button
                                   type="button"
-                                  className="resume-ai__btn-accent"
+                                  className="resume-ai__btn-accent resume-ai__btn-accent--with-spinner"
                                   disabled={!row.resumeAttached || busy}
                                   onClick={() => openAnalyzeModal(row)}
+                                  aria-busy={busy}
                                 >
-                                  {busy ? '분석중…' : '분석'}
+                                  {busy ? (
+                                    <span
+                                      className="resume-ai__spinner-donut resume-ai__spinner-donut--sm"
+                                      aria-hidden="true"
+                                    />
+                                  ) : (
+                                    '분석'
+                                  )}
                                 </button>
                               </td>
                             </tr>
@@ -657,7 +770,7 @@ export default function ResumePage() {
                             aria-valuemax={100}
                           >
                             <div
-                              className="resume-ai__score-fill"
+                              className={`resume-ai__score-fill ${scoreBarTierClass(sc)}`}
                               style={{ width: `${sc}%` }}
                             />
                           </div>
@@ -666,10 +779,62 @@ export default function ResumePage() {
                         <p className="resume-ai__muted">점수 없음</p>
                       );
                     })()}
-                    <p className="resume-ai__section-sub">요약</p>
-                    <div className="resume-ai__summary-box">
-                      {detail.analysis.summary || '—'}
-                    </div>
+                    {(() => {
+                      const parsed = parseAnalysisResultJson(
+                        detail.analysis.resultJson,
+                      );
+                      const summaryText =
+                        (detail.analysis.summary &&
+                          String(detail.analysis.summary).trim()) ||
+                        parsed.summaryFromJson ||
+                        '—';
+                      return (
+                        <>
+                          <div className="resume-ai__analysis-block">
+                            <h5 className="resume-ai__analysis-block-title">요약</h5>
+                            <div className="resume-ai__summary-box">{summaryText}</div>
+                          </div>
+                          <div className="resume-ai__analysis-block">
+                            <h5 className="resume-ai__analysis-block-title">강점</h5>
+                            {parsed.strengths.length > 0 ? (
+                              <ul className="resume-ai__bullet-list resume-ai__bullet-list--strength">
+                                {parsed.strengths.map((t, i) => (
+                                  <li key={`str-${i}`}>{t}</li>
+                                ))}
+                              </ul>
+                            ) : (
+                              <p className="resume-ai__muted">
+                                표시할 강점 항목이 없습니다.
+                              </p>
+                            )}
+                          </div>
+                          <div className="resume-ai__analysis-block">
+                            <h5 className="resume-ai__analysis-block-title">약점</h5>
+                            {parsed.risks.length > 0 ? (
+                              <ul className="resume-ai__bullet-list resume-ai__bullet-list--risk">
+                                {parsed.risks.map((t, i) => (
+                                  <li key={`risk-${i}`}>{t}</li>
+                                ))}
+                              </ul>
+                            ) : (
+                              <p className="resume-ai__muted">
+                                표시할 약점·리스크 항목이 없습니다.
+                              </p>
+                            )}
+                          </div>
+                          {parsed.decision ? (
+                            <p className="resume-ai__analysis-decision">
+                              <span className="resume-ai__analysis-decision-label">
+                                판정
+                              </span>
+                              <span className="resume-ai__analysis-decision-value">
+                                {parsed.decision}
+                              </span>
+                            </p>
+                          ) : null}
+                        </>
+                      );
+                    })()}
                     {detail.analysis.failureMessage ? (
                       <p className="resume-ai__alert resume-ai__alert--error">
                         {detail.analysis.failureMessage}
@@ -678,24 +843,6 @@ export default function ResumePage() {
                     <p className="resume-ai__analysis-foot">
                       분석일시: {formatDt(detail.analysis.analyzedAt)}
                     </p>
-                    <details className="resume-ai__json-details">
-                      <summary>원본 JSON</summary>
-                      <pre className="resume-ai__detail-pre resume-ai__detail-pre--json">
-                        {detail.analysis.resultJson
-                          ? (() => {
-                              try {
-                                return JSON.stringify(
-                                  JSON.parse(detail.analysis.resultJson),
-                                  null,
-                                  2,
-                                );
-                              } catch {
-                                return detail.analysis.resultJson;
-                              }
-                            })()
-                          : '—'}
-                      </pre>
-                    </details>
                   </section>
                 ) : (
                   <section className="resume-ai__section">
@@ -720,6 +867,7 @@ export default function ResumePage() {
           className="resume-ai__modal-backdrop"
           role="presentation"
           onClick={(e) => {
+            if (analyzeBusyId === analyzeModalRow?.applicantId) return;
             if (e.target === e.currentTarget) closeAnalyzeModal();
           }}
         >
@@ -764,11 +912,19 @@ export default function ResumePage() {
                 onClick={confirmAnalyze}
                 disabled={analyzeBusyId === analyzeModalRow.applicantId}
               >
-                {analyzeBusyId === analyzeModalRow.applicantId
-                  ? '분석 중…'
-                  : '분석 실행'}
+                분석 실행
               </button>
             </div>
+            {analyzeBusyId === analyzeModalRow.applicantId ? (
+              <div
+                className="resume-ai__modal-busy"
+                role="status"
+                aria-live="polite"
+              >
+                <span className="resume-ai__spinner-donut" aria-hidden="true" />
+                <span className="resume-ai__sr-only">Resume analysis in progress</span>
+              </div>
+            ) : null}
           </div>
         </div>
       ) : null}
