@@ -97,7 +97,7 @@ const EmployeeView = () => {
                     <p>전체 임직원의 명단과 상세 정보를 확인합니다.</p>
                 </div>
                 {/* 관리자 권한이 있을 때만 버튼 표시 */}
-                {role === 'ADMIN' && (
+                {role === 'ROLE_ADMIN' && (
                     <button className="btn-primary" onClick={handleOpenModal}>
                         + 신규 임직원 등록
                     </button>
