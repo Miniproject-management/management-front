@@ -41,94 +41,96 @@ export default function JobApplicationPage() {
   }
 
   return (
-    <section className="apply-page" aria-labelledby="apply-page-title">
-      <header className="apply-page__header">
-        <h1 id="apply-page-title">채용 지원</h1>
-        <p className="apply-page__lead">
-          지원 정보와 이력서 파일을 제출해 주세요. 표시된 항목은 필수입니다.
-        </p>
-      </header>
+    <section className="job-apply" aria-labelledby="job-apply-title">
+      <div className="job-apply__grid">
+        <header className="job-apply__intro">
+          <h1 id="job-apply-title">채용 지원</h1>
+          <p className="job-apply__lead">
+            지원 정보와 이력서 파일을 제출해 주세요. 표시된 항목은 필수입니다.
+          </p>
+        </header>
 
-      <form className="apply-page__form apply-page__card" onSubmit={onSubmit}>
-        <div className="apply-page__field">
-          <label className="apply-page__label" htmlFor="apply-name">
-            이름 <span className="apply-page__req" aria-hidden="true">*</span>
-          </label>
-          <input
-            id="apply-name"
-            className="apply-page__input"
-            name="name"
-            autoComplete="name"
-            placeholder="홍길동"
-            disabled={loading}
-          />
-        </div>
-
-        <div className="apply-page__field">
-          <label className="apply-page__label" htmlFor="apply-email">
-            이메일
-          </label>
-          <input
-            id="apply-email"
-            className="apply-page__input"
-            name="email"
-            type="email"
-            autoComplete="email"
-            placeholder="name@example.com"
-            disabled={loading}
-          />
-        </div>
-
-        <div className="apply-page__field">
-          <label className="apply-page__label" htmlFor="apply-phone">
-            연락처
-          </label>
-          <input
-            id="apply-phone"
-            className="apply-page__input"
-            name="phone"
-            type="tel"
-            autoComplete="tel"
-            placeholder="010-0000-0000"
-            disabled={loading}
-          />
-        </div>
-
-        <div className="apply-page__field">
-          <label className="apply-page__label" htmlFor="apply-file">
-            지원서류(첨부){' '}
-            <span className="apply-page__req" aria-hidden="true">
-              *
-            </span>
-          </label>
-          <div className="apply-page__file-wrap">
+        <form className="job-apply__form job-apply__card" onSubmit={onSubmit}>
+          <div className="job-apply__field">
+            <label className="job-apply__label" htmlFor="job-apply-name">
+              이름 <span className="job-apply__req" aria-hidden="true">*</span>
+            </label>
             <input
-              id="apply-file"
-              name="file"
-              type="file"
-              accept=".pdf,application/pdf"
+              id="job-apply-name"
+              className="job-apply__input"
+              name="name"
+              autoComplete="name"
+              placeholder="홍길동"
               disabled={loading}
             />
           </div>
-          <p className="apply-page__file-hint">PDF 형식을 권장합니다.</p>
-        </div>
 
-        <div className="apply-page__actions">
-          <button className="apply-page__submit" type="submit" disabled={loading}>
-            {loading ? '제출 중…' : '지원서 제출'}
-          </button>
-        </div>
+          <div className="job-apply__field">
+            <label className="job-apply__label" htmlFor="job-apply-email">
+              이메일
+            </label>
+            <input
+              id="job-apply-email"
+              className="job-apply__input"
+              name="email"
+              type="email"
+              autoComplete="email"
+              placeholder="name@example.com"
+              disabled={loading}
+            />
+          </div>
 
-        {msg ? (
-          <p
-            className={`apply-page__msg is-${msgTone}`}
-            role="status"
-            aria-live="polite"
-          >
-            {msg}
-          </p>
-        ) : null}
-      </form>
+          <div className="job-apply__field">
+            <label className="job-apply__label" htmlFor="job-apply-phone">
+              연락처
+            </label>
+            <input
+              id="job-apply-phone"
+              className="job-apply__input"
+              name="phone"
+              type="tel"
+              autoComplete="tel"
+              placeholder="010-0000-0000"
+              disabled={loading}
+            />
+          </div>
+
+          <div className="job-apply__field">
+            <label className="job-apply__label" htmlFor="job-apply-file">
+              지원서류(첨부){' '}
+              <span className="job-apply__req" aria-hidden="true">
+                *
+              </span>
+            </label>
+            <div className="job-apply__file-wrap">
+              <input
+                id="job-apply-file"
+                name="file"
+                type="file"
+                accept=".pdf,application/pdf"
+                disabled={loading}
+              />
+            </div>
+            <p className="job-apply__file-hint">PDF 형식을 권장합니다.</p>
+          </div>
+
+          <div className="job-apply__actions">
+            <button className="job-apply__submit" type="submit" disabled={loading}>
+              {loading ? '제출 중…' : '지원서 제출'}
+            </button>
+          </div>
+
+          {msg ? (
+            <p
+              className={`job-apply__msg is-${msgTone}`}
+              role="status"
+              aria-live="polite"
+            >
+              {msg}
+            </p>
+          ) : null}
+        </form>
+      </div>
     </section>
   );
 }
