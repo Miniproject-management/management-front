@@ -9,6 +9,7 @@ const DashboardView = () => {
     managers: 0,
     newHires: 0
   });
+  const [deptStats, setDeptStats] = useState([]); // 부서별 통계 추가
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -38,6 +39,7 @@ const DashboardView = () => {
           managers: managersCount,
           newHires: newHiresCount
         });
+        setDeptStats(deptRes.data); // 부서 데이터 저장
       } catch (error) {
         console.error("대시보드 요약 데이터를 가져오는 데 실패했습니다.", error);
       } finally {
@@ -117,8 +119,36 @@ const DashboardView = () => {
 
       <div className="recent-section">
         <div className="section-card">
-          <h3>알림</h3>
-          <p className="text-sm text-gray-500">상세 통계 및 최근 현황 기능은 업데이트 예정입니다.</p>
+          <div className="flex-between">
+            <h3>부서별 인원 현황</h3>
+            <span className="text-xs text-gray-400">전체 인원 대비 비중</span>
+          </div>
+          
+          <div className="dept-chart">
+            {deptStats.length > 0 ? (
+              deptStats.map((dept) => {
+                // 최대 인원수 기준으로 비율 계산 (전체 인원이 아닌 최대 부서 인원 기준이 더 보기 좋을 수 있음)
+                const maxCount = Math.max(...deptStats.map(d => d.employeeCount || 0), 1);
+                const percentage = ((dept.employeeCount || 0) / maxCount) * 100;
+                
+                return (
+                  <div key={dept.deptNo} className="chart-row">
+                    <div className="chart-label" title={dept.deptName}>{dept.deptName}</div>
+                    <div className="chart-bar-container">
+                      <div 
+                        className="chart-bar" 
+                        style={{ width: `${percentage}%` }}
+                      >
+                        <span className="bar-value">{dept.employeeCount || 0}명</span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })
+            ) : (
+              <p className="text-center py-10 text-gray-400">표시할 부서 데이터가 없습니다.</p>
+            )}
+          </div>
         </div>
       </div>
     </div>
