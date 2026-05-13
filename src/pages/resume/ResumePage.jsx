@@ -151,6 +151,27 @@ export default function ResumePage() {
     return { total, withResume, analyzed, avgScore };
   }, [rows]);
 
+  /** 요약 탭: 종합 점수 구간별 인원(막대 그래프용) */
+  const scoreDistribution = useMemo(() => {
+    const bins = [
+      { label: '0–59점', min: 0, max: 59, count: 0 },
+      { label: '60–74점', min: 60, max: 74, count: 0 },
+      { label: '75–89점', min: 75, max: 89, count: 0 },
+      { label: '90–100점', min: 90, max: 100, count: 0 },
+    ];
+    let scored = 0;
+    for (const r of rows) {
+      const s = clampScore0to100(r.overallScore);
+      if (s == null) continue;
+      scored += 1;
+      const bin = bins.find((b) => s >= b.min && s <= b.max);
+      if (bin) bin.count += 1;
+    }
+    const maxBar = Math.max(...bins.map((b) => b.count), 1);
+    const noScore = rows.length - scored;
+    return { bins, scored, noScore, maxBar };
+  }, [rows]);
+
   const totalPages = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
   const safePage = Math.min(page, totalPages);
   const pageSlice = useMemo(() => {
@@ -344,50 +365,97 @@ export default function ResumePage() {
       {error ? <p className="resume-ai__alert resume-ai__alert--error">{error}</p> : null}
 
       {tab === 'summary' && (
-        <section className="dashboard-page__summary-grid">
-          <article className="summary-card">
-            <div className="summary-card__icon tone-blue">
-              <Users size={22} strokeWidth={2} />
-            </div>
-            <div className="summary-card__body">
-              <p className="summary-card__label">전체 지원자</p>
-              <strong className="summary-card__value">{kpis.total}명</strong>
-              <span className="summary-card__note">등록된 지원자 수</span>
-            </div>
-          </article>
-          <article className="summary-card">
-            <div className="summary-card__icon tone-green">
-              <FileText size={22} strokeWidth={2} />
-            </div>
-            <div className="summary-card__body">
-              <p className="summary-card__label">이력서 제출</p>
-              <strong className="summary-card__value">{kpis.withResume}명</strong>
-              <span className="summary-card__note">첨부파일 있는 지원자</span>
-            </div>
-          </article>
-          <article className="summary-card">
-            <div className="summary-card__icon tone-purple">
-              <Star size={22} strokeWidth={2} />
-            </div>
-            <div className="summary-card__body">
-              <p className="summary-card__label">평균 스크리닝 점수</p>
-              <strong className="summary-card__value">
-                {kpis.avgScore != null ? `${kpis.avgScore}점` : '—'}
-              </strong>
-              <span className="summary-card__note">분석 완료 건 기준</span>
-            </div>
-          </article>
-          <article className="summary-card">
-            <div className="summary-card__icon tone-orange">
-              <CheckCircle size={22} strokeWidth={2} />
-            </div>
-            <div className="summary-card__body">
-              <p className="summary-card__label">분석 이력 있음</p>
-              <strong className="summary-card__value">{kpis.analyzed}명</strong>
-              <span className="summary-card__note">상태 또는 점수 보유</span>
-            </div>
-          </article>
-        </section>
+        <div className="resume-ai__summary-layout">
+          {loading ? (
+            <p className="resume-ai__hint">불러오는 중…</p>
+          ) : (
+            <>
+              <section className="dashboard-page__summary-grid">
+                <article className="summary-card">
+                  <div className="summary-card__icon tone-blue">
+                    <Users size={22} strokeWidth={2} />
+                  </div>
+                  <div className="summary-card__body">
+                    <p className="summary-card__label">전체 지원자</p>
+                    <strong className="summary-card__value">{kpis.total}명</strong>
+                    <span className="summary-card__note">등록된 지원자 수</span>
+                  </div>
+                </article>
+                <article className="summary-card">
+                  <div className="summary-card__icon tone-green">
+                    <FileText size={22} strokeWidth={2} />
+                  </div>
+                  <div className="summary-card__body">
+                    <p className="summary-card__label">이력서 제출</p>
+                    <strong className="summary-card__value">{kpis.withResume}명</strong>
+                    <span className="summary-card__note">첨부파일 있는 지원자</span>
+                  </div>
+                </article>
+                <article className="summary-card">
+                  <div className="summary-card__icon tone-purple">
+                    <Star size={22} strokeWidth={2} />
+                  </div>
+                  <div className="summary-card__body">
+                    <p className="summary-card__label">평균 스크리닝 점수</p>
+                    <strong className="summary-card__value">
+                      {kpis.avgScore != null ? `${kpis.avgScore}점` : '—'}
+                    </strong>
+                    <span className="summary-card__note">분석 완료 건 기준</span>
+                  </div>
+                </article>
+                <article className="summary-card">
+                  <div className="summary-card__icon tone-orange">
+                    <CheckCircle size={22} strokeWidth={2} />
+                  </div>
+                  <div className="summary-card__body">
+                    <p className="summary-card__label">분석 이력 있음</p>
+                    <strong className="summary-card__value">{kpis.analyzed}명</strong>
+                    <span className="summary-card__note">상태 또는 점수 보유</span>
+                  </div>
+                </article>
+              </section>
+
+              <section
+                className="resume-ai__score-chart"
+                aria-labelledby="resume-ai-score-dist-title"
+              >
+                <h2 id="resume-ai-score-dist-title" className="resume-ai__score-chart-title">
+                  지원자 점수 분포
+                </h2>
+                <p className="resume-ai__score-chart-sub">
+                  종합 점수가 있는 지원자만 구간별로 집계합니다.
+                </p>
+                {scoreDistribution.scored === 0 ? (
+                  <p className="resume-ai__muted">
+                    아직 집계할 점수 데이터가 없습니다. 지원자 목록에서 분석을 실행해 보세요.
+                  </p>
+                ) : (
+                  <div className="resume-ai__score-chart-bars">
+                    {scoreDistribution.bins.map((bin) => (
+                      <div key={bin.label} className="resume-ai__dist-row">
+                        <span className="resume-ai__dist-label">{bin.label}</span>
+                        <div className="resume-ai__dist-track">
+                          <div
+                            className="resume-ai__dist-fill"
+                            style={{
+                              width: `${(bin.count / scoreDistribution.maxBar) * 100}%`,
+                            }}
+                          />
+                        </div>
+                        <span className="resume-ai__dist-count">{bin.count}명</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {scoreDistribution.noScore > 0 ? (
+                  <p className="resume-ai__score-chart-foot">
+                    점수 없음(미분석·실패 등): {scoreDistribution.noScore}명
+                  </p>
+                ) : null}
+              </section>
+            </>
+          )}
+        </div>
       )}
 
       {tab === 'list' && (

@@ -25,12 +25,17 @@
  * /resume 에서 목록·상세가 길어지면 하단(이력서 PDF·분석)이 잘리고 스크롤로도 안 보임.
  */
 .dashboard-page.resume-ai {
+  /* 기본 .dashboard-page 는 grid-template-rows: 54px 1fr 이라
+     두 번째 자식(탭 바)이 남은 높이를 전부 먹고 요약 카드가 아래로 밀림 → flex 로 재정의 */
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
   height: auto;
   min-height: calc(100vh - 40px);
   max-height: none;
   overflow-x: hidden;
   overflow-y: visible;
-  align-content: start;
   width: 100%;
   max-width: none;
 }
@@ -42,13 +47,22 @@
   width: 100%;
 }
 
+/* 요약 탭: KPI + 점수 분포를 한 덩어리로 상단 정렬 */
+.resume-ai__summary-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  flex: 0 0 auto;
+}
+
 /* 요약 탭 KPI 그리드: 가로 전체 사용 */
 .dashboard-page.resume-ai .dashboard-page__summary-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 16px;
   width: 100%;
-  margin-bottom: 8px;
+  margin-bottom: 0;
 }
 
 @media (max-width: 960px) {
@@ -61,6 +75,87 @@
   .dashboard-page.resume-ai .dashboard-page__summary-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* ----- 요약 탭: 점수 분포(막대) ----- */
+
+.resume-ai__score-chart {
+  padding: 20px 22px 22px;
+  border-radius: 16px;
+  border: 1px solid var(--resume-ai-border);
+  background: #ffffff;
+  box-shadow: var(--resume-ai-shadow-soft);
+}
+
+.resume-ai__score-chart-title {
+  margin: 0 0 4px;
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--resume-ai-text);
+}
+
+.resume-ai__score-chart-sub {
+  margin: 0 0 18px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--resume-ai-muted);
+}
+
+.resume-ai__score-chart-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.resume-ai__dist-row {
+  display: grid;
+  grid-template-columns: 100px 1fr 52px;
+  align-items: center;
+  gap: 12px;
+}
+
+@media (max-width: 520px) {
+  .resume-ai__dist-row {
+    grid-template-columns: 84px 1fr 44px;
+    gap: 8px;
+  }
+}
+
+.resume-ai__dist-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #334155;
+}
+
+.resume-ai__dist-track {
+  height: 12px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  overflow: hidden;
+}
+
+.resume-ai__dist-fill {
+  height: 100%;
+  min-width: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #fb923c, var(--resume-ai-accent));
+  transition: width 0.35s ease;
+}
+
+.resume-ai__dist-count {
+  font-size: 13px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--resume-ai-text);
+  text-align: right;
+}
+
+.resume-ai__score-chart-foot {
+  margin: 14px 0 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--resume-ai-muted-light);
 }
 
 .resume-ai .summary-card {
@@ -557,6 +652,8 @@
   gap: 20px;
   align-items: stretch;
   width: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
 .resume-ai__list-panel {
