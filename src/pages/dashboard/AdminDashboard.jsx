@@ -438,7 +438,7 @@ function AdminDashboard() {
         </article>
 
         <article className="dashboard-card dashboard-card--medium">
-          <CardHeader title="결재 대기 문서" hasLink />
+          <CardHeader title="결재 대기 문서" hasLink linkTo="/approval" />
 
           <table className="dashboard-table approval-table">
             <thead>
