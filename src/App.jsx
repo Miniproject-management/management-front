@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Sidebar from "./components/Sidebar";
 import Footer from "./components/Footer";
+import RequireRole from "./components/RequireRole";
 
 import LoginPage from "./pages/auth/LoginPage";
 import ApprovalPage from "./pages/approval/ApprovalPage";
@@ -27,10 +28,31 @@ function App() {
         <div className="content-wrapper">
           <main className="main-content">
             <Routes>
-              <Route path="/" element={<DashboardPage />} />
-              <Route path="/dashboard/admin" element={<AdminDashboard />} />
-              <Route path="/dashboard/manager" element={<ManagerDashboard />} />
-              <Route path="/dashboard/employee" element={<EmployeeDashboard />} />
+              <Route path="/" element={<RequireRole><DashboardPage /></RequireRole>} />
+              <Route
+                path="/dashboard/admin"
+                element={
+                  <RequireRole allowed={["ROLE_ADMIN"]}>
+                    <AdminDashboard />
+                  </RequireRole>
+                }
+              />
+              <Route
+                path="/dashboard/manager"
+                element={
+                  <RequireRole allowed={["ROLE_MANAGER"]}>
+                    <ManagerDashboard />
+                  </RequireRole>
+                }
+              />
+              <Route
+                path="/dashboard/employee"
+                element={
+                  <RequireRole allowed={["ROLE_EMPLOYEE"]}>
+                    <EmployeeDashboard />
+                  </RequireRole>
+                }
+              />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/approval" element={<ApprovalPage />} />
               <Route path="/resume" element={<ResumePage />} />
