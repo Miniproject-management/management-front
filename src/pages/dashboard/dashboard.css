@@ -1665,6 +1665,7 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  align-items: center;
   gap: 6px 10px;
   margin: 10px 0 0;
   padding-top: 10px;
@@ -1672,6 +1673,16 @@
   color: var(--employee-muted);
   font-size: 12px;
   font-weight: 600;
+}
+
+.employee-calendar-summary span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.employee-calendar-summary svg {
+  color: var(--employee-green);
 }
 
 .employee-calendar-summary em {

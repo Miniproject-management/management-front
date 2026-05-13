@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   CalendarCheck,
+  CalendarClock,
   CalendarDays,
   ChevronDown,
   ChevronLeft,
@@ -359,13 +360,13 @@ function EmployeeDashboard() {
           </div>
 
           <p className="employee-calendar-summary">
-            총 {balance ? `${balance.totalLeave}일` : "-"}
+            <span><CalendarCheck size={13} /> 총 {balance ? `${balance.totalLeave}일` : "-"}</span>
             <em>·</em>
-            사용 {balance ? `${balance.usedLeave}일` : "-"}
+            <span><CalendarClock size={13} /> 사용 {balance ? `${balance.usedLeave}일` : "-"}</span>
             <em>·</em>
-            잔여 {balance ? `${balance.remainingLeave}일` : "-"}
+            <span><CalendarCheck size={13} /> 잔여 {balance ? `${balance.remainingLeave}일` : "-"}</span>
             <em>·</em>
-            승인 대기 {pendingCount}건
+            <span><ClipboardList size={13} /> 승인 대기 {pendingCount}건</span>
           </p>
         </article>
       </div>
