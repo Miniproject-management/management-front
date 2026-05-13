@@ -24,28 +24,29 @@ function App() {
       <div className="layout">
         <Sidebar />
 
-        <main className="main-content">
-          <Routes>
-            <Route path="/" element={<DashboardPage />} />
-            <Route path="/dashboard/admin" element={<AdminDashboard />} />
-            <Route path="/dashboard/manager" element={<ManagerDashboard />} />
-            <Route path="/dashboard/employee" element={<EmployeeDashboard />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/approval" element={<ApprovalPage />} />
-            <Route path="/resume" element={<ResumePage />} />
-            <Route path="/department" element={<DepartmentPage />} />
-            <Route path="/apply" element={<JobApplicationPage />} />
-            <Route path="/approval/:leaveId" element={<ApprovalDetailPage />} />
-            <Route path="/approval/apply" element={<LeaveApplyPage />} />
-            <Route
-              path="/approval/leave-balance"
-              element={<LeaveBalancePage />}
-            />
-          </Routes>
+        <div className="content-wrapper">
+          <main className="main-content">
+            <Routes>
+              <Route path="/" element={<DashboardPage />} />
+              <Route path="/dashboard/admin" element={<AdminDashboard />} />
+              <Route path="/dashboard/manager" element={<ManagerDashboard />} />
+              <Route path="/dashboard/employee" element={<EmployeeDashboard />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/approval" element={<ApprovalPage />} />
+              <Route path="/resume" element={<ResumePage />} />
+              <Route path="/department" element={<DepartmentPage />} />
+              <Route path="/apply" element={<JobApplicationPage />} />
+              <Route path="/approval/:leaveId" element={<ApprovalDetailPage />} />
+              <Route path="/approval/apply" element={<LeaveApplyPage />} />
+              <Route
+                path="/approval/leave-balance"
+                element={<LeaveBalancePage />}
+              />
+            </Routes>
+          </main>
 
-          {/* 공통 Footer */}
           <Footer />
-        </main>
+        </div>
       </div>
     </BrowserRouter>
   );
