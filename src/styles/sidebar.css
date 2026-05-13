@@ -47,6 +47,16 @@
   color: white;
 }
 
+.menu-item.active {
+  background-color: #fea954;
+  color: white;
+}
+
+.menu-item:focus-visible,
+.preview-link:focus-visible {
+  outline: none;
+}
+
 .login-btn {
   background-color: #fea954;
   color: white;
@@ -95,6 +105,12 @@
 .preview-link:hover {
   background: #ffffff;
   color: #ea580c;
+}
+
+.preview-link.active {
+  background: #ffffff;
+  color: #ea580c;
+  font-weight: 700;
 }
 
 .preview-link:last-child {
