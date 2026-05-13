@@ -582,7 +582,7 @@ function AdminDashboard() {
         </article>
 
         <article className="dashboard-card dashboard-card--medium">
-          <CardHeader title="부서별 인원 현황" hasLink />
+          <CardHeader title="부서별 인원 현황" hasLink linkTo="/department" />
 
           <div className="headcount-layout">
             <table className="dashboard-table headcount-table">

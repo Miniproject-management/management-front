@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import {
   CalendarCheck,
   CalendarClock,
@@ -14,6 +15,7 @@ import {
 
 import useAuthStore from "../../stores/authStore";
 import { getUserDashboardApi } from "../../api/dashboardApi";
+import { getEmployeesApi } from "../../api/employeeApi";
 
 import "./dashboard.css";
 
@@ -36,21 +38,6 @@ const LEAVE_TYPE_LABEL = {
   HALF: "반차",
   SICK: "병가",
 };
-
-// 부서 팀원: 백엔드 API 추가 후 연동 예정 (현재 더미)
-const teamInfo = {
-  deptName: "백엔드 개발팀",
-  manager: "김팀장",
-  totalCount: 6,
-};
-
-const teamMembers = [
-  { name: "김민수", role: "Backend Developer", status: "재직", tone: "green" },
-  { name: "이서연", role: "DevOps Engineer", status: "휴가 중", tone: "orange" },
-  { name: "박서연", role: "Security Engineer", status: "재직", tone: "green" },
-  { name: "정다은", role: "UI/UX Designer", status: "재직", tone: "green" },
-  { name: "최지훈", role: "Backend Developer", status: "출장", tone: "blue" },
-];
 
 const WEEKDAYS = ["일", "월", "화", "수", "목", "금", "토"];
 
@@ -138,9 +125,16 @@ function EmployeeStatus({ status, tone }) {
   return <span className={`employee-status employee-status--${tone}`}>{status}</span>;
 }
 
+function isTeamLeader(emp) {
+  const position = String(emp?.position || "").toLowerCase();
+  const title = String(emp?.jobTitle || "").toLowerCase();
+  return position.includes("팀장") || position.includes("leader") || title.includes("팀장") || title.includes("leader");
+}
+
 function EmployeeDashboard() {
   const { empNo } = useAuthStore();
   const [data, setData] = useState(null);
+  const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -151,17 +145,21 @@ function EmployeeDashboard() {
     }
     let cancelled = false;
     setLoading(true);
-    getUserDashboardApi(empNo)
-      .then((res) => {
+    Promise.allSettled([getUserDashboardApi(empNo), getEmployeesApi()])
+      .then(([dashboardRes, employeeRes]) => {
         if (!cancelled) {
-          setData(res);
-          setError(null);
-        }
-      })
-      .catch((err) => {
-        if (!cancelled) {
-          console.error("사원 대시보드 조회 실패", err);
-          setError(err);
+          if (dashboardRes.status === "fulfilled") {
+            setData(dashboardRes.value);
+            setError(null);
+          } else {
+            console.error("사원 대시보드 조회 실패", dashboardRes.reason);
+            setError(dashboardRes.reason);
+          }
+          if (employeeRes.status === "fulfilled") {
+            setEmployees(Array.isArray(employeeRes.value) ? employeeRes.value : []);
+          } else {
+            console.error("사원 목록 조회 실패", employeeRes.reason);
+          }
         }
       })
       .finally(() => {
@@ -184,6 +182,28 @@ function EmployeeDashboard() {
   const balance = data?.leaveBalance;
   const myRequests = data?.myRequests || [];
   const mySchedule = data?.mySchedule || [];
+
+  const myEmployee = useMemo(
+    () => employees.find((emp) => String(emp.empNo) === String(empNo)),
+    [employees, empNo],
+  );
+
+  const departmentMembers = useMemo(() => {
+    const deptName = myEmployee?.deptName;
+    const members = deptName
+      ? employees.filter((emp) => emp.deptName === deptName)
+      : [...employees];
+    return members.sort((a, b) => {
+      if (isTeamLeader(a) && !isTeamLeader(b)) return -1;
+      if (!isTeamLeader(a) && isTeamLeader(b)) return 1;
+      return String(a.empName || "").localeCompare(String(b.empName || ""), "ko");
+    });
+  }, [employees, myEmployee]);
+
+  const teamLeader = useMemo(
+    () => departmentMembers.find(isTeamLeader),
+    [departmentMembers],
+  );
 
   const calendarWeeks = useMemo(() => buildCalendarWeeks(year, month), [year, month]);
   const calendarEvents = useMemo(() => buildCalendarEvents(mySchedule), [mySchedule]);
@@ -267,33 +287,45 @@ function EmployeeDashboard() {
           <div className="employee-card__head">
             <div className="employee-team-title">
               <h2>우리 부서 팀원</h2>
-              <p>{teamInfo.deptName} · 팀장 {teamInfo.manager} · 총 {teamInfo.totalCount}명</p>
+              <p>
+                {myEmployee?.deptName || "부서 정보 없음"}
+                {" · "}
+                팀장 {teamLeader?.empName || "-"}
+                {" · "}
+                총 {departmentMembers.length}명
+              </p>
             </div>
-            <button type="button">전체 보기 <ChevronRight size={14} /></button>
+            <Link to="/department">전체 보기 <ChevronRight size={14} /></Link>
           </div>
 
           <ul className="employee-team-list">
-            {teamMembers.map(({ name, role, status, tone }) => (
-              <li className="employee-team-item" key={name}>
-                <div className="employee-team-item__avatar">
-                  <Users size={16} />
-                </div>
-                <div className="employee-team-item__info">
-                  <span className="employee-team-item__name">{name}</span>
-                  <span className="employee-team-item__role">{role}</span>
-                </div>
-                <span className={`employee-status employee-status--${tone === "green" ? "approved" : tone === "orange" ? "rejected" : "pending"}`}>
-                  {status}
-                </span>
-              </li>
-            ))}
+            {loading ? (
+              <li className="employee-team-item employee-team-item--empty">불러오는 중...</li>
+            ) : departmentMembers.length === 0 ? (
+              <li className="employee-team-item employee-team-item--empty">부서 팀원 정보가 없습니다.</li>
+            ) : (
+              departmentMembers.slice(0, 5).map((member) => (
+                <li className="employee-team-item" key={member.empNo}>
+                  <div className="employee-team-item__avatar">
+                    <Users size={16} />
+                  </div>
+                  <div className="employee-team-item__info">
+                    <span className="employee-team-item__name">{member.empName || "-"}</span>
+                    <span className="employee-team-item__role">{member.jobTitle || member.position || "-"}</span>
+                  </div>
+                  <span className={`employee-status employee-status--${isTeamLeader(member) ? "pending" : "approved"}`}>
+                    {member.position || "재직"}
+                  </span>
+                </li>
+              ))
+            )}
           </ul>
         </article>
 
         <article className="employee-card employee-card--history">
           <div className="employee-card__head">
             <h2>최근 신청 내역</h2>
-            <button type="button">전체 내역 보기 <ChevronRight size={14} /></button>
+            <Link to="/approval">전체 내역 보기 <ChevronRight size={14} /></Link>
           </div>
           <table className="employee-table">
             <thead>

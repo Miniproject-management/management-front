@@ -779,6 +779,7 @@
 
 .manager-date-button,
 .manager-icon-button,
+.manager-card__head a,
 .manager-card__head button,
 .manager-card--activity > button {
   display: inline-flex;
@@ -852,6 +853,7 @@
 }
 
 .manager-card__head button,
+.manager-card__head a,
 .manager-card--activity > button {
   height: 28px;
   padding: 0 10px;
@@ -859,6 +861,7 @@
   color: var(--manager-orange);
   font-size: 12px;
   border-color: #eef2f7;
+  text-decoration: none;
 }
 
 .manager-kpi {
@@ -1794,6 +1797,7 @@
 }
 
 .employee-card__head button,
+.employee-card__head a,
 .employee-calendar-head button {
   display: inline-flex;
   align-items: center;
@@ -1803,10 +1807,11 @@
   border: 1px solid #eef2f7;
   border-radius: 8px;
   background: #fff;
-  color: var(--employee-blue);
+  color: var(--employee-orange);
   font: inherit;
   font-size: 12px;
   font-weight: 700;
+  text-decoration: none;
 }
 
 .employee-table {
