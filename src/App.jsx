@@ -7,6 +7,7 @@ import LoginPage from "./pages/auth/LoginPage";
 import ApprovalPage from "./pages/approval/ApprovalPage";
 import ResumePage from "./pages/resume/ResumePage";
 import DepartmentPage from "./pages/department/DepartmentPage";
+import DashboardPage from "./pages/dashboard/DashboardPage";
 import AdminDashboard from "./pages/dashboard/AdminDashboard";
 import ManagerDashboard from "./pages/dashboard/ManagerDashboard";
 import EmployeeDashboard from "./pages/dashboard/EmployeeDashboard";
@@ -26,7 +27,7 @@ function App() {
         <div className="content-wrapper">
           <main className="main-content">
             <Routes>
-              <Route path="/" element={<AdminDashboard />} />
+              <Route path="/" element={<DashboardPage />} />
               <Route path="/dashboard/admin" element={<AdminDashboard />} />
               <Route path="/dashboard/manager" element={<ManagerDashboard />} />
               <Route path="/dashboard/employee" element={<EmployeeDashboard />} />

@@ -290,7 +290,7 @@ function ManagerDashboard() {
         <article className="manager-card manager-card--table manager-card--members">
           <div className="manager-card__head">
             <h2>팀원 연차 현황</h2>
-            <Link to="/department">전체 보기 <ChevronRight size={14} /></Link>
+            <Link to="/approval">전체 보기 <ChevronRight size={14} /></Link>
           </div>
           <table className="manager-table">
             <thead>
@@ -325,7 +325,6 @@ function ManagerDashboard() {
         <article className="manager-card manager-card--table manager-card--approval">
           <div className="manager-card__head">
             <h2>오늘 휴가 중인 팀원</h2>
-            <Link to="/approval">전체 보기 <ChevronRight size={14} /></Link>
           </div>
           <table className="manager-table">
             <thead>
