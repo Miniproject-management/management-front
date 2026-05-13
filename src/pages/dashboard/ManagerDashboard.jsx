@@ -124,13 +124,6 @@ function ManagerDashboard() {
         </article>
 
         <article className="manager-card manager-card--team">
-          <h2>우리 팀 연차 요약</h2>
-          <div className="manager-team-summary">
-            <div className="is-blue"><span>이번 달 사용 연차</span><b>8.5일</b></div>
-            <div className="is-orange"><span>승인 대기 연차</span><b>1.5일</b></div>
-            <div className="is-green"><span>평균 잔여 연차</span><b>8.7일</b></div>
-          </div>
-
           <div className="manager-calendar-head">
             <h3>팀 휴가 일정</h3>
             <div><ChevronLeft size={16} /> <b>2025년 5월</b> <ChevronRight size={16} /></div>
