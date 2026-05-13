@@ -2,13 +2,13 @@ import {
   CalendarCheck,
   CalendarClock,
   CalendarDays,
-  CalendarPlus,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
   ClipboardList,
   Clock3,
   Plane,
+  Users,
 } from "lucide-react";
 
 import "./dashboard.css";
@@ -42,6 +42,20 @@ const employeeKpis = [
     icon: Plane,
     tone: "blue",
   },
+];
+
+const teamInfo = {
+  deptName: "백엔드 개발팀",
+  manager: "김팀장",
+  totalCount: 6,
+};
+
+const teamMembers = [
+  { name: "김민수", role: "Backend Developer", status: "재직", tone: "green" },
+  { name: "이서연", role: "DevOps Engineer", status: "휴가 중", tone: "orange" },
+  { name: "박서연", role: "Security Engineer", status: "재직", tone: "green" },
+  { name: "정다은", role: "UI/UX Designer", status: "재직", tone: "green" },
+  { name: "최지훈", role: "Backend Developer", status: "출장", tone: "blue" },
 ];
 
 const requestRows = [
@@ -100,26 +114,31 @@ function EmployeeDashboard() {
           </article>
         ))}
 
-        <article className="employee-card employee-card--quick">
-          <h2>빠른 메뉴</h2>
-          <div className="employee-quick-grid">
-            <button type="button" className="employee-tone-green">
-              <CalendarPlus size={26} />
-              연차 신청
-            </button>
-            <button type="button" className="employee-tone-orange">
-              <Clock3 size={26} />
-              반차 신청
-            </button>
-            <button type="button" className="employee-tone-blue">
-              <CalendarDays size={26} />
-              휴가 일정 보기
-            </button>
-            <button type="button" className="employee-tone-purple">
-              <ClipboardList size={26} />
-              신청 내역 보기
-            </button>
+        <article className="employee-card employee-card--team">
+          <div className="employee-card__head">
+            <div className="employee-team-title">
+              <h2>우리 부서 팀원</h2>
+              <p>{teamInfo.deptName} · 팀장 {teamInfo.manager} · 총 {teamInfo.totalCount}명</p>
+            </div>
+            <button type="button">전체 보기 <ChevronRight size={14} /></button>
           </div>
+
+          <ul className="employee-team-list">
+            {teamMembers.map(({ name, role, status, tone }) => (
+              <li className="employee-team-item" key={name}>
+                <div className="employee-team-item__avatar">
+                  <Users size={16} />
+                </div>
+                <div className="employee-team-item__info">
+                  <span className="employee-team-item__name">{name}</span>
+                  <span className="employee-team-item__role">{role}</span>
+                </div>
+                <span className={`employee-status employee-status--${tone === "green" ? "approved" : tone === "orange" ? "rejected" : "pending"}`}>
+                  {status}
+                </span>
+              </li>
+            ))}
+          </ul>
         </article>
 
         <article className="employee-card employee-card--history">
