@@ -1,171 +1,181 @@
-/* /apply 전용 — 공통 index.css·sidebar.css 미수정 */
+/* /apply 채용 지원 전용 — leaveApply.css 의 .apply-page 와 충돌 방지: .job-apply */
 
-.apply-page {
-  --apply-accent: #ea580c;
-  --apply-accent-soft: #fff7ed;
-  --apply-accent-border: #fdba74;
-  --apply-text: #0f172a;
-  --apply-muted: #64748b;
-  --apply-border: #e2e8f0;
-  --apply-card-shadow: 0 16px 40px rgba(15, 23, 42, 0.06);
+.job-apply {
+  --job-accent: #fea954;
+  --job-accent-deep: #ea580c;
+  --job-accent-soft: #fff7ed;
+  --job-accent-border: #fdba74;
+  --job-text: #0f172a;
+  --job-muted: #64748b;
+  --job-border: #e2e8f0;
+  --job-card-shadow: 0 20px 48px rgba(15, 23, 42, 0.08);
 
   width: 100%;
-  max-width: 560px;
+  max-width: 920px;
   margin: 0 auto;
-  padding: 28px 20px 48px;
+  padding: 32px 8px 56px;
   box-sizing: border-box;
 }
 
-.apply-page__header {
-  margin-bottom: 28px;
+.job-apply__grid {
+  display: grid;
+  grid-template-columns: minmax(200px, 1fr) minmax(280px, 1.05fr);
+  gap: clamp(24px, 4vw, 48px);
+  align-items: start;
 }
 
-.apply-page__header h1 {
-  margin: 0 0 8px;
-  font-size: 26px;
+.job-apply__intro {
+  padding-top: 8px;
+}
+
+.job-apply__intro h1 {
+  margin: 0 0 14px;
+  font-size: clamp(24px, 2.4vw, 30px);
   font-weight: 800;
   letter-spacing: -0.03em;
-  color: var(--apply-text);
+  color: var(--job-text);
+  line-height: 1.2;
 }
 
-.apply-page__lead {
+.job-apply__lead {
   margin: 0;
+  max-width: 28ch;
   font-size: 14px;
   font-weight: 500;
-  color: var(--apply-muted);
-  line-height: 1.55;
+  color: var(--job-muted);
+  line-height: 1.65;
 }
 
-.apply-page__card {
+.job-apply__card {
   padding: 28px 26px 26px;
-  border-radius: 16px;
-  border: 1px solid #f4f0ea;
+  border-radius: 18px;
+  border: 1px solid #eef0f4;
   background: #ffffff;
-  box-shadow: var(--apply-card-shadow);
+  box-shadow: var(--job-card-shadow);
 }
 
-.apply-page__form {
+.job-apply__form {
   display: flex;
   flex-direction: column;
   gap: 18px;
 }
 
-.apply-page__field {
+.job-apply__field {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.apply-page__label {
+.job-apply__label {
   font-size: 13px;
   font-weight: 700;
   color: #334155;
   letter-spacing: -0.01em;
 }
 
-.apply-page__label .apply-page__req {
-  color: var(--apply-accent);
+.job-apply__label .job-apply__req {
+  color: var(--job-accent-deep);
   font-weight: 800;
 }
 
-.apply-page__input,
-.apply-page__file-wrap input[type="text"],
-.apply-page__file-wrap input[type="email"] {
+.job-apply__input,
+.job-apply__file-wrap input[type="text"],
+.job-apply__file-wrap input[type="email"] {
   width: 100%;
   box-sizing: border-box;
   padding: 12px 14px;
-  border-radius: 12px;
-  border: 1px solid var(--apply-border);
+  border-radius: 10px;
+  border: 1px solid var(--job-border);
   font-size: 15px;
   font-family: inherit;
-  color: var(--apply-text);
-  background: #fafafa;
+  color: var(--job-text);
+  background: #f4f4f5;
   transition:
     border-color 0.15s,
     box-shadow 0.15s,
     background 0.15s;
 }
 
-.apply-page__input:hover,
-.apply-page__file-wrap input:hover {
+.job-apply__input:hover,
+.job-apply__file-wrap input:hover {
   border-color: #cbd5e1;
 }
 
-.apply-page__input:focus,
-.apply-page__file-wrap input:focus {
+.job-apply__input:focus,
+.job-apply__file-wrap input:focus {
   outline: none;
-  border-color: var(--apply-accent-border);
+  border-color: var(--job-accent-border);
   background: #fff;
-  box-shadow: 0 0 0 3px rgba(253, 186, 116, 0.35);
+  box-shadow: 0 0 0 3px rgba(254, 169, 84, 0.28);
 }
 
-.apply-page__input:disabled {
+.job-apply__input:disabled {
   opacity: 0.65;
   cursor: not-allowed;
 }
 
-.apply-page__file-wrap {
+.job-apply__file-wrap {
   position: relative;
 }
 
-.apply-page__file-wrap input[type="file"] {
+.job-apply__file-wrap input[type="file"] {
   width: 100%;
   padding: 10px 12px;
-  border-radius: 12px;
-  border: 1px dashed var(--apply-accent-border);
-  background: var(--apply-accent-soft);
+  border-radius: 10px;
+  border: 1px dashed var(--job-accent-border);
+  background: var(--job-accent-soft);
   font-size: 14px;
   font-weight: 600;
   color: #334155;
   cursor: pointer;
 }
 
-.apply-page__file-hint {
+.job-apply__file-hint {
   margin: 0;
   font-size: 12px;
   font-weight: 600;
-  color: var(--apply-muted);
+  color: var(--job-muted);
 }
 
-.apply-page__actions {
+.job-apply__actions {
   margin-top: 8px;
   padding-top: 8px;
 }
 
-.apply-page__submit {
+.job-apply__submit {
   width: 100%;
   padding: 14px 20px;
   border: none;
   border-radius: 12px;
-  background: linear-gradient(180deg, #fb923c 0%, var(--apply-accent) 100%);
+  background: linear-gradient(180deg, var(--job-accent) 0%, var(--job-accent-deep) 100%);
   color: #fff;
   font-size: 15px;
   font-weight: 800;
   letter-spacing: -0.02em;
   cursor: pointer;
-  box-shadow: 0 8px 22px rgba(234, 88, 12, 0.35);
+  box-shadow: 0 10px 28px rgba(234, 88, 12, 0.38);
   transition:
     transform 0.12s,
     box-shadow 0.15s,
     filter 0.15s;
 }
 
-.apply-page__submit:hover:not(:disabled) {
-  filter: brightness(1.05);
-  box-shadow: 0 10px 26px rgba(234, 88, 12, 0.4);
+.job-apply__submit:hover:not(:disabled) {
+  filter: brightness(1.04);
+  box-shadow: 0 12px 32px rgba(234, 88, 12, 0.42);
 }
 
-.apply-page__submit:active:not(:disabled) {
+.job-apply__submit:active:not(:disabled) {
   transform: scale(0.99);
 }
 
-.apply-page__submit:disabled {
+.job-apply__submit:disabled {
   opacity: 0.65;
   cursor: not-allowed;
   box-shadow: none;
 }
 
-.apply-page__msg {
+.job-apply__msg {
   margin: 0;
   padding: 12px 14px;
   border-radius: 12px;
@@ -174,30 +184,44 @@
   line-height: 1.5;
 }
 
-.apply-page__msg.is-success {
+.job-apply__msg.is-success {
   color: #166534;
   background: #ecfdf5;
   border: 1px solid #bbf7d0;
 }
 
-.apply-page__msg.is-error {
+.job-apply__msg.is-error {
   color: #991b1b;
   background: #fef2f2;
   border: 1px solid #fecaca;
 }
 
-.apply-page__msg.is-neutral {
+.job-apply__msg.is-neutral {
   color: #334155;
   background: #f8fafc;
-  border: 1px solid var(--apply-border);
+  border: 1px solid var(--job-border);
 }
 
-@media (max-width: 600px) {
-  .apply-page {
-    padding: 20px 16px 40px;
+@media (max-width: 720px) {
+  .job-apply {
+    padding: 20px 4px 40px;
+    max-width: 480px;
   }
 
-  .apply-page__card {
+  .job-apply__grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .job-apply__intro {
+    padding-top: 0;
+  }
+
+  .job-apply__lead {
+    max-width: none;
+  }
+
+  .job-apply__card {
     padding: 22px 18px 20px;
   }
 }
