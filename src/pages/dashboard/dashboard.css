@@ -1168,10 +1168,36 @@
   font-size: 13px;
 }
 
+.manager-calendar-nav,
+.employee-calendar-nav {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 1px solid #e5eaf0;
+  border-radius: 8px;
+  background: #fff;
+  color: #64748b;
+  cursor: pointer;
+}
+
+.manager-calendar-nav:hover,
+.employee-calendar-nav:hover {
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+.manager-calendar .is-other-month {
+  color: #cbd5e1;
+}
+
 .manager-calendar {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  grid-template-rows: 28px repeat(5, 34px);
+  grid-template-rows: 28px;
+  grid-auto-rows: minmax(0, 1fr);
   flex: 1;
   min-height: 0;
   overflow: hidden;
@@ -1835,7 +1861,8 @@
 .employee-calendar {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
-  grid-template-rows: 34px repeat(5, 55px);
+  grid-template-rows: 34px;
+  grid-auto-rows: minmax(45px, 1fr);
   overflow: hidden;
   border: 1px solid #e5eaf0;
   border-radius: 12px;

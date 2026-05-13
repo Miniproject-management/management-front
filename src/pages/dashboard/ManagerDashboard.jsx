@@ -43,15 +43,17 @@ function buildCalendarWeeks(year, month) {
   const start = new Date(first);
   start.setDate(first.getDate() - first.getDay());
 
+  const lastDay = new Date(year, month + 1, 0);
   const weeks = [];
-  for (let w = 0; w < 6; w += 1) {
+  const cursor = new Date(start);
+  while (weeks.length < 6) {
     const week = [];
     for (let d = 0; d < 7; d += 1) {
-      const cell = new Date(start);
-      cell.setDate(start.getDate() + w * 7 + d);
-      week.push(cell);
+      week.push(new Date(cursor));
+      cursor.setDate(cursor.getDate() + 1);
     }
     weeks.push(week);
+    if (week[6] >= lastDay) break;
   }
   return weeks;
 }
@@ -129,8 +131,12 @@ function ManagerDashboard() {
   }, [empNo]);
 
   const today = useMemo(() => new Date(), []);
-  const year = today.getFullYear();
-  const month = today.getMonth();
+  const [viewDate, setViewDate] = useState(() => new Date(today.getFullYear(), today.getMonth(), 1));
+  const year = viewDate.getFullYear();
+  const month = viewDate.getMonth();
+
+  const goPrevMonth = () => setViewDate(new Date(year, month - 1, 1));
+  const goNextMonth = () => setViewDate(new Date(year, month + 1, 1));
 
   const myBalance = data?.myLeaveBalance;
   const myRequests = data?.myRequests || [];
@@ -242,7 +248,15 @@ function ManagerDashboard() {
         <article className="manager-card manager-card--team">
           <div className="manager-calendar-head">
             <h3>팀 휴가 일정</h3>
-            <div><ChevronLeft size={16} /> <b>{year}년 {month + 1}월</b> <ChevronRight size={16} /></div>
+            <div>
+              <button type="button" className="manager-calendar-nav" onClick={goPrevMonth} aria-label="이전 달">
+                <ChevronLeft size={16} />
+              </button>
+              <b>{year}년 {month + 1}월</b>
+              <button type="button" className="manager-calendar-nav" onClick={goNextMonth} aria-label="다음 달">
+                <ChevronRight size={16} />
+              </button>
+            </div>
           </div>
 
           <div className="manager-calendar">
@@ -253,8 +267,12 @@ function ManagerDashboard() {
               const key = formatDate(date);
               const events = teamCalendarMap[key];
               const isToday = date.toDateString() === today.toDateString();
+              const inMonth = date.getMonth() === month;
               return (
-                <span className={isToday ? "is-today" : ""} key={`${key}-${index}`}>
+                <span
+                  className={`${isToday ? "is-today" : ""} ${inMonth ? "" : "is-other-month"}`}
+                  key={`${key}-${index}`}
+                >
                   {date.getDate()}
                   {events ? <MiniDot tone={events[0].tone} /> : null}
                 </span>
