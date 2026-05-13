@@ -47,6 +47,35 @@ function previewFromSummary(text) {
   return `${t.slice(0, 160)}…`;
 }
 
+/** resultJson(strengths·risks·decision 등) 안전 파싱 */
+function parseAnalysisResultJson(resultJson) {
+  const empty = {
+    strengths: [],
+    risks: [],
+    decision: null,
+    summaryFromJson: null,
+  };
+  if (!resultJson || typeof resultJson !== 'string') return empty;
+  try {
+    const o = JSON.parse(resultJson);
+    const strengths = Array.isArray(o.strengths)
+      ? o.strengths.filter((x) => typeof x === 'string' && String(x).trim())
+      : [];
+    const risks = Array.isArray(o.risks)
+      ? o.risks.filter((x) => typeof x === 'string' && String(x).trim())
+      : [];
+    const decision =
+      o.decision != null && String(o.decision).trim()
+        ? String(o.decision).trim()
+        : null;
+    const summaryFromJson =
+      typeof o.summary === 'string' && o.summary.trim() ? o.summary.trim() : null;
+    return { strengths, risks, decision, summaryFromJson };
+  } catch {
+    return empty;
+  }
+}
+
 function mergeAnalyzeIntoRow(row, analyzeResult) {
   const a = analyzeResult?.analysis;
   if (!a) return row;
@@ -734,10 +763,62 @@ export default function ResumePage() {
                         <p className="resume-ai__muted">점수 없음</p>
                       );
                     })()}
-                    <p className="resume-ai__section-sub">요약</p>
-                    <div className="resume-ai__summary-box">
-                      {detail.analysis.summary || '—'}
-                    </div>
+                    {(() => {
+                      const parsed = parseAnalysisResultJson(
+                        detail.analysis.resultJson,
+                      );
+                      const summaryText =
+                        (detail.analysis.summary &&
+                          String(detail.analysis.summary).trim()) ||
+                        parsed.summaryFromJson ||
+                        '—';
+                      return (
+                        <>
+                          <div className="resume-ai__analysis-block">
+                            <h5 className="resume-ai__analysis-block-title">요약</h5>
+                            <div className="resume-ai__summary-box">{summaryText}</div>
+                          </div>
+                          <div className="resume-ai__analysis-block">
+                            <h5 className="resume-ai__analysis-block-title">강점</h5>
+                            {parsed.strengths.length > 0 ? (
+                              <ul className="resume-ai__bullet-list resume-ai__bullet-list--strength">
+                                {parsed.strengths.map((t, i) => (
+                                  <li key={`str-${i}`}>{t}</li>
+                                ))}
+                              </ul>
+                            ) : (
+                              <p className="resume-ai__muted">
+                                표시할 강점 항목이 없습니다.
+                              </p>
+                            )}
+                          </div>
+                          <div className="resume-ai__analysis-block">
+                            <h5 className="resume-ai__analysis-block-title">약점</h5>
+                            {parsed.risks.length > 0 ? (
+                              <ul className="resume-ai__bullet-list resume-ai__bullet-list--risk">
+                                {parsed.risks.map((t, i) => (
+                                  <li key={`risk-${i}`}>{t}</li>
+                                ))}
+                              </ul>
+                            ) : (
+                              <p className="resume-ai__muted">
+                                표시할 약점·리스크 항목이 없습니다.
+                              </p>
+                            )}
+                          </div>
+                          {parsed.decision ? (
+                            <p className="resume-ai__analysis-decision">
+                              <span className="resume-ai__analysis-decision-label">
+                                판정
+                              </span>
+                              <span className="resume-ai__analysis-decision-value">
+                                {parsed.decision}
+                              </span>
+                            </p>
+                          ) : null}
+                        </>
+                      );
+                    })()}
                     {detail.analysis.failureMessage ? (
                       <p className="resume-ai__alert resume-ai__alert--error">
                         {detail.analysis.failureMessage}
@@ -746,24 +827,6 @@ export default function ResumePage() {
                     <p className="resume-ai__analysis-foot">
                       분석일시: {formatDt(detail.analysis.analyzedAt)}
                     </p>
-                    <details className="resume-ai__json-details">
-                      <summary>원본 JSON</summary>
-                      <pre className="resume-ai__detail-pre resume-ai__detail-pre--json">
-                        {detail.analysis.resultJson
-                          ? (() => {
-                              try {
-                                return JSON.stringify(
-                                  JSON.parse(detail.analysis.resultJson),
-                                  null,
-                                  2,
-                                );
-                              } catch {
-                                return detail.analysis.resultJson;
-                              }
-                            })()
-                          : '—'}
-                      </pre>
-                    </details>
                   </section>
                 ) : (
                   <section className="resume-ai__section">
