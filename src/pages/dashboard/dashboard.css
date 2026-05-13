@@ -222,6 +222,29 @@
   table-layout: fixed;
 }
 
+.dashboard-table__empty {
+  padding: 22px 10px;
+  text-align: center;
+  color: #94a3b8;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.dashboard-page__error {
+  margin: 0 0 8px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: #fee2e2;
+  color: #b91c1c;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.document-type__sub {
+  color: #94a3b8;
+  font-weight: 600;
+}
+
 .dashboard-table th {
   height: 32px;
   padding: 0 10px;
@@ -1246,6 +1269,24 @@
   border-collapse: collapse;
 }
 
+.manager-table__empty {
+  padding: 18px 8px;
+  text-align: center;
+  color: var(--manager-muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.manager-dashboard__error {
+  margin: 0 0 8px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: #fee2e2;
+  color: #b91c1c;
+  font-size: 13px;
+  font-weight: 600;
+}
+
 .manager-table th,
 .manager-table td {
   height: 31px;
@@ -1766,6 +1807,10 @@
   background: #f8fafc;
 }
 
+.employee-calendar .is-other-month b {
+  color: #cbd5e1;
+}
+
 .employee-calendar .is-today b {
   display: inline-grid;
   width: 26px;
@@ -1856,6 +1901,24 @@
   margin: 0;
   color: var(--employee-muted);
   font-size: 12px;
+  font-weight: 600;
+}
+
+.employee-dashboard__error {
+  margin: 0 0 8px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: #feecec;
+  color: var(--employee-red);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.employee-table__empty {
+  padding: 20px 10px;
+  text-align: center;
+  color: var(--employee-muted);
+  font-size: 13px;
   font-weight: 600;
 }
 
