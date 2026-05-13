@@ -1,23 +1,42 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../api/axios';
-import { Users, Building2 } from "lucide-react";
+import { Users, Building2, UserCheck, UserPlus } from "lucide-react";
 
 const DashboardView = () => {
-  const [counts, setCounts] = useState({ employees: 0, departments: 0 });
+  const [stats, setStats] = useState({ 
+    employees: 0, 
+    departments: 0,
+    managers: 0,
+    newHires: 0
+  });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // 방법 2: 기존 API 두 개를 동시에 호출해서 길이를 측정
         const [empRes, deptRes] = await Promise.all([
-          api.get('/api/hr/employees'),           // 전체 사원 목록
-          api.get('/api/hr/departments/tree')     // 전체 부서 목록 (트리 혹은 리스트)
+          api.get('/api/hr/employees'),
+          api.get('/api/hr/departments/tree')
         ]);
 
-        setCounts({
-          employees: empRes.data.length,
-          departments: deptRes.data.length
+        const empData = empRes.data;
+        const now = new Date();
+        const currentMonth = now.toISOString().slice(0, 7); // YYYY-MM
+
+        // 통계 계산
+        const managersCount = empData.filter(emp => 
+          emp.position === '팀장' || emp.position === '관리자'
+        ).length;
+
+        const newHiresCount = empData.filter(emp => 
+          emp.hireDate && emp.hireDate.startsWith(currentMonth)
+        ).length;
+
+        setStats({
+          employees: empData.length,
+          departments: deptRes.data.length,
+          managers: managersCount,
+          newHires: newHiresCount
         });
       } catch (error) {
         console.error("대시보드 요약 데이터를 가져오는 데 실패했습니다.", error);
@@ -44,11 +63,11 @@ const DashboardView = () => {
           <div className="stat-info">
             <span className="stat-label">총 임직원</span>
             <div className="stat-value-group">
-              <span className="stat-num">{counts.employees}</span>
+              <span className="stat-num">{stats.employees}</span>
               <span className="stat-unit">명</span>
             </div>
           </div>
-          <div className="stat-icon-box">
+          <div className="stat-icon-box blue">
             <Users size={24} />
           </div>
         </div>
@@ -58,31 +77,40 @@ const DashboardView = () => {
           <div className="stat-info">
             <span className="stat-label">총 부서</span>
             <div className="stat-value-group">
-              <span className="stat-num">{counts.departments}</span>
+              <span className="stat-num">{stats.departments}</span>
               <span className="stat-unit">개</span>
             </div>
           </div>
-          <div className="stat-icon-box">
+          <div className="stat-icon-box orange">
             <Building2 size={24} />
           </div>
         </div>
 
-        {/* 예시 이미지의 4개 칸을 맞추기 위해 비워두거나 다른 정보 활용 가능 */}
-        <div className="stat-card placeholder-card">
+        {/* 관리직 인원 */}
+        <div className="stat-card">
           <div className="stat-info">
-            <span className="stat-label"></span>
+            <span className="stat-label">관리자/팀장</span>
             <div className="stat-value-group">
-              <span className="stat-num">-</span>
+              <span className="stat-num">{stats.managers}</span>
+              <span className="stat-unit">명</span>
             </div>
+          </div>
+          <div className="stat-icon-box green">
+            <UserCheck size={24} />
           </div>
         </div>
 
-        <div className="stat-card placeholder-card">
+        {/* 이번 달 신규 입사자 */}
+        <div className="stat-card">
           <div className="stat-info">
-            <span className="stat-label"></span>
+            <span className="stat-label">이달의 신규 입사</span>
             <div className="stat-value-group">
-              <span className="stat-num">-</span>
+              <span className="stat-num">{stats.newHires}</span>
+              <span className="stat-unit">명</span>
             </div>
+          </div>
+          <div className="stat-icon-box purple">
+            <UserPlus size={24} />
           </div>
         </div>
       </div>
