@@ -753,8 +753,8 @@
 .manager-dashboard__grid {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
-  grid-template-rows: 104px 250px 170px 190px;
-  gap: 14px;
+  grid-template-rows: 104px 360px 250px;
+  gap: 16px;
   align-items: stretch;
 }
 
@@ -837,20 +837,20 @@
 }
 
 .manager-card--leave {
-  grid-column: 1 / span 7;
+  grid-column: 1 / span 5;
   grid-row: 2;
 }
 
 .manager-card--team {
-  grid-column: 8 / span 5;
-  grid-row: 2 / span 2;
+  grid-column: 6 / span 7;
+  grid-row: 2;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
 .manager-card--members {
-  grid-column: 1 / span 4;
+  grid-column: 1 / span 7;
   grid-row: 3;
 }
 
@@ -860,8 +860,8 @@
 }
 
 .manager-card--approval {
-  grid-column: 1 / span 4;
-  grid-row: 4;
+  grid-column: 8 / span 5;
+  grid-row: 3;
 }
 
 .manager-card--activity {
@@ -875,9 +875,7 @@
 }
 
 .manager-leave-layout {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  display: block;
   height: calc(100% - 40px);
 }
 
@@ -891,16 +889,18 @@
 
 .manager-leave-donut {
   display: grid;
-  grid-template-columns: 180px minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   align-items: center;
-  gap: 12px;
-  padding: 12px;
+  justify-items: center;
+  height: 100%;
+  gap: 18px;
+  padding: 22px;
 }
 
 .manager-ring {
   display: grid;
-  width: 148px;
-  height: 148px;
+  width: 180px;
+  height: 180px;
   place-items: center;
   align-content: center;
   border-radius: 50%;
@@ -910,7 +910,7 @@
 }
 
 .manager-ring strong {
-  font-size: 24px;
+  font-size: 30px;
   line-height: 1;
   font-weight: 800;
 }
@@ -929,6 +929,8 @@
 
 .manager-leave-donut ul {
   display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  width: 100%;
   gap: 10px;
   margin: 0;
   padding: 0;
@@ -937,9 +939,14 @@
 
 .manager-leave-donut li {
   display: grid;
-  grid-template-columns: 28px minmax(0, 1fr);
-  column-gap: 8px;
+  grid-template-columns: 32px minmax(0, 1fr);
+  column-gap: 10px;
   align-items: center;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid #edf1f6;
+  border-radius: 12px;
+  background: #fbfcfe;
 }
 
 .manager-leave-donut li svg {
@@ -1222,22 +1229,22 @@
 
 .manager-table th,
 .manager-table td {
-  height: 27px;
+  height: 36px;
   overflow: hidden;
   padding: 0 8px;
   border-bottom: 1px solid var(--manager-line);
   text-align: left;
   white-space: nowrap;
   text-overflow: ellipsis;
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1;
   font-weight: 700;
 }
 
 .manager-table th {
-  height: 30px;
+  height: 38px;
   color: var(--manager-muted);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 800;
   background: #f8fafc;
 }

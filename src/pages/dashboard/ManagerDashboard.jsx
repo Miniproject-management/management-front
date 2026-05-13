@@ -6,8 +6,6 @@ import {
   ChevronLeft,
   ChevronRight,
   ClipboardCheck,
-  FileText,
-  Filter,
   Plane,
   Umbrella,
   Users,
@@ -54,25 +52,10 @@ const teamMembers = [
   ["최지훈", "Backend", "3일", "7일", "0일"],
 ];
 
-const teamRoles = [
-  ["Backend", "4명", "9.0일"],
-  ["DevOps", "2명", "7.5일"],
-  ["Security", "2명", "8.8일"],
-  ["UI/UX", "2명", "9.2일"],
-  ["기획", "2명", "8.1일"],
-];
-
 const approvalRows = [
   ["연차 신청", "김민수", "05.19", CalendarPlus],
   ["반차 신청", "이서연", "05.19", Plane],
   ["연차 신청", "박서연", "05.18", CalendarPlus],
-];
-
-const activities = [
-  [CalendarDays, "김민수님이 연차를 신청했습니다.", "05.19 10:21", "blue"],
-  [Umbrella, "박서연님이 반차 승인이 등록되었습니다.", "05.18 09:45", "green"],
-  [FileText, "정다은님이 연차 신청이 승인 대기 중입니다.", "05.18 12:21", "purple"],
-  [CalendarCheck, "최지훈님이 반차 신청이 등록되었습니다.", "05.18 11:06", "orange"],
 ];
 
 const upcomingLeaves = [
@@ -89,17 +72,6 @@ const calendarWeeks = [
   ["18", "19", "20", "21", "22", "23", "24"],
   ["25", "26", "27", "28", "29", "30", "31"],
 ];
-
-function ManagerProgress({ value, total = 15, label }) {
-  const percent = Math.min(100, Math.round((value / total) * 100));
-
-  return (
-    <div className="manager-progress" aria-label={label}>
-      <span style={{ height: `${percent}%` }} />
-      <b>{value}</b>
-    </div>
-  );
-}
 
 function MiniDot({ tone }) {
   return <span className={`manager-dot manager-dot--${tone}`} />;
@@ -119,9 +91,6 @@ function ManagerDashboard() {
             <CalendarDays size={18} />
             2025.05.19 (월)
             <ChevronDown size={17} />
-          </button>
-          <button className="manager-icon-button" type="button" aria-label="필터">
-            <Filter size={19} />
           </button>
         </div>
       </header>
@@ -157,21 +126,6 @@ function ManagerDashboard() {
                 <li><CalendarCheck size={16} /> <span>사용 연차</span> <b>2.5일</b></li>
                 <li><CalendarPlus size={16} /> <span>잔여 연차</span> <b className="is-orange">12.5일</b></li>
               </ul>
-            </div>
-
-            <div className="manager-month-chart">
-              <div className="manager-month-chart__head">
-                <h3>연차 사용 현황</h3>
-                <span><i /> 사용 연차 <i className="is-light" /> 잔여 연차</span>
-              </div>
-              <div className="manager-bars">
-                {[13, 12, 11, 12, 12.5].map((remain, index) => (
-                  <div className="manager-bar-item" key={remain + index}>
-                    <ManagerProgress value={remain} label={`${index + 1}월 잔여 연차`} />
-                    <em>{index + 1}월</em>
-                  </div>
-                ))}
-              </div>
             </div>
           </div>
         </article>
@@ -246,28 +200,11 @@ function ManagerDashboard() {
           </table>
         </article>
 
-        <article className="manager-card manager-card--table manager-card--roles">
-          <h2>우리 팀 구성</h2>
-          <table className="manager-table">
-            <thead>
-              <tr>
-                <th>직무</th>
-                <th>인원</th>
-                <th>평균 잔여 연차</th>
-              </tr>
-            </thead>
-            <tbody>
-              {teamRoles.map((row) => (
-                <tr key={row[0]}>
-                  {row.map((cell) => <td key={cell}>{cell}</td>)}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </article>
-
         <article className="manager-card manager-card--table manager-card--approval">
-          <h2>결재 대기 문서</h2>
+          <div className="manager-card__head">
+            <h2>결재 대기 문서</h2>
+            <button type="button">전체 보기 <ChevronRight size={14} /></button>
+          </div>
           <table className="manager-table">
             <thead>
               <tr>
@@ -288,30 +225,6 @@ function ManagerDashboard() {
               ))}
             </tbody>
           </table>
-        </article>
-
-        <article className="manager-card manager-card--activity">
-          <h2>최근 팀 활동</h2>
-          <ul>
-            {activities.map(([Icon, text, time, tone]) => (
-              <li key={text}>
-                <span className={`manager-activity-icon manager-tone-${tone}`}><Icon size={15} /></span>
-                <p>{text}</p>
-                <time>{time}</time>
-              </li>
-            ))}
-          </ul>
-          <button type="button">더 보기 <ChevronRight size={14} /></button>
-        </article>
-
-        <article className="manager-card manager-card--quick">
-          <h2>빠른 메뉴</h2>
-          <div>
-            <button type="button" className="manager-tone-blue"><CalendarPlus size={24} />연차 신청</button>
-            <button type="button" className="manager-tone-green"><Umbrella size={24} />반차 신청</button>
-            <button type="button" className="manager-tone-purple"><FileText size={24} />내 신청 내역</button>
-            <button type="button" className="manager-tone-orange"><CalendarCheck size={24} />팀 휴가 관리</button>
-          </div>
         </article>
       </div>
     </section>
