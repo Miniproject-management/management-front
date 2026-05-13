@@ -990,30 +990,66 @@ button.resume-ai__icon-btn--link {
   color: var(--resume-ai-muted-light);
 }
 
-.resume-ai__json-details {
-  margin-top: 14px;
-  border-radius: 10px;
-  border: 1px solid #e2e8f0;
-  background: #f8fafc;
-  padding: 0 12px 10px;
+.resume-ai__analysis-block {
+  margin-top: 18px;
 }
 
-.resume-ai__json-details summary {
-  padding: 10px 4px;
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--resume-ai-muted);
-  cursor: pointer;
-  user-select: none;
+.resume-ai__analysis-block-title {
+  margin: 0 0 10px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--resume-ai-accent-border);
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--resume-ai-text);
+  letter-spacing: -0.02em;
 }
 
-.resume-ai__json-details summary:hover {
+.resume-ai__bullet-list {
+  margin: 0;
+  padding-left: 1.2rem;
+  font-size: 14px;
+  line-height: 1.65;
+  font-weight: 500;
   color: #334155;
 }
 
-.resume-ai__detail-pre--json {
-  max-height: 200px;
-  margin-top: 0;
+.resume-ai__bullet-list li {
+  margin-bottom: 8px;
+}
+
+.resume-ai__bullet-list li:last-child {
+  margin-bottom: 0;
+}
+
+.resume-ai__bullet-list--strength li::marker {
+  color: #15803d;
+}
+
+.resume-ai__bullet-list--risk li::marker {
+  color: #dc2626;
+}
+
+.resume-ai__analysis-decision {
+  margin: 16px 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.resume-ai__analysis-decision-label {
+  font-weight: 700;
+  color: var(--resume-ai-muted);
+}
+
+.resume-ai__analysis-decision-value {
+  font-weight: 800;
+  color: var(--resume-ai-text);
+  padding: 4px 10px;
+  border-radius: 8px;
+  background: #f1f5f9;
+  border: 1px solid var(--resume-ai-border-strong);
 }
 
 .resume-ai__list-preview {
