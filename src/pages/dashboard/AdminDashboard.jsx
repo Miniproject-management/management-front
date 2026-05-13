@@ -156,31 +156,31 @@ function AdminDashboard() {
 
   const kpis = [
     {
-      label: "회사 평균 사용률",
-      value: companyAvgUsage != null ? `${Number(companyAvgUsage).toFixed(1)}%` : "-",
-      description: "전체 직원 기준",
+      label: "전체 임직원",
+      value: "91명",
+      description: "전월 대비 +3명",
+      icon: Users,
+      tone: "orange",
+    },
+    {
+      label: "신규 지원자",
+      value: "12명",
+      description: "이번 주 기준",
+      icon: UserPlus,
+      tone: "green",
+    },
+    {
+      label: "평균 스크리닝 점수",
+      value: "84점",
+      description: "고득점 후보 3명",
       icon: Star,
       tone: "purple",
     },
     {
-      label: "결재 대기 연차",
-      value: `${pendingRequests.length}건`,
-      description: `${pendingDays.toFixed(1)}일 신청`,
-      icon: ClipboardCheck,
-      tone: "orange",
-    },
-    {
-      label: "이번 달 사용 연차",
-      value: `${monthUsedDays.toFixed(1)}일`,
-      description: `${today.getMonth() + 1}월 기준`,
-      icon: CalendarDays,
-      tone: "green",
-    },
-    {
       label: "평균 잔여 연차",
       value: avgRemaining ? `${avgRemaining}일` : "-",
-      description: "전체 부서 평균",
-      icon: UserPlus,
+      description: "전체 직원 기준",
+      icon: CalendarDays,
       tone: "orange",
     },
   ];
