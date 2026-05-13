@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 
 import Sidebar from "./components/Sidebar";
 import Footer from "./components/Footer";
@@ -19,14 +19,16 @@ import LeaveBalancePage from "./pages/approval/LeaveBalancePage";
 
 import "./index.css";
 
-function App() {
-  return (
-    <BrowserRouter>
-      <div className="layout">
-        <Sidebar />
+function AppShell() {
+  const { pathname } = useLocation();
+  const hideChrome = pathname === "/login";
 
-        <div className="content-wrapper">
-          <main className="main-content">
+  return (
+    <div className="layout">
+      {!hideChrome && <Sidebar />}
+
+      <div className="content-wrapper">
+        <main className="main-content">
             <Routes>
               <Route path="/" element={<RequireRole><DashboardPage /></RequireRole>} />
               <Route
@@ -67,9 +69,16 @@ function App() {
             </Routes>
           </main>
 
-          <Footer />
+          {!hideChrome && <Footer />}
         </div>
       </div>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AppShell />
     </BrowserRouter>
   );
 }

@@ -37,6 +37,16 @@ function LoginPage() {
 
   return (
     <div className="login-page">
+      <div className="login-brand">
+        <img
+          src="/hellohr-logo.png"
+          alt="HELLO HR"
+          className="login-brand__logo"
+        />
+        <span className="login-brand__name">HELLO HR</span>
+        <p className="login-brand__slogan">당신의 안전한 안녕이 시작됩니다.</p>
+      </div>
+
       <div className="login-container">
 
         {/* 제목 */}
