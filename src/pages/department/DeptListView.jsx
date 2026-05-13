@@ -9,6 +9,7 @@ const DeptListView = () => {
 
   // 모달 관련 상태
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedDept, setSelectedDept] = useState(null); // 수정 시 선택된 부서
   const [formData, setFormData] = useState({
     deptName: '',
     deptDesc: ''
@@ -30,13 +31,23 @@ const DeptListView = () => {
     }
   };
 
-  const handleOpenModal = () => {
-    setFormData({ deptName: '', deptDesc: '' });
+  const handleOpenModal = (dept = null) => {
+    if (dept) {
+      setSelectedDept(dept);
+      setFormData({
+        deptName: dept.deptName,
+        deptDesc: dept.deptDesc || ''
+      });
+    } else {
+      setSelectedDept(null);
+      setFormData({ deptName: '', deptDesc: '' });
+    }
     setIsModalOpen(true);
   };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
+    setSelectedDept(null);
   };
 
   const handleChange = (e) => {
@@ -51,13 +62,22 @@ const DeptListView = () => {
         alert("부서명을 입력해주세요.");
         return;
       }
-      await api.post('/api/hr/departments', formData);
-      alert("신규 부서가 성공적으로 생성되었습니다.");
+
+      if (selectedDept) {
+        // 수정 요청
+        await api.put(`/api/hr/departments/${selectedDept.deptNo}`, formData);
+        alert("부서 정보가 성공적으로 수정되었습니다.");
+      } else {
+        // 신규 생성 요청
+        await api.post('/api/hr/departments', formData);
+        alert("신규 부서가 성공적으로 생성되었습니다.");
+      }
+
       handleCloseModal();
       fetchDepartments(); // 목록 새로고침
     } catch (error) {
-      console.error("부서 생성 실패", error);
-      alert("부서 생성에 실패했습니다.");
+      console.error("부서 처리 실패", error);
+      alert(selectedDept ? "부서 수정에 실패했습니다." : "부서 생성에 실패했습니다.");
     }
   };
 
@@ -69,7 +89,7 @@ const DeptListView = () => {
           <p>회사 내 등록된 모든 부서 정보를 관리합니다.</p>
         </div>
         {role === 'ROLE_ADMIN' && (
-          <button className="btn-primary" onClick={handleOpenModal}>
+          <button className="btn-primary" onClick={() => handleOpenModal()}>
             + 신규 부서 생성
           </button>
         )}
@@ -95,7 +115,11 @@ const DeptListView = () => {
                   <td className="text-gray-500">{dept.deptDesc || '-'}</td>
                   <td className="text-center font-bold">{dept.employeeCount || 0}명</td>
                   <td className="text-center">
-                    <button className="btn-icon">•••</button>
+                    {role === 'ROLE_ADMIN' && (
+                      <button className="btn-icon" onClick={() => handleOpenModal(dept)}>
+                        •••
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))
@@ -106,11 +130,11 @@ const DeptListView = () => {
         </table>
       </div>
 
-      {/* 신규 부서 생성 모달 */}
+      {/* 부서 생성/수정 모달 */}
       {isModalOpen && (
         <div className="modal-overlay" onClick={handleCloseModal}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <h3>신규 부서 생성</h3>
+            <h3>{selectedDept ? '부서 정보 수정' : '신규 부서 생성'}</h3>
             <form onSubmit={handleSubmit}>
               <div className="form-group">
                 <label>부서명</label>
@@ -138,7 +162,7 @@ const DeptListView = () => {
                   취소
                 </button>
                 <button type="submit" className="btn-primary">
-                  생성하기
+                  {selectedDept ? '수정하기' : '생성하기'}
                 </button>
               </div>
             </form>
