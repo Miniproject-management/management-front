@@ -21,6 +21,7 @@
   gap: 10px;
 }
 
+/* 일반 버튼 (연차 신청) */
 .apply-btn {
   border: none;
 
@@ -43,6 +44,31 @@
 
 .apply-btn:hover {
   opacity: 0.9;
+}
+
+/* 관리자 버튼 (연차 생성) */
+.admin-btn {
+  border: none;
+
+  background-color: #2f3e5c;
+  color: white;
+
+  padding: 12px 18px;
+
+  border-radius: 10px;
+
+  cursor: pointer;
+
+  text-decoration: none;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  transition: 0.2s;
+}
+
+.admin-btn:hover {
+  background-color: #25324a;
 }
 
 /* 섹션 */

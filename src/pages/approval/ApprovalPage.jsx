@@ -124,7 +124,7 @@ function ApprovalPage() {
           {role === "ROLE_ADMIN" ? (
             <Link
               to="/approval/leave-balance"
-              className="apply-btn"
+              className="admin-btn"
             >
               + 연차 생성
             </Link>
