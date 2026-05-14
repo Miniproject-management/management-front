@@ -1,5 +1,15 @@
 import { create } from "zustand";
 
+const normalizeRole = (role, deptName) => {
+  if (deptName === "인사팀") {
+    return "ROLE_ADMIN";
+  }
+
+  return role;
+};
+
+const initialDeptName = localStorage.getItem("deptName") || null;
+
 const useAuthStore = create((set) => ({
 
   accessToken:
@@ -8,12 +18,11 @@ const useAuthStore = create((set) => ({
     localStorage.getItem("empNo") || null,
   empName:
     localStorage.getItem("empName") || null,
-  deptName:
-    localStorage.getItem("deptName") || null,
-  role:
-    localStorage.getItem("role") || null,
+  deptName: initialDeptName,
+  role: normalizeRole(localStorage.getItem("role") || null, initialDeptName),
 
   login: (data) => {
+    const role = normalizeRole(data.role, data.deptName);
 
     localStorage.setItem(
       "accessToken",
@@ -37,7 +46,7 @@ const useAuthStore = create((set) => ({
 
     localStorage.setItem(
       "role",
-      data.role
+      role
     );
 
     set({
@@ -45,7 +54,7 @@ const useAuthStore = create((set) => ({
       empNo: data.empNo,
       empName: data.empName,
       deptName: data.deptName,
-      role: data.role,
+      role,
     });
   },
 

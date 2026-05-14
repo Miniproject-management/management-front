@@ -56,10 +56,6 @@ function AppShell() {
                 }
               />
               <Route path="/login" element={<LoginPage />} />
-              {/* 디자인 미리보기 (완성 후 제거) */}
-              <Route path="/preview/admin" element={<AdminDashboard />} />
-              <Route path="/preview/manager" element={<ManagerDashboard />} />
-              <Route path="/preview/employee" element={<EmployeeDashboard />} />
               <Route path="/approval" element={<ApprovalPage />} />
               <Route path="/resume" element={<ResumePage />} />
               <Route path="/department" element={<DepartmentPage />} />

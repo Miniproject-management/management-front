@@ -55,30 +55,6 @@ function Sidebar() {
           </NavLink>
         </nav>
 
-        {/* 디자인 미리보기 (완성 후 제거 예정) */}
-        <div className="preview-section">
-          <div className="preview-header">
-            <p className="preview-title">디자인 미리보기</p>
-            <span className="preview-badge">DEMO</span>
-          </div>
-          <p className="preview-note">각 역할 화면 임시 진입 (배포 전 삭제)</p>
-
-          <NavLink className="preview-link" to="/preview/admin">
-            <span className="preview-link__icon" aria-hidden="true">🏢</span>
-            인사팀 화면
-          </NavLink>
-
-          <NavLink className="preview-link" to="/preview/manager">
-            <span className="preview-link__icon" aria-hidden="true">👔</span>
-            팀장 화면
-          </NavLink>
-
-          <NavLink className="preview-link" to="/preview/employee">
-            <span className="preview-link__icon" aria-hidden="true">🙋</span>
-            사원 화면
-          </NavLink>
-        </div>
-
       </div>
 
       {accessToken ? (
