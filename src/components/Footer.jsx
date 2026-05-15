@@ -28,7 +28,7 @@ function Footer() {
       <hr className="footer-line" />
 
       <p className="footer-copy">
-        Copyright ⓒ 개발연구소
+        Copyright ⓒ SK루키즈
       </p>
     </footer>
   );
